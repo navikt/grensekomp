@@ -4,8 +4,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.helse.GravidTestData
-import no.nav.helse.fritakagp.db.GravidSoeknadRepository
-import no.nav.helse.fritakagp.domain.GravidSoeknad
+import no.nav.helse.grensekomp.db.GravidSoeknadRepository
+import no.nav.helse.grensekomp.domain.GravidSoeknad
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

@@ -6,7 +6,7 @@ val logback_contrib_version = "0.1.5"
 val jacksonVersion = "2.10.3"
 val prometheusVersion = "0.6.0"
 val hikariVersion = "3.3.1"
-val mainClass = "no.nav.helse.fritakagp.AppKt"
+val mainClass = "no.nav.helse.grensekomp.AppKt"
 val junitJupiterVersion = "5.7.0"
 val assertJVersion = "3.12.2"
 val mockKVersion = "1.9.3"
@@ -36,7 +36,7 @@ plugins {
 }
 
 application {
-    mainClassName = "no.nav.helse.fritakagp.web.AppKt"
+    mainClassName = "no.nav.helse.grensekomp.web.AppKt"
 }
 
 buildscript {

@@ -1,8 +1,8 @@
 package no.nav.helse
 
-import no.nav.helse.fritakagp.domain.*
-import no.nav.helse.fritakagp.web.api.resreq.KroniskKravRequest
-import no.nav.helse.fritakagp.web.api.resreq.KroniskSoknadRequest
+import no.nav.helse.grensekomp.domain.*
+import no.nav.helse.grensekomp.web.api.resreq.KroniskKravRequest
+import no.nav.helse.grensekomp.web.api.resreq.KroniskSoknadRequest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random

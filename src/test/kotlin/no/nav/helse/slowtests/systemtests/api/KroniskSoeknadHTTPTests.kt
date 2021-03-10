@@ -5,9 +5,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.helse.GravidTestData
 import no.nav.helse.KroniskTestData
-import no.nav.helse.fritakagp.db.KroniskSoeknadRepository
-import no.nav.helse.fritakagp.domain.*
-import no.nav.helse.fritakagp.web.api.resreq.KroniskSoknadRequest
+import no.nav.helse.grensekomp.db.KroniskSoeknadRepository
+import no.nav.helse.grensekomp.domain.*
+import no.nav.helse.grensekomp.web.api.resreq.KroniskSoknadRequest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.koin.test.inject

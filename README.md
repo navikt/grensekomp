@@ -1,9 +1,9 @@
-Fritak Arbeidsgiverperiode (AGP) 
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=navikt_fritakagp)](https://sonarcloud.io/dashboard?id=navikt_fritakagp)
+Refusjonskravløsning iiht inntektssikring for utestengte EØS-borgere (AGP) 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=navikt_grensekomp)](https://sonarcloud.io/dashboard?id=navikt_grensekomp)
 ================
 
 
-Backend for mottak av søknader om fritak fra AGP ved sykepenger.
+Backend for mottak av krav om refusjon ihht inntektssikring for utestengte EØS-borgere.
 # Komme i gang
 
 For å kjøre lokalt kan du starte  `docker-compose up` fra docker/local før du starter prosjektet. 
@@ -13,7 +13,7 @@ For å kjøre lokalt kan du starte  `docker-compose up` fra docker/local før du
 Følg oppskriften for Cloud SQL proxy her: https://doc.nais.io/persistence/postgres/
 
 For å koble til når du har personlig bruker:
-CONNECTION_NAME=$(gcloud sql instances describe fritakagp --format="get(connectionName)" --project helsearbeidsgiver-dev-6d06);
+CONNECTION_NAME=$(gcloud sql instances describe grensekomp --format="get(connectionName)" --project helsearbeidsgiver-dev-6d06);
 ./cloud_sql_proxy -instances=${CONNECTION_NAME}=tcp:5555
 gcloud auth print-access-token
 

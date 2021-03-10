@@ -9,13 +9,13 @@ set -e
 #
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-    CREATE USER fritakagp WITH PASSWORD 'fritakagp';
-    CREATE DATABASE fritakagp_db;
-    CREATE SCHEMA fritakagp;
-    GRANT ALL PRIVILEGES ON DATABASE fritakagp_db TO fritakagp;
+    CREATE USER grensekomp WITH PASSWORD 'grensekomp';
+    CREATE DATABASE grensekomp_db;
+    CREATE SCHEMA grensekomp;
+    GRANT ALL PRIVILEGES ON DATABASE grensekomp_db TO grensekomp;
 EOSQL
 
-psql -v ON_ERROR_STOP=1 --username "fritakagp" --dbname "fritakagp_db" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "grensekomp" --dbname "grensekomp_db" <<-EOSQL
 
 EOSQL
 

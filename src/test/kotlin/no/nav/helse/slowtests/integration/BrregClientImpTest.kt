@@ -1,7 +1,7 @@
 package no.nav.helse.slowtests.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.helse.fritakagp.integration.brreg.BrregClientImp
+import no.nav.helse.grensekomp.integration.brreg.BrregClientImp
 import no.nav.helse.slowtests.systemtests.api.SystemTestBase
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

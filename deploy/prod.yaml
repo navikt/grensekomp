@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: fritakagp
+  name: grensekomp
   namespace: helsearbeidsgiver
   labels:
     team: helsearbeidsgiver
@@ -21,8 +21,8 @@ spec:
     periodSeconds: 5
     failureThreshold: 10
   ingresses:
-    - https://arbeidsgiver.nav.no/fritak-agp-api
-    - https://fritakagp-api.intern.nav.no
+    - https://arbeidsgiver.nav.no/grensekomp-agp-api
+    - https://grensekomp-api.intern.nav.no
   prometheus:
     enabled: true
   replicas:
@@ -77,7 +77,7 @@ spec:
     - name: GCP_PRJ_ID
       value: helsearbeidsgiver-prod-8a1c
     - name: GCP_BUCKET_NAME
-      value: helse-arbeidsgiver-fritakagb-bucket-prod
+      value: helse-arbeidsgiver-grensekompagb-bucket-prod
     - name: ALTINN_SERVICE_OWNER_GW_URL
       value: https://api-gw.oera.no/ekstern/altinn/api/serviceowner
     - name: ENHETSREGISTERET
@@ -91,7 +91,7 @@ spec:
     - name: PROXY_SCOPE
       value: api://prod-fss.helsearbeidsgiver.helsearbeidsgiver-proxy/.default
     - name: KTOR_APPLICATION_BASEPATH
-      value: /fritak-agp-api
+      value: /grensekomp-agp-api
     - name: RUN_BACKGROUND_WORKERS
       value: false
 
@@ -99,10 +99,10 @@ spec:
     sqlInstances:
       - type: POSTGRES_11
         databases:
-          - name: fritakagp-db
+          - name: grensekomp-db
             diskAutoresize: true
     buckets:
-      - name: helse-arbeidsgiver-fritakagb-bucket-prod
+      - name: helse-arbeidsgiver-grensekompagb-bucket-prod
         #retentionPeriodDays: 30
          # lifecycleCondition:
          # age: 7

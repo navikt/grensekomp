@@ -2,8 +2,8 @@ package no.nav.helse.slowtests
 
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.helse.KroniskTestData
-import no.nav.helse.fritakagp.db.PostgresKroniskKravRepository
-import no.nav.helse.fritakagp.db.createTestHikariConfig
+import no.nav.helse.grensekomp.db.PostgresKroniskKravRepository
+import no.nav.helse.grensekomp.db.createTestHikariConfig
 import no.nav.helse.slowtests.systemtests.api.SystemTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach

@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  APP: fritakagp
+  APP: grensekomp
   DOCKER_IMAGE_NAME: ghcr.io/${{ github.repository }}
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

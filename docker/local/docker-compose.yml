@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  fritakagp-database:
+  grensekomp-database:
     build:
       context: ./postgres
       dockerfile: postgres.Dockerfile
@@ -9,14 +9,6 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-
-  fritakagp-kafka:
-    build:
-      context: ./kafka
-      dockerfile: kafka.Dockerfile
-    ports:
-      - "2181:2181"
-      - "9092:9092"
 
 volumes:
   data:

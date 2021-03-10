@@ -1,6 +1,6 @@
 package no.nav.helse.slowtests.kafka
 
-import no.nav.helse.fritakagp.integration.kafka.consumerFakeConfig
+import no.nav.helse.grensekomp.integration.kafka.consumerFakeConfig
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.KafkaAdminClient
 import org.apache.kafka.clients.admin.NewTopic
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 class KafkaAdminForTests {
     companion object {
-        const val topicName = "fritakagb-test"
+        const val topicName = "grensekompagb-test"
     }
 
     private val adminClient: AdminClient = KafkaAdminClient.create(consumerFakeConfig())

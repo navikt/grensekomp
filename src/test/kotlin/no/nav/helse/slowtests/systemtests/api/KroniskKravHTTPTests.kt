@@ -4,10 +4,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.helse.KroniskTestData
-import no.nav.helse.fritakagp.db.KroniskKravRepository
-import no.nav.helse.fritakagp.db.KroniskSoeknadRepository
-import no.nav.helse.fritakagp.domain.KroniskKrav
-import no.nav.helse.fritakagp.domain.KroniskSoeknad
+import no.nav.helse.grensekomp.db.KroniskKravRepository
+import no.nav.helse.grensekomp.db.KroniskSoeknadRepository
+import no.nav.helse.grensekomp.domain.KroniskKrav
+import no.nav.helse.grensekomp.domain.KroniskSoeknad
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.koin.test.inject

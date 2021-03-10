@@ -1,8 +1,8 @@
 package no.nav.helse
 
-import no.nav.helse.fritakagp.domain.*
-import no.nav.helse.fritakagp.web.api.resreq.GravidKravRequest
-import no.nav.helse.fritakagp.web.api.resreq.GravidSoknadRequest
+import no.nav.helse.grensekomp.domain.*
+import no.nav.helse.grensekomp.web.api.resreq.GravidKravRequest
+import no.nav.helse.grensekomp.web.api.resreq.GravidSoknadRequest
 import java.time.LocalDate
 
 object GravidTestData {
