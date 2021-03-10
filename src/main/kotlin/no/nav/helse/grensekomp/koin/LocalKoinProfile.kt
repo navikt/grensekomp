@@ -39,6 +39,6 @@ fun localDevConfig(config: ApplicationConfig) = module {
     single { DefaultAltinnAuthorizer(get()) } bind AltinnAuthorizer::class
     single { JoarkService(get()) } bind JoarkService::class
 
-    single { OppgaveService(get(), get()) } bind OppgaveService::class
+    single { OppgaveService(get()) } bind OppgaveService::class
     single { DummyKvitteringSender() } bind KvitteringSender::class
 }

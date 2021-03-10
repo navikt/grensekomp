@@ -7,7 +7,7 @@ import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveRequest
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import java.time.LocalDate
 
-class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: ObjectMapper) {
+class OppgaveService(private val oppgaveKlient: OppgaveKlient) {
 
     fun opprettOppgave(refusjonskrav: Refusjonskrav, journalpostId: String, aktørId: String, callId: String): String {
         val response = runBlocking {
