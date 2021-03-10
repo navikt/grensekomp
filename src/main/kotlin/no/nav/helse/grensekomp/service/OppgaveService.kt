@@ -36,7 +36,7 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient) {
                 journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 tema = "SYK",
-                oppgavetype = "ROB_BEH",
+                oppgavetype = "BEH_SAK",
                 behandlingstema = "ab0433",
                 aktivDato = LocalDate.now(),
                 fristFerdigstillelse = LocalDate.now().plusDays(7),
