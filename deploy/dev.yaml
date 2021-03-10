@@ -53,7 +53,7 @@ spec:
           namespace: helsearbeidsgiver
           cluster: dev-fss
 
-  #envFrom:
+  envFrom:
     # servicebrukerens passord som er  hentet fra vault og lagt inn slik: https://doc.nais.io/security/secrets/kubernetes-secrets/
     - secret: altinn-grensekomp-user-password
     - secret: altinn-grensekomp-apigw-key
