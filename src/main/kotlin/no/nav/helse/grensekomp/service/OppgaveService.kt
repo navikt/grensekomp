@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OppgaveKlient
 import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveRequest
 import no.nav.helse.grensekomp.domene.Refusjonskrav
-import no.nav.helse.grensekomp.domene.toRefusjonskravForOppgave
 import java.time.LocalDate
 
 class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: ObjectMapper) {
@@ -19,8 +18,16 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: O
     }
 
     private fun mapStrukturert(refusjonskrav: Refusjonskrav): String {
-        val kravForOppgave = refusjonskrav.toRefusjonskravForOppgave()
-        return om.writeValueAsString(kravForOppgave)
+        return """
+            Krav om refusjon av lønn for utestengte EØS-borgere
+            
+            Arbeidstaker: ${refusjonskrav.identitetsnummer}
+            Arbeidsgiver: ${refusjonskrav.virksomhetsnummer}
+            
+            Periode: ${refusjonskrav.perioder.first().fom} - ${refusjonskrav.perioder.first().tom}
+            Antall dager det kreves refusjon for: ${refusjonskrav.perioder.first().antallDagerMedRefusjon}
+            Refusjonskrav : ${refusjonskrav.perioder.first().beloep} NOK
+        """.trimIndent()
     }
 
     private fun mapOppgave(journalpostId: String, aktørId: String, beskrivelse: String): OpprettOppgaveRequest {
