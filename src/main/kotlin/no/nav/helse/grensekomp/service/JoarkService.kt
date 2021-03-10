@@ -15,7 +15,7 @@ class JoarkService(val dokarkivKlient: DokarkivKlient) {
                         journalposttype = Journalposttype.INNGAAENDE,
                         kanal = "NAV_NO",
                         eksternReferanseId = refusjonskrav.id.toString(),
-                        tittel = "Refusjonskrav arbeidsgiverperiode korona",
+                        tittel = "Refusjonskrav for utestengt arbeidsgtaker",
                         bruker = Bruker(
                                 id = refusjonskrav.identitetsnummer,
                                 idType = IdType.FNR
@@ -26,8 +26,8 @@ class JoarkService(val dokarkivKlient: DokarkivKlient) {
                                 navn = "Arbeidsgiver"
                         ),
                         dokumenter = listOf(Dokument(
-                                brevkode = "refusjonskrav_arbeidsgiverperiode_korona",
-                                tittel = "Refusjonskrav arbeidsgiverperiode korona",
+                                brevkode = "refusjonskrav_utestengt_arbeider_korona",
+                                tittel = "Refusjonskrav utestengt arbeider korona",
                                 dokumentVarianter = listOf(DokumentVariant(
                                         fysiskDokument = base64EnkodetPdf
                                 ))
