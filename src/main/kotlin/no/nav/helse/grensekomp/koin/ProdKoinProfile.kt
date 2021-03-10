@@ -49,7 +49,6 @@ fun prodConfig(config: ApplicationConfig) = module {
     single { PostgresRefusjonskravRepository(get(), get()) } bind RefusjonskravRepository::class
     single { PostgresKvitteringRepository(get(), get()) } bind KvitteringRepository::class
     single { PostgresRefusjonskravService(get(), get(), get(), get(), get()) } bind RefusjonskravService::class
-    single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
 
     single { JoarkService(get()) } bind JoarkService::class
     single { OppgaveService(get(), get()) } bind OppgaveService::class
