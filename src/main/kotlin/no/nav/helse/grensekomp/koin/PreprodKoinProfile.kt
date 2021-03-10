@@ -12,11 +12,15 @@ import no.nav.helse.arbeidsgiver.web.auth.DefaultAltinnAuthorizer
 import no.nav.helse.grensekomp.MetrikkVarsler
 import no.nav.helse.grensekomp.db.*
 import no.nav.helse.grensekomp.integration.altinn.message.Clients
-import no.nav.helse.grensekomp.processing.brukernotifikasjon.BrukernotifikasjonProcessor
-import no.nav.helse.grensekomp.processing.gravid.krav.*
-import no.nav.helse.grensekomp.processing.gravid.soeknad.*
-import no.nav.helse.grensekomp.processing.kronisk.krav.*
-import no.nav.helse.grensekomp.processing.kronisk.soeknad.*
+import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
+import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
+import no.nav.helse.grensekomp.service.JoarkService
+import no.nav.helse.grensekomp.service.OppgaveService
+import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
+import no.nav.helse.grensekomp.kvittering.AltinnKvitteringMapper
+import no.nav.helse.grensekomp.kvittering.AltinnKvitteringSender
+import no.nav.helse.grensekomp.kvittering.KvitteringSender
+import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import javax.sql.DataSource
@@ -35,70 +39,33 @@ fun preprodConfig(config: ApplicationConfig) = module {
         )
     } bind DataSource::class
 
-    single { PostgresGravidSoeknadRepository(get(), get()) } bind GravidSoeknadRepository::class
-    single { PostgresKroniskSoeknadRepository(get(), get()) } bind KroniskSoeknadRepository::class
-    single { PostgresGravidKravRepository(get(), get()) } bind GravidKravRepository::class
-    single { PostgresKroniskKravRepository(get(), get()) } bind KroniskKravRepository::class
-
     single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
     single { BakgrunnsjobbService(get(), bakgrunnsvarsler = MetrikkVarsler()) }
 
-    single { GravidSoeknadProcessor(get(), get(), get(), get(), get(), GravidSoeknadPDFGenerator(), get(), get(), get()) }
-    single { GravidKravProcessor(get(), get(), get(), get(), get(), GravidKravPDFGenerator(), get(), get(), get()) }
-
-    single { KroniskSoeknadProcessor(get(), get(), get(), get(), get(), KroniskSoeknadPDFGenerator(), get(), get(), get()) }
-    single { KroniskKravProcessor(get(), get(), get(), get(), get(), KroniskKravPDFGenerator(), get(), get(), get()) }
-
     single { Clients.iCorrespondenceExternalBasic(config.getString("altinn_melding.altinn_endpoint")) }
-    
-    single {
-        GravidSoeknadAltinnKvitteringSender(
-            config.getString("altinn_melding.service_id"),
-            get(),
-            config.getString("altinn_melding.username"),
-            config.getString("altinn_melding.password")
-        )
-    } bind GravidSoeknadKvitteringSender::class
-
-    single { GravidSoeknadKvitteringProcessor(get(), get(), get()) }    
-    
-    single {
-        GravidKravAltinnKvitteringSender(
-            config.getString("altinn_melding.service_id"),
-            get(),
-            config.getString("altinn_melding.username"),
-            config.getString("altinn_melding.password")
-        )
-    } bind GravidKravKvitteringSender::class
-
-    single { GravidKravKvitteringProcessor(get(), get(), get()) }
-    
-    single {
-        KroniskSoeknadAltinnKvitteringSender(
-            config.getString("altinn_melding.service_id"),
-            get(),
-            config.getString("altinn_melding.username"),
-            config.getString("altinn_melding.password")
-        )
-    } bind KroniskSoeknadKvitteringSender::class
-    single { KroniskSoeknadKvitteringProcessor(get(), get(), get()) }
-    
-    single {
-        KroniskKravAltinnKvitteringSender(
-            config.getString("altinn_melding.service_id"),
-            get(),
-            config.getString("altinn_melding.username"),
-            config.getString("altinn_melding.password")
-        )
-    } bind KroniskKravKvitteringSender::class
-    single { KroniskKravKvitteringProcessor(get(), get(), get()) }
-
-    single { GravidSoeknadKafkaProcessor(get(), get(), get() ) }
-    single { GravidKravKafkaProcessor(get(), get(), get()) }
-    single { KroniskSoeknadKafkaProcessor(get(), get(), get()) }
-    single { KroniskKravKafkaProcessor(get(), get(), get()) }
-    single { BrukernotifikasjonProcessor(get(), get(), get(), get(), get(), get(), config.getString("service_user.username"), 3, "https://grensekomp-agp-frontend.dev.nav.no") }
 
     single { DefaultAltinnAuthorizer(get()) } bind AltinnAuthorizer::class
+
+    single { PostgresRefusjonskravRepository(get(), get()) } bind RefusjonskravRepository::class
+    single { PostgresKvitteringRepository(get(), get()) } bind KvitteringRepository::class
+    single { PostgresRefusjonskravService(get(), get(), get(), get(), get()) } bind RefusjonskravService::class
+    single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
+
+    single { JoarkService(get()) } bind JoarkService::class
+    single { OppgaveService(get(), get()) } bind OppgaveService::class
+
+    single {
+        AltinnKvitteringSender(
+            AltinnKvitteringMapper(config.getString("altinn_melding.service_id")),
+            get(),
+            config.getString("altinn_melding.username"),
+            config.getString("altinn_melding.password"),
+            get())
+    } bind KvitteringSender::class
+
+    single { RefusjonskravProcessor(get(), get(), get(), get(), get()) }
+    single { KvitteringProcessor(get(), get(), get()) }
+
+
 }
 

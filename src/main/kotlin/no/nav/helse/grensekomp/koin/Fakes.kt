@@ -14,10 +14,6 @@ import no.nav.helse.arbeidsgiver.utils.loadFromResources
 import no.nav.helse.arbeidsgiver.web.auth.AltinnOrganisationsRepository
 import no.nav.helse.grensekomp.integration.brreg.BrregClient
 import no.nav.helse.grensekomp.integration.brreg.MockBrregClient
-import no.nav.helse.grensekomp.integration.gcp.BucketStorage
-import no.nav.helse.grensekomp.integration.gcp.MockBucketStorage
-import no.nav.helse.grensekomp.integration.kafka.BrukernotifikasjonBeskjedSender
-import no.nav.helse.grensekomp.integration.kafka.MockBrukernotifikasjonBeskjedSender
 import no.nav.helse.grensekomp.integration.virusscan.MockVirusScanner
 import no.nav.helse.grensekomp.integration.virusscan.VirusScanner
 import org.koin.core.module.Module
@@ -25,7 +21,6 @@ import org.koin.dsl.bind
 
 fun Module.mockExternalDependecies() {
     single { MockAltinnRepo(get()) } bind AltinnOrganisationsRepository::class
-    single { MockBrukernotifikasjonBeskjedSender() } bind BrukernotifikasjonBeskjedSender::class
 
     single {
         object : DokarkivKlient {
@@ -86,7 +81,6 @@ fun Module.mockExternalDependecies() {
     } bind OppgaveKlient::class
 
     single { MockVirusScanner() } bind VirusScanner::class
-    single { MockBucketStorage() } bind BucketStorage::class
     single { MockBrregClient() } bind BrregClient::class
 }
 

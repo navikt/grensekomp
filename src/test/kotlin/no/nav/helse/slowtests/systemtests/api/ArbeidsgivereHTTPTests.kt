@@ -3,7 +3,6 @@ package no.nav.helse.slowtests.systemtests.api
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import no.nav.helse.KroniskTestData
 import no.nav.helse.arbeidsgiver.integrasjoner.altinn.AltinnOrganisasjon
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -28,7 +27,6 @@ class ArbeidsgivereHTTPTests : SystemTestBase() {
             appUrl(arbeidsgivereUrl)
             contentType(ContentType.Application.Json)
             loggedInAs("123456789")
-            body = KroniskTestData.kroniskSoknadMedFil
         }
 
         Assertions.assertThat(response.size).isGreaterThan(0)

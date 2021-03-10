@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
-import no.nav.helse.grensekomp.grensekompApplication
+import no.nav.helse.grensekomp.GrensekompApplication
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
@@ -30,13 +30,13 @@ open class SystemTestBase : KoinTest {
 
     companion object {
         val testServerPort = 8989
-        var app: grensekompApplication? = null
+        var app: GrensekompApplication? = null
     }
 
     @BeforeAll
     fun before() {
         if (app == null) {
-            app = grensekompApplication(port = testServerPort)
+            app = GrensekompApplication(port = testServerPort)
             app!!.start()
             Thread.sleep(200)
         }

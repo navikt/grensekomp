@@ -14,17 +14,12 @@ val tokenSupportVersion = "1.3.1"
 val mockOAuth2ServerVersion = "0.2.1"
 val koinVersion = "2.0.1"
 val valiktorVersion = "0.12.0"
-val gcpStorageVersion = "1.113.6"
 val cxfVersion = "3.4.1"
 val jaxwsVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.3"
-val kafkaClient = "2.7.0"
-val confluentVersion = "6.0.1"
-val brukernotifikasjonSchemasVersion = "1.2021.01.18-11.12-b9c8c40b98d1"
-
-
+val apachePoiVersion = "4.1.2"
+val influxVersion = "2.20"
 val githubPassword: String by project
-
 
 
 plugins {
@@ -85,7 +80,6 @@ dependencies {
             }
             because("snyk control")
         }
-
     }
     implementation("commons-codec:commons-codec:1.13") // overstyrer transiente 1.10
     implementation("io.netty:netty-codec:4.1.59.Final") // overstyrer transiente 4.1.44
@@ -93,6 +87,10 @@ dependencies {
     implementation("org.eclipse.jetty:jetty-server:9.4.37.v20210219")
     implementation("com.google.guava:guava:30.0-jre") //[Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] overstyrer versjon 29.0
     // -- end snyk fixes
+
+    implementation("org.apache.poi:poi:$apachePoiVersion")
+    implementation("org.apache.poi:poi-ooxml:$apachePoiVersion")
+    implementation("org.influxdb:influxdb-java:${influxVersion}")
 
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
@@ -113,8 +111,6 @@ dependencies {
     implementation("org.koin:koin-ktor:$koinVersion")
     implementation("no.nav.security:token-client-core:$tokenSupportVersion")
     implementation("no.nav.security:token-validation-ktor:$tokenSupportVersion")
-
-    implementation("com.github.navikt:brukernotifikasjon-schemas:$brukernotifikasjonSchemasVersion")
 
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
     implementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
@@ -166,10 +162,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
-    implementation( "com.google.cloud:google-cloud-storage:$gcpStorageVersion")
-    implementation("org.apache.kafka:kafka-clients:$kafkaClient")
-    implementation("io.confluent:kafka-avro-serializer:$confluentVersion")
-
 }
 
 tasks.named<KotlinCompile>("compileKotlin")

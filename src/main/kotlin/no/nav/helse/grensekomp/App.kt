@@ -14,22 +14,11 @@ import no.nav.helse.arbeidsgiver.system.getEnvironment
 import no.nav.helse.arbeidsgiver.system.getString
 import no.nav.helse.grensekomp.koin.getAllOfType
 import no.nav.helse.grensekomp.koin.selectModuleBasedOnProfile
-import no.nav.helse.grensekomp.processing.brukernotifikasjon.BrukernotifikasjonProcessor
-import no.nav.helse.grensekomp.processing.gravid.krav.GravidKravKafkaProcessor
-import no.nav.helse.grensekomp.processing.gravid.krav.GravidKravKvitteringProcessor
-import no.nav.helse.grensekomp.processing.gravid.krav.GravidKravProcessor
-import no.nav.helse.grensekomp.processing.gravid.soeknad.GravidSoeknadKafkaProcessor
-import no.nav.helse.grensekomp.processing.gravid.soeknad.GravidSoeknadKvitteringProcessor
 import no.nav.helse.grensekomp.web.nais.nais
-import no.nav.helse.grensekomp.processing.gravid.soeknad.GravidSoeknadProcessor
-import no.nav.helse.grensekomp.processing.kronisk.krav.KroniskKravKafkaProcessor
-import no.nav.helse.grensekomp.processing.kronisk.krav.KroniskKravKvitteringProcessor
-import no.nav.helse.grensekomp.processing.kronisk.krav.KroniskKravProcessor
-import no.nav.helse.grensekomp.processing.kronisk.soeknad.KroniskSoeknadKafkaProcessor
-import no.nav.helse.grensekomp.processing.kronisk.soeknad.KroniskSoeknadProcessor
-import no.nav.helse.grensekomp.processing.kronisk.soeknad.KroniskSoeknadKvitteringProcessor
 import no.nav.helse.grensekomp.web.auth.localCookieDispenser
 import no.nav.helse.grensekomp.web.grensekompModule
+import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
+import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
 import org.flywaydb.core.Flyway
 import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext
@@ -38,8 +27,8 @@ import org.koin.core.context.stopKoin
 import org.koin.core.get
 import org.slf4j.LoggerFactory
 
-class grensekompApplication(val port: Int = 8080) : KoinComponent {
-    private val logger = LoggerFactory.getLogger(grensekompApplication::class.simpleName)
+class GrensekompApplication(val port: Int = 8080) : KoinComponent {
+    private val logger = LoggerFactory.getLogger(GrensekompApplication::class.simpleName)
     private var webserver: NettyApplicationEngine? = null
     private var appConfig: HoconApplicationConfig = HoconApplicationConfig(ConfigFactory.load())
     private val runtimeEnvironment = appConfig.getEnvironment()
@@ -54,7 +43,7 @@ class grensekompApplication(val port: Int = 8080) : KoinComponent {
         startKoin { modules(selectModuleBasedOnProfile(appConfig)) }
         migrateDatabase()
 
-        configAndStartBackgroundWorker()
+        configAndStartBackgroundWorkers()
         autoDetectProbeableComponents()
         configAndStartWebserver()
     }
@@ -69,7 +58,7 @@ class grensekompApplication(val port: Int = 8080) : KoinComponent {
         webserver = embeddedServer(Netty, applicationEngineEnvironment {
             config = appConfig
             connector {
-                port = this@grensekompApplication.port
+                port = this@GrensekompApplication.port
             }
 
             module {
@@ -85,27 +74,11 @@ class grensekompApplication(val port: Int = 8080) : KoinComponent {
         webserver!!.start(wait = false)
     }
 
-    private fun configAndStartBackgroundWorker() {
+    private fun configAndStartBackgroundWorkers() {
         if (appConfig.getString("run_background_workers") == "true") {
             get<BakgrunnsjobbService>().apply {
-                registrer(get<GravidSoeknadProcessor>())
-                registrer(get<GravidSoeknadKafkaProcessor>())
-                registrer(get<GravidSoeknadKvitteringProcessor>())
-
-                registrer(get<GravidKravProcessor>())
-                registrer(get<GravidKravKafkaProcessor>())
-                registrer(get<GravidKravKvitteringProcessor>())
-
-                registrer(get<KroniskSoeknadProcessor>())
-                registrer(get<KroniskSoeknadKafkaProcessor>())
-                registrer(get<KroniskSoeknadKvitteringProcessor>())
-
-                registrer(get<KroniskKravProcessor>())
-                registrer(get<KroniskKravKafkaProcessor>())
-                registrer(get<KroniskKravKvitteringProcessor>())
-
-                registrer(get<BrukernotifikasjonProcessor>())
-
+                registrer(get<KvitteringProcessor>())
+                registrer(get<RefusjonskravProcessor>())
                 startAsync(true)
             }
         }
@@ -114,7 +87,7 @@ class grensekompApplication(val port: Int = 8080) : KoinComponent {
     private fun migrateDatabase() {
         logger.info("Starter databasemigrering")
 
-        Flyway.configure().baselineOnMigrate(true)
+        Flyway.configure().baselineOnMigrate(false)
             .dataSource(GlobalContext.get().koin.get())
             .load()
             .migrate()
@@ -144,7 +117,7 @@ fun main() {
         logger.error("uncaught exception in thread ${thread.name}: ${err.message}", err)
     }
 
-    val application = grensekompApplication()
+    val application = GrensekompApplication()
     application.start()
 
     Runtime.getRuntime().addShutdownHook(Thread {
