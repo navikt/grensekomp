@@ -142,7 +142,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
         return when(valiktokProp) {
             "identitetsnummer" -> "Fødselsnummer"
             "virksomhetsnummer" -> "Virksomhetsnummer"
-            "perioder" -> "Arbeidsgiverperioden (fom+tom)"
+            "perioder" -> "Perioden (fom+tom)"
             "perioder[0].fom" -> "Fra og med"
             "perioder[0].tom" -> "Til og med"
             "perioder[0].antallDagerMedRefusjon" -> "Antall arbeidsdager med refusjon"

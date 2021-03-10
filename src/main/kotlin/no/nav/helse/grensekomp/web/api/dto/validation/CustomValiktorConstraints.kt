@@ -82,9 +82,9 @@ fun <E> Validator<E>.Property<Iterable<Periode>?>.harIngenOverlappendePerioder()
             }
         }
 
-class MaksArbeidsgiverperiodeLengdeConstraint : CustomConstraint
+class MaksPeriodeLengdeConstraint : CustomConstraint
 fun <E> Validator<E>.Property<Iterable<Periode>?>.totalPeriodeLengdeErMaks(maksDager: Int) =
-        this.validate(MaksArbeidsgiverperiodeLengdeConstraint()) { ps ->
+        this.validate(MaksPeriodeLengdeConstraint()) { ps ->
             val sum = ps!!.map {
                 ChronoUnit.DAYS.between(it.fom, it.tom.plusDays(1))
             }.sum()

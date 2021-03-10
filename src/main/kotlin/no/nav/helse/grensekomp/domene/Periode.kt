@@ -9,10 +9,7 @@ data class Periode(
         val beloep: Double
 ): Comparable<Periode> {
     companion object {
-        val refusjonFraDato = LocalDate.of(2020, 3, 16)
-        val maksOppholdMellomPerioder = 16
-        val maksimalAGPLengde = 16
-        val arbeidsgiverBetalerForDager = 3
+        val refusjonFraDato = LocalDate.of(2021, 1, 29)
     }
 
     override fun compareTo(other: Periode): Int {
