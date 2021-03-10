@@ -46,7 +46,6 @@ spec:
       external:
         - host: helsearbeidsgiver-proxy.dev-fss-pub.nais.io
         - host: tt02.altinn.no
-        - host: kafka-schema-registry.nais-q.adeo.no
         - host: data.brreg.no
 
       rules:
@@ -74,21 +73,10 @@ spec:
       value: https://tt02.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
     - name: CLAM_AV_URL
       value: http://clamav.clamav.svc.cluster.local/scan
-    - name: GCP_PRJ_ID
-      value: helsearbeidsgiver-dev-6d06
-    - name: GCP_BUCKET_NAME
-      value: helse-arbeidsgiver-grensekompagb-bucket
     - name: ALTINN_SERVICE_OWNER_GW_URL
       value: https://api-gw-q1.oera.no/ekstern/altinn/api/serviceowner
     - name: ENHETSREGISTERET
       value: data.brreg.no/enhetsregisteret/api/underenheter
-    - name: AVRO_SCHEMA_SERVER_URL
-      value: https://kafka-schema-registry.nais-q.adeo.no
-    - name: ON_PREM_KAFKA_BROKERS
-      value: SSL://b27apvl00045.preprod.local:8443,SSL://b27apvl00046.preprod.local:8443,SSL://b27apvl00047.preprod.local:8443
-    - name: KAFKA_BESKJED_TOPIC_NAME
-      value: aapen-brukernotifikasjon-nyBeskjed-v1
-
 
   gcp:
     sqlInstances:
@@ -96,14 +84,3 @@ spec:
         databases:
           - name: grensekomp-db
             diskAutoresize: true
-    buckets:
-      - name: helse-arbeidsgiver-grensekompagb-bucket
-        #retentionPeriodDays: 30
-         # lifecycleCondition:
-         # age: 7
-         # createdBefore: 2020-01-01
-         # numNewerVersions: 2
-        #  withState: ANY
-
-  kafka:
-    pool: nav-dev    # enum of nav-dev, nav-prod

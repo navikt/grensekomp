@@ -21,7 +21,7 @@ spec:
     periodSeconds: 5
     failureThreshold: 10
   ingresses:
-    - https://arbeidsgiver.nav.no/grensekomp-agp-api
+    - https://arbeidsgiver.nav.no/grensekomp-api
     - https://grensekomp-api.intern.nav.no
   prometheus:
     enabled: true
@@ -47,7 +47,6 @@ spec:
       external:
         - host: helsearbeidsgiver-proxy.prod-fss-pub.nais.io
         - host: altinn.no
-        - host: kafka-schema-registry.nais.adeo.no
         - host: data.brreg.no
 
       rules:
@@ -74,20 +73,10 @@ spec:
       value: https://altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
     - name: CLAM_AV_URL
       value: http://clamav.clamav.svc.cluster.local/scan
-    - name: GCP_PRJ_ID
-      value: helsearbeidsgiver-prod-8a1c
-    - name: GCP_BUCKET_NAME
-      value: helse-arbeidsgiver-grensekompagb-bucket-prod
     - name: ALTINN_SERVICE_OWNER_GW_URL
       value: https://api-gw.oera.no/ekstern/altinn/api/serviceowner
     - name: ENHETSREGISTERET
       value: data.brreg.no/enhetsregisteret/api/underenheter
-    - name: AVRO_SCHEMA_SERVER_URL
-      value: https://kafka-schema-registry.nais.adeo.no
-    - name: ON_PREM_KAFKA_BROKERS
-      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
-    - name: KAFKA_BESKJED_TOPIC_NAME
-      value: aapen-brukernotifikasjon-nyBeskjed-v1
     - name: PROXY_SCOPE
       value: api://prod-fss.helsearbeidsgiver.helsearbeidsgiver-proxy/.default
     - name: KTOR_APPLICATION_BASEPATH
@@ -101,14 +90,3 @@ spec:
         databases:
           - name: grensekomp-db
             diskAutoresize: true
-    buckets:
-      - name: helse-arbeidsgiver-grensekompagb-bucket-prod
-        #retentionPeriodDays: 30
-         # lifecycleCondition:
-         # age: 7
-         # createdBefore: 2020-01-01
-         # numNewerVersions: 2
-        #  withState: ANY
-
-  kafka:
-    pool: nav-prod    # enum of nav-dev, nav-prod
