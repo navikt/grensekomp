@@ -1,6 +1,5 @@
 package no.nav.helse.grensekomp.integrasjon
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -9,16 +8,10 @@ import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OppgaveKlient
 import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveRequest
 import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveResponse
 import no.nav.helse.grensekomp.TestData
-import no.nav.helse.grensekomp.koin.common
 import no.nav.helse.grensekomp.service.OppgaveService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.get
 
 internal class OppgaveServiceTest : KoinTest {
     val oppgaveKlientMock = mockk<OppgaveKlient>()
