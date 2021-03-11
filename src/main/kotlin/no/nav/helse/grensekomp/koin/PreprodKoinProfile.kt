@@ -50,7 +50,7 @@ fun preprodConfig(config: ApplicationConfig) = module {
     single { PostgresKvitteringRepository(get(), get()) } bind KvitteringRepository::class
 
     single { PostgresRefusjonskravService(get(), get(), get(), get(), get()) } bind RefusjonskravService::class
-    single { JoarkService(get()) } bind JoarkService::class
+    single { JoarkService(get(), get(), get()) } bind JoarkService::class
     single { OppgaveService(get()) } bind OppgaveService::class
 
     single {

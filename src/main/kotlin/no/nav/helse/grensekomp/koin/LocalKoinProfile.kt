@@ -37,7 +37,7 @@ fun localDevConfig(config: ApplicationConfig) = module {
     single { PostgresRefusjonskravService(get(), get(), get(), get(), get()) } bind RefusjonskravService::class
 
     single { DefaultAltinnAuthorizer(get()) } bind AltinnAuthorizer::class
-    single { JoarkService(get()) } bind JoarkService::class
+    single { JoarkService(get(), get(), get()) } bind JoarkService::class
 
     single { OppgaveService(get()) } bind OppgaveService::class
     single { DummyKvitteringSender() } bind KvitteringSender::class

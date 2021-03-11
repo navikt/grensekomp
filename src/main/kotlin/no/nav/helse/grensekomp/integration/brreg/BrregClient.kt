@@ -8,37 +8,31 @@ import io.ktor.http.*
 import io.ktor.util.*
 
 interface BrregClient {
-    suspend fun getVirksomhetsNavn(orgnr: String): String?
+    suspend fun getVirksomhetsNavn(orgnr: String): String
 }
 
 class MockBrregClient : BrregClient {
-    override suspend fun getVirksomhetsNavn(orgnr: String): String? {
+    override suspend fun getVirksomhetsNavn(orgnr: String): String {
         return "Stark Industries"
     }
 }
 
 class BrregClientImp(private val httpClient: HttpClient, private val om: ObjectMapper, private val berreUrl: String) :
     BrregClient {
-    override suspend fun getVirksomhetsNavn(orgnr: String): String? {
-        var navn : String? = null
-        try {
-            navn =  httpClient.get<UnderenheterNavnResponse>(
+    override suspend fun getVirksomhetsNavn(orgnr: String): String {
+        return try {
+            httpClient.get<UnderenheterNavnResponse>(
                 url {
                     protocol = URLProtocol.HTTPS
                     host = berreUrl
                     path(orgnr)
                 }).navn
-
-        } catch (cause: Throwable) {
-            when (cause) {
-                is ClientRequestException -> {
-                    if (404 == cause.response?.status?.value)
-                        navn =  "Ukjent arbeidsgiver"
-                }
-                else -> throw cause
+        } catch (cause: ClientRequestException) {
+            if (404 == cause.response.status.value) {
+                "Ukjent arbeidsgiver"
+            } else {
+                throw cause
             }
         }
-
-        return navn
     }
 }
