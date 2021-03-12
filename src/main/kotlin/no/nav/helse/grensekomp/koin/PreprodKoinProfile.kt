@@ -3,8 +3,6 @@ package no.nav.helse.grensekomp.koin
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.config.*
 import io.ktor.util.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.BakgrunnsjobbRepository
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.BakgrunnsjobbService
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.PostgresBakgrunnsjobbRepository
@@ -14,8 +12,6 @@ import no.nav.helse.arbeidsgiver.web.auth.DefaultAltinnAuthorizer
 import no.nav.helse.grensekomp.MetrikkVarsler
 import no.nav.helse.grensekomp.db.*
 import no.nav.helse.grensekomp.integration.altinn.message.Clients
-import no.nav.helse.grensekomp.integration.sensu.SensuClient
-import no.nav.helse.grensekomp.integration.sensu.SensuClientImpl
 import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
 import no.nav.helse.grensekomp.service.JoarkService
@@ -24,9 +20,6 @@ import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
 import no.nav.helse.grensekomp.kvittering.AltinnKvitteringMapper
 import no.nav.helse.grensekomp.kvittering.AltinnKvitteringSender
 import no.nav.helse.grensekomp.kvittering.KvitteringSender
-import no.nav.helse.grensekomp.prosessering.metrics.InfluxReporter
-import no.nav.helse.grensekomp.prosessering.metrics.InfluxReporterImpl
-import no.nav.helse.grensekomp.prosessering.metrics.ProcessInfluxJob
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -45,9 +38,6 @@ fun preprodConfig(config: ApplicationConfig) = module {
             )
         )
     } bind DataSource::class
-    single { SensuClientImpl("sensu.nais", 3030) } bind SensuClient::class
-    single { InfluxReporterImpl("grensekomp", "dev-gcp", "helsearbeidsgiver", get()) } bind InfluxReporter::class
-    single { ProcessInfluxJob(get(), CoroutineScope(Dispatchers.IO), 1000 * 60, get()) }
 
     single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
     single { BakgrunnsjobbService(get(), bakgrunnsvarsler = MetrikkVarsler()) }
