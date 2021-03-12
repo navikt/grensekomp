@@ -19,6 +19,7 @@ import no.nav.helse.grensekomp.web.auth.localCookieDispenser
 import no.nav.helse.grensekomp.web.grensekompModule
 import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
+import no.nav.helse.grensekomp.prosessering.metrics.ProcessInfluxJob
 import org.flywaydb.core.Flyway
 import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext
@@ -76,6 +77,7 @@ class GrensekompApplication(val port: Int = 8080) : KoinComponent {
 
     private fun configAndStartBackgroundWorkers() {
         if (appConfig.getString("run_background_workers") == "true") {
+            get<ProcessInfluxJob>().startAsync(retryOnFail = true)
             get<BakgrunnsjobbService>().apply {
                 registrer(get<KvitteringProcessor>())
                 registrer(get<RefusjonskravProcessor>())

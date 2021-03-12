@@ -12,14 +12,30 @@ import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveResponse
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.*
 import no.nav.helse.arbeidsgiver.utils.loadFromResources
 import no.nav.helse.arbeidsgiver.web.auth.AltinnOrganisationsRepository
+import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.integration.brreg.BrregClient
 import no.nav.helse.grensekomp.integration.brreg.MockBrregClient
+import no.nav.helse.grensekomp.integration.sensu.SensuClient
+import no.nav.helse.grensekomp.integration.sensu.SensuEvent
 import no.nav.helse.grensekomp.integration.virusscan.MockVirusScanner
 import no.nav.helse.grensekomp.integration.virusscan.VirusScanner
+import no.nav.helse.grensekomp.prosessering.metrics.InfluxReporter
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 
 fun Module.mockExternalDependecies() {
+    single { object: SensuClient {
+        override fun write(data: SensuEvent) {
+
+        }
+    } } bind SensuClient::class
+
+    single { object: InfluxReporter {
+        override fun registerRefusjonskrav(krav: Refusjonskrav) {
+
+        }
+    } } bind InfluxReporter::class
+
     single { MockAltinnRepo(get()) } bind AltinnOrganisationsRepository::class
 
     single {
