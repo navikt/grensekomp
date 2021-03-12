@@ -3,6 +3,8 @@ package no.nav.helse.grensekomp.koin
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.config.*
 import io.ktor.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.BakgrunnsjobbRepository
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.BakgrunnsjobbService
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.PostgresBakgrunnsjobbRepository
@@ -15,6 +17,7 @@ import no.nav.helse.grensekomp.service.OppgaveService
 import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
 import no.nav.helse.grensekomp.kvittering.DummyKvitteringSender
 import no.nav.helse.grensekomp.kvittering.KvitteringSender
+import no.nav.helse.grensekomp.prosessering.metrics.ProcessInfluxJob
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -41,4 +44,6 @@ fun localDevConfig(config: ApplicationConfig) = module {
 
     single { OppgaveService(get(), get()) } bind OppgaveService::class
     single { DummyKvitteringSender() } bind KvitteringSender::class
+    single { ProcessInfluxJob(get(), CoroutineScope(Dispatchers.IO), 1000 * 60, get()) }
+
 }
