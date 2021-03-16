@@ -21,6 +21,7 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
@@ -32,20 +33,25 @@ import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_COUNTER
 import no.nav.helse.grensekomp.metrics.REQUEST_TIME
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
-import no.nav.helse.grensekomp.web.dto.RefusjonskravDto
+import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
+import no.nav.helse.grensekomp.web.dto.validation.ArbeidsforholdConstraint
 import no.nav.helse.grensekomp.web.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.dto.validation.getContextualMessage
 import org.koin.ktor.ext.get
 import org.valiktor.ConstraintViolationException
+import org.valiktor.DefaultConstraintViolation
 import java.io.IOException
+import java.util.*
 import javax.ws.rs.ForbiddenException
+import kotlin.collections.ArrayList
 
 private val excelContentType = ContentType.parse("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 @KtorExperimentalAPI
 fun Route.grensekompRoutes(
     authorizer: AltinnAuthorizer,
-    refusjonskravService: RefusjonskravService
+    refusjonskravService: RefusjonskravService,
+    aaregClient: AaregArbeidsforholdClient
 ) {
 
     route("/login-expiry") {
@@ -60,18 +66,20 @@ fun Route.grensekompRoutes(
             try {
                 val refusjonskrav = call.receive<RefusjonskravDto>()
                 authorize(authorizer, refusjonskrav.virksomhetsnummer)
+                harArbeidsforhold(aaregClient, refusjonskrav)
+
                 val opprettetAv = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
 
                 val domeneKrav = Refusjonskrav(
                     opprettetAv,
                     refusjonskrav.identitetsnummer,
                     refusjonskrav.virksomhetsnummer,
-                    refusjonskrav.perioder
+                    refusjonskrav.periode
                 )
                 val saved = refusjonskravService.saveKravWithKvittering(domeneKrav)
                 call.respond(HttpStatusCode.OK, saved)
                 INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(refusjonskrav.perioder.sumByDouble { it.beloep }.div(1000))
+                INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(refusjonskrav.periode.beloep.div(1000))
             } finally {
                 timer.observeDuration()
             }
@@ -91,6 +99,8 @@ fun Route.grensekompRoutes(
                 try {
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
                     authorize(authorizer, dto.virksomhetsnummer)
+                    harArbeidsforhold(aaregClient, dto)
+
                     val opprettetAv = hentIdentitetsnummerFraLoginToken(
                         application.environment.config,
                         call.request
@@ -99,7 +109,7 @@ fun Route.grensekompRoutes(
                         opprettetAv,
                         dto.identitetsnummer,
                         dto.virksomhetsnummer,
-                        dto.perioder
+                        dto.periode
                     )
                 } catch (forbiddenEx: ForbiddenException) {
                     responseBody[i] = PostListResponseDto(
@@ -140,8 +150,7 @@ fun Route.grensekompRoutes(
                 val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                 savedList.forEach { item ->
                     INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.perioder.sumByDouble { it.beloep }
-                        .div(1000))
+                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.periode.beloep.div(1000))
                     responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
                 }
             }
@@ -158,8 +167,9 @@ fun Route.grensekompRoutes(
         }
 
         post("/upload") {
+            throw ForbiddenException("Denne funksjonen er ikke implementert")
 
-            val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
+            /*val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
             val multipart = call.receiveMultipart()
 
             val fileItem = multipart.readAllParts()
@@ -178,7 +188,7 @@ fun Route.grensekompRoutes(
             ExcelBulkService(refusjonskravService, ExcelParser(authorizer))
                 .processExcelFile(bytes.inputStream(), id)
 
-            call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")
+            call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")*/
         }
     }
 }
@@ -188,5 +198,35 @@ private fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnA
     val identitetsnummer = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
     if (!authorizer.hasAccess(identitetsnummer, arbeidsgiverId)) {
         throw ForbiddenException()
+    }
+}
+
+@KtorExperimentalAPI
+private suspend fun harArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
+    val arbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
+        .find { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
+
+    /**
+     * Hente ut arbeidsforhold med størst periode
+     *
+     * uten FOM er forholdet aktivt
+     *
+     * Kravperioden må være subsett av ansettelsesperioden.
+     *
+     *
+     *
+     *
+     */
+
+
+    if (arbeidsforhold == null ) {
+        throw ConstraintViolationException(
+            setOf(
+                DefaultConstraintViolation(
+                    "virksomhetsnummer",
+                    constraint = ArbeidsforholdConstraint()
+                )
+            )
+        )
     }
 }

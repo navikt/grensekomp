@@ -2,6 +2,10 @@ package no.nav.helse.grensekomp.koin
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Arbeidsforhold
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Arbeidsgiver
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Opplysningspliktig
 import no.nav.helse.arbeidsgiver.integrasjoner.altinn.AltinnOrganisasjon
 import no.nav.helse.arbeidsgiver.integrasjoner.dokarkiv.DokarkivKlient
 import no.nav.helse.arbeidsgiver.integrasjoner.dokarkiv.JournalpostRequest
@@ -33,6 +37,13 @@ fun Module.mockExternalDependecies() {
             }
         }
     } bind DokarkivKlient::class
+
+    single {
+        object : AaregArbeidsforholdClient {
+            override suspend fun hentArbeidsforhold(ident: String, callId: String): List<Arbeidsforhold> =
+                listOf<Arbeidsforhold>(Arbeidsforhold(Arbeidsgiver("test", "810007842"), Opplysningspliktig("Juice", "810007702"), emptyList()))
+        }
+    } bind AaregArbeidsforholdClient::class
 
     single {
         object : PdlClient {

@@ -5,7 +5,7 @@ import java.util.*
 data class RefusjonskravForOppgave(
         val identitetsnummer: String,
         val virksomhetsnummer: String,
-        val perioder: Set<Periode>,
+        val periode: Periode,
 
         var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
         var feilmelding: String? = null,
@@ -23,7 +23,7 @@ data class RefusjonskravForOppgave(
 fun Refusjonskrav.toRefusjonskravForOppgave() = RefusjonskravForOppgave(
         identitetsnummer = identitetsnummer,
         virksomhetsnummer = virksomhetsnummer,
-        perioder = perioder,
+        periode = periode,
         status = status,
         feilmelding = feilmelding,
         oppgaveId = oppgaveId,

@@ -40,20 +40,22 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
                                 <th style="padding:12px">Virksomhetsnummer</th>
                                 <th style="padding:12px">Mottatt</th>
                             </tr>
-                        ${kvittering.refusjonsListe.sorted().joinToString(separator = "") { krav ->
-            krav.perioder.sorted().joinToString(
-                    separator = "\n"
-            ) {
+                        ${
+            kvittering.refusjonsListe.sorted().joinToString(separator = "") { krav ->
                 """
-                                <tr>
-                                <td style="padding:12px">${krav.identitetsnummer}</td>
-                                <td style="padding:12px">${it.fom.format(dateFormatter)} - ${it.tom.format(dateFormatter)}</td>
-                                <td style="padding:12px">${it.antallDagerMedRefusjon}</td>
-                                <td style="padding:12px">${it.beloep}</td>
-                                <td style="padding:12px">${krav.virksomhetsnummer}</td>
-                                <td style="padding:12px">${krav.opprettet.format(dateTimeFormatterPlain)}</td>
-                                </tr>
-                                        """.trimIndent()
+                                        <tr>
+                                        <td style="padding:12px">${krav.identitetsnummer}</td>
+                                        <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${
+                    krav.periode.tom.format(
+                        dateFormatter
+                    )
+                }</td>
+                                        <td style="padding:12px">${krav.periode.antallDagerMedRefusjon}</td>
+                                        <td style="padding:12px">${krav.periode.beloep}</td>
+                                        <td style="padding:12px">${krav.virksomhetsnummer}</td>
+                                        <td style="padding:12px">${krav.opprettet.format(dateTimeFormatterPlain)}</td>
+                                        </tr>
+                                                """
             }
         }}
                        </table>
@@ -64,19 +66,19 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
 
 
         val meldingsInnhold = ExternalContentV2()
-                .withLanguageCode("1044")
-                .withMessageTitle(tittel)
-                .withMessageBody(innhold)
-                .withMessageSummary("Kvittering for krav om utvidet refusjon ved koronaviruset")
+            .withLanguageCode("1044")
+            .withMessageTitle(tittel)
+            .withMessageBody(innhold)
+            .withMessageSummary("Kvittering for krav om utvidet refusjon ved koronaviruset")
 
 
         return InsertCorrespondenceV2()
-                .withAllowForwarding(false)
-                .withReportee(kvittering.virksomhetsnummer)
-                .withMessageSender("NAV (Arbeids- og velferdsetaten)")
-                .withServiceCode(altinnTjenesteKode)
-                .withServiceEdition("1")
-                .withContent(meldingsInnhold)
+            .withAllowForwarding(false)
+            .withReportee(kvittering.virksomhetsnummer)
+            .withMessageSender("NAV (Arbeids- og velferdsetaten)")
+            .withServiceCode(altinnTjenesteKode)
+            .withServiceEdition("1")
+            .withContent(meldingsInnhold)
 
     }
 

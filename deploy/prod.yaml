@@ -69,6 +69,8 @@ spec:
       value: https://helsearbeidsgiver-proxy.prod-fss-pub.nais.io/oppgave
     - name: PDL_URL
       value: https://helsearbeidsgiver-proxy.prod-fss-pub.nais.io/pdl
+    - name: AAREG_URL
+      value: https://helsearbeidsgiver-proxy.prod-fss-pub.nais.io/aareg-arbeidsforhold
     - name: ALTINN_ENDPOINT
       value: https://altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
     - name: CLAM_AV_URL

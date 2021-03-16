@@ -32,7 +32,7 @@ internal class ExcelBulkServiceTest {
                 TestData.opprettetAv,
                 TestData.validIdentitetsnummer,
                 TestData.validOrgNr,
-                emptySet()
+                TestData.gyldigKrav.periode
         )
         )
 

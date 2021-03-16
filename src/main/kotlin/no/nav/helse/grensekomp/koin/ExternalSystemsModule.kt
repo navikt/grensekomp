@@ -3,6 +3,8 @@ package no.nav.helse.grensekomp.koin
 import io.ktor.config.*
 import no.nav.helse.arbeidsgiver.integrasjoner.AccessTokenProvider
 import no.nav.helse.arbeidsgiver.integrasjoner.OAuth2TokenProvider
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClientImpl
 import no.nav.helse.arbeidsgiver.integrasjoner.altinn.AltinnRestClient
 import no.nav.helse.arbeidsgiver.integrasjoner.dokarkiv.DokarkivKlient
 import no.nav.helse.arbeidsgiver.integrasjoner.dokarkiv.DokarkivKlientImpl
@@ -56,6 +58,8 @@ fun Module.externalSystemClients(config: ApplicationConfig) {
     } bind AccessTokenProvider::class
 
     single { PdlClientImpl(config.getString("pdl_url"), get(), get(), get()) } bind PdlClient::class
+    single { AaregArbeidsforholdClientImpl(config.getString("aareg_url"), get(), get()) } bind AaregArbeidsforholdClient::class
+
     single { DokarkivKlientImpl(config.getString("dokarkiv.base_url"), get(), get()) } bind DokarkivKlient::class
     single { OppgaveKlientImpl(config.getString("oppgavebehandling.url"), get(), get()) } bind OppgaveKlient::class
     single {

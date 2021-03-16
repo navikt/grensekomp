@@ -7,6 +7,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.BakgrunnsjobbRepository
 import no.nav.helse.arbeidsgiver.bakgrunnsjobb.MockBakgrunnsjobbRepository
+import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.db.KvitteringRepository
 import no.nav.helse.grensekomp.db.MockKvitteringRepository
 import no.nav.helse.grensekomp.db.MockRefusjonskravRepo
@@ -27,7 +28,7 @@ internal class PostgresRefusjonskravServiceTest {
 
     @Test
     fun `ett krav lagres også med kvittering og to jobber`() {
-        service.saveKravWithKvittering(Refusjonskrav("1", "1", "1", emptySet()))
+        service.saveKravWithKvittering(Refusjonskrav("1", "1", "1", TestData.gyldigKrav.periode))
         verify(exactly = 2) { bakgrunnRepo.save(any(), any()) }
         verify(exactly = 1) { kvitteringRepo.insert(any(), any()) }
         verify(exactly = 1) { kravRepo.insert(any(), any()) }
@@ -35,7 +36,7 @@ internal class PostgresRefusjonskravServiceTest {
 
     @Test
     fun `to krav lagres også med en kvittering og to jobber hver`() {
-        service.saveKravListWithKvittering(mapOf(Pair(0, Refusjonskrav("1", "1", "1", emptySet())), (Pair(1, Refusjonskrav("1", "1", "1", emptySet())))))
+        service.saveKravListWithKvittering(mapOf(Pair(0, Refusjonskrav("1", "1", "1", TestData.gyldigKrav.periode)), (Pair(1, Refusjonskrav("1", "1", "1", TestData.gyldigKrav.periode)))))
         verify(exactly = 3) { bakgrunnRepo.save(any(), any()) }
         verify(exactly = 1) { kvitteringRepo.insert(any(), any()) }
         verify(exactly = 2) { kravRepo.insert(any(), any()) }
@@ -43,7 +44,7 @@ internal class PostgresRefusjonskravServiceTest {
 
     @Test
     fun `to krav lagres også med en kvittering og to jobber hver bulk`() {
-        service.bulkInsert(listOf(Refusjonskrav("1", "1", "1", emptySet()), Refusjonskrav("1", "1", "1", emptySet())))
+        service.bulkInsert(listOf(Refusjonskrav("1", "1", "1", TestData.gyldigKrav.periode), Refusjonskrav("1", "1", "1", TestData.gyldigKrav.periode)))
         verify(exactly = 3) { bakgrunnRepo.save(any(), any()) }
         verify(exactly = 1) { kvitteringRepo.insert(any(), any()) }
         verify(exactly = 1) { kravRepo.bulkInsert(any(), any()) }

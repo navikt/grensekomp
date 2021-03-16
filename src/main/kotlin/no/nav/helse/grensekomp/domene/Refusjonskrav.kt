@@ -7,7 +7,7 @@ data class Refusjonskrav(
     var opprettetAv: String,
     val identitetsnummer: String,
     val virksomhetsnummer: String,
-    val perioder: Set<Periode>,
+    val periode: Periode,
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
     var feilmelding: String? = null,
@@ -25,9 +25,9 @@ data class Refusjonskrav(
             return -1
         if (identitetsnummer > other.identitetsnummer)
             return 1
-        if (other.perioder.first().fom.isAfter(perioder.first().fom))
+        if (other.periode.fom.isAfter(periode.fom))
             return -1
-        if (other.perioder.first().fom.isBefore(perioder.first().fom))
+        if (other.periode.fom.isBefore(periode.fom))
             return 1
         if (other.opprettet.isAfter(opprettet))
             return -1

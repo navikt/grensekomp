@@ -20,18 +20,13 @@ internal class KvitteringTest {
                 opprettetAv = TestData.opprettetAv,
                 identitetsnummer = TestData.validIdentitetsnummer,
                 virksomhetsnummer = TestData.validOrgNr,
-                perioder = setOf(
+                periode =
                     Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
                         2,
                         4500800.50
-                ), Periode(
-                        LocalDate.of(2020, 4, 5),
-                        LocalDate.of(2020, 4, 10),
-                        4,
-                        1220800.50
-                )),
+                ),
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )
@@ -50,12 +45,12 @@ internal class KvitteringTest {
                 opprettetAv = TestData.opprettetAv,
                 identitetsnummer = TestData.validIdentitetsnummer,
                 virksomhetsnummer = TestData.validOrgNr,
-                perioder = setOf(Periode(
+                periode = Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
                         2,
                         250.50
-                )),
+                ),
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )

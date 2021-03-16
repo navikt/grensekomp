@@ -4,7 +4,7 @@ import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.grensekomp.excel.ExcelBulkService.Companion.startDataRowAt
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
-import no.nav.helse.grensekomp.web.dto.RefusjonskravDto
+import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.dto.validation.getContextualMessage
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Row
@@ -84,7 +84,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
         val refusjonskrav = RefusjonskravDto(
                 identitetsnummer,
                 virksomhetsNummer,
-                setOf(Periode(fom, tom, antallDager, beloep))
+                Periode(fom, tom, antallDager, beloep)
         )
 
         // authorize the use
@@ -97,7 +97,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
                 opprettetAv,
                 refusjonskrav.identitetsnummer,
                 refusjonskrav.virksomhetsnummer,
-                refusjonskrav.perioder,
+                refusjonskrav.periode,
                 kilde = "XLSX-$correlationId"
         )
     }
@@ -142,11 +142,11 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
         return when(valiktokProp) {
             "identitetsnummer" -> "Fødselsnummer"
             "virksomhetsnummer" -> "Virksomhetsnummer"
-            "perioder" -> "Perioden (fom+tom)"
-            "perioder[0].fom" -> "Fra og med"
-            "perioder[0].tom" -> "Til og med"
-            "perioder[0].antallDagerMedRefusjon" -> "Antall arbeidsdager med refusjon"
-            "perioder[0].beloep" -> "Totalbeløp som kreves refundert"
+            "periode" -> "Perioden (fom+tom)"
+            "periode.fom" -> "Fra og med"
+            "periode.tom" -> "Til og med"
+            "periode.antallDagerMedRefusjon" -> "Antall arbeidsdager med refusjon"
+            "periode.beloep" -> "Totalbeløp som kreves refundert"
             else -> "($valiktokProp)"
         }
     }

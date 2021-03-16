@@ -7,6 +7,7 @@ import io.mockk.verify
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClient
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlHentFullPerson
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlIdent
+import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.db.PostgresRefusjonskravRepository
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.domene.RefusjonskravStatus
@@ -34,7 +35,7 @@ class RefusjonskravProcessorTest {
                 opprettetAv = "123",
                 identitetsnummer = "123",
                 virksomhetsnummer = "213",
-                perioder = emptySet(),
+                periode = TestData.gyldigKrav.periode,
                 status = RefusjonskravStatus.JOBB
         )
     }
