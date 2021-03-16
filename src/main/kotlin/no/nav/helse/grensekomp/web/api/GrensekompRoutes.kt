@@ -110,6 +110,7 @@ fun Route.grensekompRoutes(
                             validationErrors = problems
                         )
                     } else {
+                        logger.error("Feil under prosessering", genericEx)
                         responseBody[i] = PostListResponseDto(
                             status = PostListResponseDto.Status.GENERIC_ERROR,
                             genericMessage = genericEx.message
