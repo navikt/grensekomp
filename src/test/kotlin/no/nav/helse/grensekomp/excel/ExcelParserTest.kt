@@ -66,15 +66,4 @@ internal class ExcelParserTest {
         assertThat(rowErrors[17]?.size).isEqualTo(1)
         assertThat(rowErrors[17]?.get(0)?.column).isEqualTo("Beløp")
     }
-
-    @Test
-    fun `Har man ikke tilgang til virksomheten skal man få feil`() {
-        val workbook: Workbook = XSSFWorkbook(validFile)
-        every { authorizerMock.hasAccess(any(), any()) } returns false
-
-        val result = ExcelParser(authorizerMock).parseAndValidateExcelContent(workbook, TestData.validIdentitetsnummer)
-
-        assertThat(result.errors.size).isEqualTo(11)
-        assertThat(result.errors.all { it.column.equals("Virksomhetsnummer") && it.message.contains("tilgang") })
-    }
 }
