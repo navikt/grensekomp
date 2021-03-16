@@ -15,6 +15,8 @@ import no.nav.helse.grensekomp.service.OppgaveService
 import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
 import no.nav.helse.grensekomp.kvittering.DummyKvitteringSender
 import no.nav.helse.grensekomp.kvittering.KvitteringSender
+import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
+import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -30,8 +32,6 @@ fun localDevConfig(config: ApplicationConfig) = module {
     single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
     single { BakgrunnsjobbService(get()) }
 
-    single { DefaultAltinnAuthorizer(get()) } bind AltinnAuthorizer::class
-
     single { PostgresRefusjonskravRepository(get(), get()) } bind RefusjonskravRepository::class
     single { PostgresKvitteringRepository(get(), get()) } bind KvitteringRepository::class
     single { PostgresRefusjonskravService(get(), get(), get(), get(), get()) } bind RefusjonskravService::class
@@ -41,4 +41,7 @@ fun localDevConfig(config: ApplicationConfig) = module {
 
     single { OppgaveService(get(), get()) } bind OppgaveService::class
     single { DummyKvitteringSender() } bind KvitteringSender::class
+
+    single { RefusjonskravProcessor(get(), get(), get(), get(), get()) }
+    single { KvitteringProcessor(get(), get(), get()) }
 }

@@ -1,4 +1,4 @@
-package no.nav.helse.grensekomp.web.dto.validation
+package no.nav.helse.grensekomp.web.api.dto.validation
 
 import org.valiktor.ConstraintViolation
 import org.valiktor.i18n.toMessage
@@ -54,8 +54,8 @@ fun ConstraintViolation.getContextualMessage(): String {
  * Inneholder en liste over rader og kolonner som feilet parsing eller
  */
 class ExcelProblem(
-        val problemDetails: Set<ExcelProblemDetail>,
-        var message: String? = "En eller flere rader/kolonner har feil."
+    val problemDetails: Set<ExcelProblemDetail>,
+    var message: String? = "En eller flere rader/kolonner har feil."
 ) : Problem(
         URI.create("urn:sporenstreks:excel-error"),
         "Det var en eller flere feil med excelarket",

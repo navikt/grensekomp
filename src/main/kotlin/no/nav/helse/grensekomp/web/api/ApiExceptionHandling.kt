@@ -10,13 +10,12 @@ import no.nav.helse.arbeidsgiver.web.validation.Problem
 import no.nav.helse.arbeidsgiver.web.validation.ValidationProblem
 import no.nav.helse.arbeidsgiver.web.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.integration.altinn.ManglerAltinnRettigheterException
-import no.nav.helse.grensekomp.web.dto.validation.getContextualMessage
+import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
 import java.util.*
-import javax.ws.rs.ForbiddenException
 
 fun Application.configureExceptionHandling() {
     install(StatusPages) {
@@ -40,14 +39,6 @@ fun Application.configureExceptionHandling() {
             val problems = cause.constraintViolations.map {
                 ValidationProblemDetail(it.constraint.name, it.getContextualMessage(), it.property, it.value)
             }.toSet()
-
-            problems
-                .filter {
-                    it.propertyPath.contains("perioder")
-                }
-                .forEach {
-                    logger.warn("Invalid ${it.propertyPath}: ${it.invalidValue} (${it.message})")
-                }
 
             call.respond(HttpStatusCode.UnprocessableEntity, ValidationProblem(problems))
         }

@@ -7,11 +7,6 @@ import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.PartData
-import io.ktor.http.content.readAllParts
-import io.ktor.http.content.streamProvider
-import io.ktor.request.receive
-import io.ktor.request.receiveMultipart
 import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.response.respondBytes
@@ -26,26 +21,25 @@ import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.domene.Refusjonskrav
-import no.nav.helse.grensekomp.excel.ExcelBulkService
-import no.nav.helse.grensekomp.excel.ExcelParser
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_COUNTER
-import no.nav.helse.grensekomp.metrics.REQUEST_TIME
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
-import no.nav.helse.grensekomp.web.dto.validation.ArbeidsforholdConstraint
-import no.nav.helse.grensekomp.web.dto.validation.ValidationProblemDetail
-import no.nav.helse.grensekomp.web.dto.validation.getContextualMessage
+import no.nav.helse.grensekomp.web.api.dto.validation.ArbeidsforholdConstraint
+import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
+import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import org.koin.ktor.ext.get
+import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
-import java.io.IOException
+import java.time.LocalDate
 import java.util.*
 import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
 
 private val excelContentType = ContentType.parse("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+val logger = LoggerFactory.getLogger("grensekompRoutes")
 
 @KtorExperimentalAPI
 fun Route.grensekompRoutes(
@@ -54,6 +48,7 @@ fun Route.grensekompRoutes(
     aaregClient: AaregArbeidsforholdClient
 ) {
 
+
     route("/login-expiry") {
         get {
             call.respond(HttpStatusCode.OK, hentUtløpsdatoFraLoginToken(application.environment.config, call.request))
@@ -61,30 +56,6 @@ fun Route.grensekompRoutes(
     }
 
     route("/refusjonskrav") {
-        post("/") {
-            val timer = REQUEST_TIME.startTimer()
-            try {
-                val refusjonskrav = call.receive<RefusjonskravDto>()
-                authorize(authorizer, refusjonskrav.virksomhetsnummer)
-                harArbeidsforhold(aaregClient, refusjonskrav)
-
-                val opprettetAv = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
-
-                val domeneKrav = Refusjonskrav(
-                    opprettetAv,
-                    refusjonskrav.identitetsnummer,
-                    refusjonskrav.virksomhetsnummer,
-                    refusjonskrav.periode
-                )
-                val saved = refusjonskravService.saveKravWithKvittering(domeneKrav)
-                call.respond(HttpStatusCode.OK, saved)
-                INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(refusjonskrav.periode.beloep.div(1000))
-            } finally {
-                timer.observeDuration()
-            }
-        }
-
         post("/list") {
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
@@ -99,7 +70,7 @@ fun Route.grensekompRoutes(
                 try {
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
                     authorize(authorizer, dto.virksomhetsnummer)
-                    harArbeidsforhold(aaregClient, dto)
+                    validerArbeidsforhold(aaregClient, dto)
 
                     val opprettetAv = hentIdentitetsnummerFraLoginToken(
                         application.environment.config,
@@ -202,24 +173,26 @@ private fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnA
 }
 
 @KtorExperimentalAPI
-private suspend fun harArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
+private suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
     val arbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
-        .find { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
+        .filter { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
 
-    /**
-     * Hente ut arbeidsforhold med størst periode
-     *
-     * uten FOM er forholdet aktivt
-     *
-     * Kravperioden må være subsett av ansettelsesperioden.
-     *
-     *
-     *
-     *
-     */
+    val aktueltArbeidsforhold = if (arbeidsforhold.size > 1) {
+        arbeidsforhold.maxByOrNull { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
+    } else {
+        arbeidsforhold.firstOrNull()
+    }
 
+    val arbeidsForholdOk = aktueltArbeidsforhold != null &&
+            aktueltArbeidsforhold.ansettelsesperiode.periode.fom!!.isBefore(refusjonskrav.periode.fom) &&
+            (
+                    aktueltArbeidsforhold.ansettelsesperiode.periode.tom == null ||
+                    refusjonskrav.periode.tom.isBefore(aktueltArbeidsforhold.ansettelsesperiode.periode.tom) ||
+                    refusjonskrav.periode.tom == aktueltArbeidsforhold.ansettelsesperiode.periode.tom
+            )
 
-    if (arbeidsforhold == null ) {
+    if ( !arbeidsForholdOk ) {
+        logger.warn("Arbeidsforhold feilet validering")
         throw ConstraintViolationException(
             setOf(
                 DefaultConstraintViolation(

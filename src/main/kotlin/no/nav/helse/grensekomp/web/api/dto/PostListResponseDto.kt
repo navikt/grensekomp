@@ -1,6 +1,6 @@
 package no.nav.helse.grensekomp.web.api.dto
 
-import no.nav.helse.grensekomp.web.dto.validation.ValidationProblemDetail
+import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 
 data class PostListResponseDto(
     val status: Status,

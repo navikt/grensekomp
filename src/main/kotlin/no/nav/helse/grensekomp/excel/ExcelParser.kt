@@ -5,7 +5,7 @@ import no.nav.helse.grensekomp.excel.ExcelBulkService.Companion.startDataRowAt
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
-import no.nav.helse.grensekomp.web.dto.validation.getContextualMessage
+import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
