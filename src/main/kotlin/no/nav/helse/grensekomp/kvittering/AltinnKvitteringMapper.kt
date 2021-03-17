@@ -15,54 +15,47 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
 
         val tittel = "Kvittering for krav om utvidet refusjon ved koronaviruset"
 
-        val innhold = """
-            <html>
+        val innhold = """            <html>
                <head>
                    <meta charset="UTF-8">
                </head>
                <body>
                    <div class="melding">
-                       <h2>Kvittering for krav om utvidet refusjon ved koronaviruset</h2>
+                       <h2>Kvittering  – refusjonskrav ved innreiseforbud</h2>
                        <p><strong>Virksomhetsnummer</strong> ${kvittering.virksomhetsnummer}<p>
                        <p>${kvittering.tidspunkt.format(dateTimeFormatterMedKl)}</p>
                        <p></p>
                        <p>
-                        Kravet vil bli behandlet raskt dersom alt er i orden. Har dere spørsmål, ring NAVs arbeidsgivertelefon <br><strong>55 55 33 36.</strong>
+                        Søknaden vil bli behandlet raskt dersom alt er i orden. Har dere spørsmål, ring NAVs arbeidsgivertelefon <br><strong>55 55 33 36.</strong>
                         </p>
                         <p></p>
                         <h3>Dere har innrapportert følgende: </h3>
                         <table style="border-style:solid; border-color:rgba(64, 56, 50, 1); border-width:2px;">
                             <tr style="border-style:solid; border-color:rgba(64, 56, 50, 1); border-width:2px;">
-                                <th style="padding:12px">Fødselsnummer</th>
+                                <th style="padding:12px">Mottatt</th>
+                                <th style="padding:12px">Fødsels-/D-nummer</th>
                                 <th style="padding:12px">Periode</th>
                                 <th style="padding:12px">Antall dager</th>
-                                <th style="padding:12px">Beløp</th>
-                                <th style="padding:12px">Virksomhetsnummer</th>
-                                <th style="padding:12px">Mottatt</th>
+                                <th style="padding:12px">Dagsats</th>
                             </tr>
                         ${
             kvittering.refusjonsListe.sorted().joinToString(separator = "") { krav ->
                 """
-                                        <tr>
-                                        <td style="padding:12px">${krav.identitetsnummer}</td>
-                                        <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${
-                    krav.periode.tom.format(
-                        dateFormatter
-                    )
-                }</td>
-                                        <td style="padding:12px">${krav.periode.antallDagerMedRefusjon}</td>
-                                        <td style="padding:12px">${krav.periode.beloep}</td>
-                                        <td style="padding:12px">${krav.virksomhetsnummer}</td>
-                                        <td style="padding:12px">${krav.opprettet.format(dateTimeFormatterPlain)}</td>
-                                        </tr>
-                                                """
+                                <tr>
+                                <td style="padding:12px">${krav.opprettet.format(dateTimeFormatterPlain)}</td>    
+                                <td style="padding:12px">${krav.identitetsnummer}</td>
+                                <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${krav.periode.tom.format(dateFormatter)}</td>
+                                <td style="padding:12px">${krav.periode.antallDagerMedRefusjon}</td>
+                                <td style="padding:12px">${krav.periode.beloep}</td>
+                                </tr>
+                                        """.trimIndent()
             }
         }}
                        </table>
                    </div>
                </body>
             </html>
-        """.trimIndent()
+""".trimIndent()
 
 
         val meldingsInnhold = ExternalContentV2()
