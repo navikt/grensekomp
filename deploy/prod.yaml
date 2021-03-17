@@ -82,7 +82,7 @@ spec:
     - name: PROXY_SCOPE
       value: api://prod-fss.helsearbeidsgiver.helsearbeidsgiver-proxy/.default
     - name: KTOR_APPLICATION_BASEPATH
-      value: /grensekomp-agp-api
+      value: /grensekomp-api
     - name: RUN_BACKGROUND_WORKERS
       value: false
 
