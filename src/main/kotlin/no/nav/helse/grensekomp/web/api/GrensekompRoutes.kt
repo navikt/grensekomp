@@ -47,11 +47,15 @@ fun Route.grensekompRoutes(
     refusjonskravService: RefusjonskravService,
     aaregClient: AaregArbeidsforholdClient
 ) {
-
-
     route("/login-expiry") {
         get {
             call.respond(HttpStatusCode.OK, hentUtløpsdatoFraLoginToken(application.environment.config, call.request))
+        }
+    }
+
+    route("/test-aareg") {
+        get {
+            call.respond(aaregClient.hentArbeidsforhold("26077025269", "810007842"))
         }
     }
 

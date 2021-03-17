@@ -128,7 +128,6 @@ dependencies {
     implementation("org.flywaydb:flyway-core:7.3.0")
     implementation("org.apache.pdfbox:pdfbox:2.0.21")
 
-
     implementation("no.nav.tjenestespesifikasjoner:altinn-correspondence-agency-external-basic:1.2019.09.25-00.21-49b69f0625e0")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11+")
@@ -151,8 +150,9 @@ dependencies {
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
+
     testImplementation("org.koin:koin-test:$koinVersion")
-    implementation("com.github.javafaker:javafaker:1.0.2") // flytt denne til test når generatorene ikke er nødvendige i prod-koden lenger
+    testImplementation("com.github.javafaker:javafaker:1.0.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2")
     testImplementation("io.mockk:mockk:$mockKVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
