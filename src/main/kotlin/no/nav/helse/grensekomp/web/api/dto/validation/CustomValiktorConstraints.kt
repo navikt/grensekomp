@@ -1,13 +1,11 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
-import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator
 import no.nav.helse.grensekomp.web.dto.validation.OrganisasjonsnummerValidator
 import org.valiktor.Constraint
 import org.valiktor.Validator
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import kotlin.math.min
 
 interface CustomConstraint : Constraint {
     override val messageBundle: String

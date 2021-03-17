@@ -178,15 +178,11 @@ private fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnA
 }
 
 @KtorExperimentalAPI
-private suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
-    val arbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
+suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
+    val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
         .filter { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
-
-    val aktueltArbeidsforhold = if (arbeidsforhold.size > 1) {
-        arbeidsforhold.maxByOrNull { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
-    } else {
-        arbeidsforhold.firstOrNull()
-    }
+        .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
+        .lastOrNull()
 
     val arbeidsForholdOk = aktueltArbeidsforhold != null &&
             aktueltArbeidsforhold.ansettelsesperiode.periode.fom!!.isBefore(refusjonskrav.periode.fom) &&
@@ -202,7 +198,8 @@ private suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient
             setOf(
                 DefaultConstraintViolation(
                     "virksomhetsnummer",
-                    constraint = ArbeidsforholdConstraint()
+                    constraint = ArbeidsforholdConstraint(),
+                    value = refusjonskrav.virksomhetsnummer
                 )
             )
         )
