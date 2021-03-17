@@ -10,10 +10,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.response.respondBytes
-import io.ktor.routing.Route
+import io.ktor.routing.*
 import io.ktor.routing.get
-import io.ktor.routing.post
-import io.ktor.routing.route
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
@@ -50,12 +48,6 @@ fun Route.grensekompRoutes(
     route("/login-expiry") {
         get {
             call.respond(HttpStatusCode.OK, hentUtløpsdatoFraLoginToken(application.environment.config, call.request))
-        }
-    }
-
-    route("/test-aareg") {
-        get {
-            call.respond(aaregClient.hentArbeidsforhold("26077025269", "810007842"))
         }
     }
 
