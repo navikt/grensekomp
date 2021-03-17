@@ -2,6 +2,7 @@ package no.nav.helse.grensekomp.kvittering
 
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.ExternalContentV2
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2
+import no.nav.helse.grensekomp.pdf.PDFGenerator.Companion.NUMBER_FORMAT
 import java.time.format.DateTimeFormatter
 
 class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
@@ -37,6 +38,7 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
                                 <th style="padding:12px">Periode</th>
                                 <th style="padding:12px">Antall dager</th>
                                 <th style="padding:12px">Dagsats</th>
+                                <th style="padding:12px">Omregnet til 70 %</th>
                             </tr>
                         ${
             kvittering.refusjonsListe.sorted().joinToString(separator = "") { krav ->
@@ -47,6 +49,7 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
                                 <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${krav.periode.tom.format(dateFormatter)}</td>
                                 <td style="padding:12px">${krav.periode.antallDagerMedRefusjon}</td>
                                 <td style="padding:12px">${krav.periode.beloep}</td>
+                                <td style="padding:12px">${NUMBER_FORMAT.format(krav.periode.beloep * krav.periode.antallDagerMedRefusjon * 0.7)}</td>
                                 </tr>
                                         """.trimIndent()
             }

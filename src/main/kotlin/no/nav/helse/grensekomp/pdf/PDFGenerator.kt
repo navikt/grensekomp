@@ -17,9 +17,6 @@ class PDFGenerator {
     private val MARGIN_X = 40f
     private val MARGIN_Y = 40f
     private val FONT_NAME = "fonts/SourceSansPro-Regular.ttf"
-    val TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
-    val DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    val NUMBER_FORMAT = DecimalFormat("#,###.00")
 
     fun lagPDF(refusjonskrav: Refusjonskrav): ByteArray {
         val doc = PDDocument()
@@ -39,9 +36,9 @@ class PDFGenerator {
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Fra: ${DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${DATE_FORMAT.format(refusjonskrav.periode.tom)}    Antall dager: ${refusjonskrav.periode.antallDagerMedRefusjon}    Refusjonsbeløp: ${NUMBER_FORMAT.format(refusjonskrav.periode.beloep)}")
+        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Antall dager: ${refusjonskrav.periode.antallDagerMedRefusjon}    Refusjonsbeløp: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beloep)}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
-        contentStream.showText("Opprettet: ${TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
+        contentStream.showText("Opprettet: ${Companion.TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
         contentStream.endText()
         contentStream.close()
         val out = ByteArrayOutputStream()
@@ -49,6 +46,12 @@ class PDFGenerator {
         val ba = out.toByteArray()
         doc.close()
         return ba
+    }
+
+    companion object {
+        val NUMBER_FORMAT = DecimalFormat("#,###.00")
+        val DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
     }
 
 }
