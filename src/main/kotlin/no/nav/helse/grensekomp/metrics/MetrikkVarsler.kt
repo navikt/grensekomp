@@ -18,6 +18,11 @@ val FEILET_JOBB_COUNTER = Counter.build()
         .help("Countes the number of permanently failed jobs")
         .register()
 
+val MANGLENDE_ARBEIDSFORHOLD = Counter.build()
+        .name("grensekomp_mangler_arbeidsforhold")
+        .help("Antall ganger vi har fått bom i sjekken mot arbeidsforhold")
+        .register()
+
 
 val INNKOMMENDE_REFUSJONSKRAV_COUNTER: Counter = Counter.build()
         .namespace(METRICS_NS)

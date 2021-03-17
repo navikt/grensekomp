@@ -21,6 +21,8 @@ import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_COUNTER
+import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
+import no.nav.helse.grensekomp.metrics.MetrikkVarsler
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
@@ -185,11 +187,11 @@ suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusj
             )
 
     if ( !arbeidsForholdOk ) {
-        logger.warn("Arbeidsforhold feilet validering")
+        MANGLENDE_ARBEIDSFORHOLD.inc()
         throw ConstraintViolationException(
             setOf(
                 DefaultConstraintViolation(
-                    "virksomhetsnummer",
+                    "identitetsnummer",
                     constraint = ArbeidsforholdConstraint(),
                     value = refusjonskrav.virksomhetsnummer
                 )
