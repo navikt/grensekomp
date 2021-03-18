@@ -1,5 +1,7 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
+import no.nav.helse.grensekomp.domene.Periode
+import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import org.valiktor.ConstraintViolation
 import org.valiktor.i18n.toMessage
 import java.net.URI
@@ -40,11 +42,12 @@ class ValidationProblemDetail(
 
 fun ConstraintViolation.getContextualMessage(): String {
     return when {
-        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith("beloep")) ->  "Refusjonsbeløpet må være et positivt tall eller null"
-        (this.constraint.name =="LessOrEqual" && this.property.endsWith("beloep")) ->  "Refusjonsbeløpet er for høyt"
-        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(".tom")) ->  "Fra-dato må være før til-dato"
-        (this.constraint.name =="LessOrEqual" && this.property.endsWith(".tom")) ->  "Det kan ikke kreves refusjon for datoer fremover i tid"
-        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith("antallDagerMedRefusjon")) ->  "Antall dager det kreves refusjon for kan ikke være negativt tall"
+        (this.constraint.name =="True" && this.property.endsWith(RefusjonskravDto::bekreftet.name)) ->  "Du må bekreftet at opplysningene er riktige"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::beloep.name)) ->  "Refusjonsbeløpet må være et positivt tall eller null"
+        (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::beloep.name)) ->  "Refusjonsbeløpet er for høyt"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "Fra-dato må være før til-dato"
+        (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "Det kan ikke kreves refusjon for datoer fremover i tid"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::antallDagerMedRefusjon.name)) ->  "Antall dager det kreves refusjon for kan ikke være negativt tall"
         else -> this.toMessage().message
     }
 }

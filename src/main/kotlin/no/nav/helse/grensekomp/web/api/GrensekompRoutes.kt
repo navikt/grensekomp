@@ -78,7 +78,8 @@ fun Route.grensekompRoutes(
                         opprettetAv,
                         dto.identitetsnummer,
                         dto.virksomhetsnummer,
-                        dto.periode
+                        dto.periode,
+                        dto.bekreftet
                     )
                 } catch (forbiddenEx: ForbiddenException) {
                     responseBody[i] = PostListResponseDto(

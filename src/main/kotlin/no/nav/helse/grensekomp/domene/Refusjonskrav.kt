@@ -8,6 +8,7 @@ data class Refusjonskrav(
     val identitetsnummer: String,
     val virksomhetsnummer: String,
     val periode: Periode,
+    val bekreftet: Boolean = true,
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
     var feilmelding: String? = null,

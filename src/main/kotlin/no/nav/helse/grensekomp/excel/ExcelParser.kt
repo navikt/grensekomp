@@ -84,7 +84,8 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
         val refusjonskrav = RefusjonskravDto(
                 identitetsnummer,
                 virksomhetsNummer,
-                Periode(fom, tom, antallDager, beloep)
+                Periode(fom, tom, antallDager, beloep),
+                true
         )
 
         // authorize the use
@@ -98,6 +99,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
                 refusjonskrav.identitetsnummer,
                 refusjonskrav.virksomhetsnummer,
                 refusjonskrav.periode,
+                refusjonskrav.bekreftet,
                 kilde = "XLSX-$correlationId"
         )
     }

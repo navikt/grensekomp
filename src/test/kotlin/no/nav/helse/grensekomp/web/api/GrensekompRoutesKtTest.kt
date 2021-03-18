@@ -23,7 +23,8 @@ internal class ArbeidsforholdContraintTest {
                 LocalDate.of(2021, 3, 15),
                 5,
                 100.0
-            )
+            ),
+            true
         )
 
         val aaregMock = object: AaregArbeidsforholdClient {

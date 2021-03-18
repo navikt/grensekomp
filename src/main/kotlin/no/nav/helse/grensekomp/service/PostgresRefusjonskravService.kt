@@ -13,7 +13,6 @@ import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringJobData
 import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravJobData
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
-import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
@@ -52,20 +51,20 @@ class PostgresRefusjonskravService(
     }
 
 
-    override fun saveKravListWithKvittering(kravListeMedIndex: Map<Int, Refusjonskrav>): Map<Int, Refusjonskrav> {
+    override fun saveKravListWithKvittering(kravList: Map<Int, Refusjonskrav>): Map<Int, Refusjonskrav> {
         //Alle innsendingene må være på samme virksomhet
         ds.connection.use { con ->
             con.autoCommit = false
             val kvittering = Kvittering(
-                    virksomhetsnummer = kravListeMedIndex.values.first().virksomhetsnummer,
-                    refusjonsListe = kravListeMedIndex.values.toList(),
+                    virksomhetsnummer = kravList.values.first().virksomhetsnummer,
+                    refusjonsListe = kravList.values.toList(),
                     tidspunkt = LocalDateTime.now(),
                     status = KvitteringStatus.JOBB
             )
             val savedKvittering = kvitteringRepository.insert(kvittering, con)
             lagreKvitteringJobb(savedKvittering, con)
             val savedMap = mutableMapOf<Int, Refusjonskrav>()
-            kravListeMedIndex.forEach {
+            kravList.forEach {
                 it.value.kvitteringId = savedKvittering.id
                 it.value.status = RefusjonskravStatus.JOBB
                 savedMap[it.key] = refusjonskravRepository.insert(it.value, con)

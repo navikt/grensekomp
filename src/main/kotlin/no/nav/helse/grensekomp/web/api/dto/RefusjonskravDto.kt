@@ -10,7 +10,8 @@ import java.time.LocalDate
 data class RefusjonskravDto(
         val identitetsnummer: String,
         val virksomhetsnummer: String,
-        val periode: Periode
+        val periode: Periode,
+        val bekreftet: Boolean
 ) {
 
     init {
@@ -18,6 +19,7 @@ data class RefusjonskravDto(
         validate(this) {
             validate(RefusjonskravDto::identitetsnummer).isValidIdentitetsnummer()
             validate(RefusjonskravDto::virksomhetsnummer).isValidOrganisasjonsnummer()
+            validate(RefusjonskravDto::bekreftet).isTrue()
 
             validate(RefusjonskravDto::periode).validate {
                 validate(Periode::beloep).isPositive()

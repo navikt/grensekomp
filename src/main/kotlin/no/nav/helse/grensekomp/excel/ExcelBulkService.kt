@@ -31,7 +31,7 @@ class ExcelBulkService(private val service: RefusjonskravService, private val pa
         }
 
         log.info("Lagrer ${parsingResult.refusjonskrav.size} krav")
-        val referenceNumbers = service.bulkInsert(parsingResult.refusjonskrav)
+        service.bulkInsert(parsingResult.refusjonskrav)
         log.info("Lagret  ${parsingResult.refusjonskrav.size} krav")
         INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc(parsingResult.refusjonskrav.size.toDouble())
     }
