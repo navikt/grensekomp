@@ -29,6 +29,7 @@ import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.api.dto.validation.ArbeidsforholdConstraint
 import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
+import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
@@ -169,34 +170,5 @@ private fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnA
     val identitetsnummer = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
     if (!authorizer.hasAccess(identitetsnummer, arbeidsgiverId)) {
         throw ForbiddenException()
-    }
-}
-
-@KtorExperimentalAPI
-suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
-    val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
-        .filter { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
-        .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
-        .lastOrNull()
-
-    val arbeidsForholdOk = aktueltArbeidsforhold != null &&
-            aktueltArbeidsforhold.ansettelsesperiode.periode.fom!!.isBefore(refusjonskrav.periode.fom) &&
-            (
-                    aktueltArbeidsforhold.ansettelsesperiode.periode.tom == null ||
-                    refusjonskrav.periode.tom.isBefore(aktueltArbeidsforhold.ansettelsesperiode.periode.tom) ||
-                    refusjonskrav.periode.tom == aktueltArbeidsforhold.ansettelsesperiode.periode.tom
-            )
-
-    if ( !arbeidsForholdOk ) {
-        MANGLENDE_ARBEIDSFORHOLD.inc()
-        throw ConstraintViolationException(
-            setOf(
-                DefaultConstraintViolation(
-                    "identitetsnummer",
-                    constraint = ArbeidsforholdConstraint(),
-                    value = refusjonskrav.virksomhetsnummer
-                )
-            )
-        )
     }
 }

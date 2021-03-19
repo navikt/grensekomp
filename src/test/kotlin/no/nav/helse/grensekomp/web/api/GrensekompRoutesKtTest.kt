@@ -9,11 +9,15 @@ import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Arbeidsforhold
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
+import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class ArbeidsforholdContraintTest {
+
     @Test
+    @Disabled("Exploratory")
     internal fun test() {
         val krav = RefusjonskravDto(
             "10107400090",
@@ -51,7 +55,7 @@ internal class ArbeidsforholdContraintTest {
                             ],
                             "ansettelsesperiode": {
                                 "periode": {
-                                    "fom": "2001-03-08",
+                                    "fom": "2021-02-08",
                                     "tom": null
                                 }
                             }

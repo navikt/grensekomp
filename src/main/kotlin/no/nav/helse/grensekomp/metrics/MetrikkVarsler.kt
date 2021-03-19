@@ -20,6 +20,7 @@ val FEILET_JOBB_COUNTER = Counter.build()
 
 val MANGLENDE_ARBEIDSFORHOLD = Counter.build()
         .name("grensekomp_mangler_arbeidsforhold")
+        .labelNames("reason")
         .help("Antall ganger vi har fått bom i sjekken mot arbeidsforhold")
         .register()
 
