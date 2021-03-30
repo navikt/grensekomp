@@ -36,8 +36,7 @@ data class RefusjonskravDto(
                 // tom periode kan ikke ha refusjonsbeløp
                 validate(Periode::beloep).tomPeriodeKanIkkeHaBeloepConstraint(obj.periode.antallDagerMedRefusjon)
             }
-            validate(RefusjonskravDto::bostedsland).isNotEmpty()
-            validate(RefusjonskravDto::bostedsland).hasSize(3,3)
+            validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }
     }
 }
