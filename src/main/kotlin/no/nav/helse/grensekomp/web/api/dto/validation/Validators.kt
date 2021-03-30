@@ -117,12 +117,7 @@ class BostedlandValidator(input: String?) {
     init {
         require(input != null)
         asString = input
-        require("""\d{3}""".toRegex().matches(asString)) { "Landskode må være 3 bokstave: $asString" }
-        require(gyldigISoNavn) { "Ugyldig landskode" }
-    }
-    private val gyldigISoNavn: Boolean
-    get() {
-        return asString.toUpperCase() in euLanderIsoKoder
+        require(asString.toUpperCase() in euLanderIsoKoder) { "Ugyldig landskode" }
     }
 
     companion object {
