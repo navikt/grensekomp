@@ -5,6 +5,7 @@ import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator
 import no.nav.helse.grensekomp.web.dto.validation.OrganisasjonsnummerValidator
 import org.valiktor.Constraint
@@ -48,6 +49,11 @@ fun <E> Validator<E>.Property<Double?>.tomPeriodeKanIkkeHaBeloepConstraint(antal
 class ArbeidsforholdConstraint : CustomConstraint
 class ArbeidsforholdStartConstraint : CustomConstraint
 class ArbeidsforholdLengdeConstraint : CustomConstraint
+
+class BostedslandConstraints : CustomConstraint
+
+fun <E> Validator<E>.Property<String?>.isValidBostedsland() =
+    this.validate(BostedslandConstraints()) { BostedlandValidator.isValid(it)}
 
 @KtorExperimentalAPI
 suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
