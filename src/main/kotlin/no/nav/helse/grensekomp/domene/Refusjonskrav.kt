@@ -9,6 +9,7 @@ data class Refusjonskrav(
     val virksomhetsnummer: String,
     val periode: Periode,
     val bekreftet: Boolean = true,
+    var bostedland: String,
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
     var feilmelding: String? = null,
@@ -19,7 +20,7 @@ data class Refusjonskrav(
     val opprettet: LocalDateTime = LocalDateTime.now(),
     val id: UUID = UUID.randomUUID(),
     var kvitteringId: UUID? = null,
-    var indeksertInflux: Boolean = false
+    var indeksertInflux: Boolean = false,
 ): Comparable<Refusjonskrav> {
     override fun compareTo(other: Refusjonskrav): Int {
         if (other.identitetsnummer > identitetsnummer)

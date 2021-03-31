@@ -21,21 +21,15 @@ import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
 import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_COUNTER
-import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
-import no.nav.helse.grensekomp.metrics.MetrikkVarsler
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
-import no.nav.helse.grensekomp.web.api.dto.validation.ArbeidsforholdConstraint
 import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
-import org.valiktor.DefaultConstraintViolation
-import java.time.LocalDate
-import java.util.*
 import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
 
@@ -80,7 +74,8 @@ fun Route.grensekompRoutes(
                         dto.identitetsnummer,
                         dto.virksomhetsnummer,
                         dto.periode,
-                        dto.bekreftet
+                        dto.bekreftet,
+                        dto.bostedsland
                     )
                 } catch (forbiddenEx: ForbiddenException) {
                     responseBody[i] = PostListResponseDto(
@@ -122,7 +117,7 @@ fun Route.grensekompRoutes(
                 val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                 savedList.forEach { item ->
                     INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.periode.beloep.div(1000))
+                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.periode.dagsats.div(1000))
                     responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
                 }
             }

@@ -48,8 +48,8 @@ class AltinnKvitteringMapper(val altinnTjenesteKode: String) {
                                 <td style="padding:12px">${krav.identitetsnummer}</td>
                                 <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${krav.periode.tom.format(dateFormatter)}</td>
                                 <td style="padding:12px">${krav.periode.antallDagerMedRefusjon}</td>
-                                <td style="padding:12px">${krav.periode.beloep}</td>
-                                <td style="padding:12px">${NUMBER_FORMAT.format(krav.periode.beloep * krav.periode.antallDagerMedRefusjon * 0.7)}</td>
+                                <td style="padding:12px">${krav.periode.dagsats}</td>
+                                <td style="padding:12px">${NUMBER_FORMAT.format(krav.periode.dagsats * krav.periode.antallDagerMedRefusjon * 0.7)}</td>
                                 </tr>
                                         """.trimIndent()
             }

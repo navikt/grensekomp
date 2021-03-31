@@ -102,6 +102,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
                 refusjonskrav.virksomhetsnummer,
                 refusjonskrav.periode,
                 refusjonskrav.bekreftet,
+                refusjonskrav.bostedsland,
                 kilde = "XLSX-$correlationId"
         )
     }
