@@ -3,6 +3,7 @@ package no.nav.helse.grensekomp.web.dto.validation
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator.Companion.tabeller.kontrollsiffer1
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator.Companion.tabeller.kontrollsiffer2
 import no.nav.helse.grensekomp.web.dto.validation.OrganisasjonsnummerValidator.Companion.tabeller.weights
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.euLanderIsoKoder
 
 
 class FoedselsNrValidator(input: String?) {
@@ -106,6 +107,41 @@ class OrganisasjonsnummerValidator(input: String?) {
 
             val res = 11 - (produktsum % 11)
             return if (res == 11) 0 else res
+        }
+    }
+}
+
+class BostedlandValidator(input: String?) {
+    val asString: String
+
+    init {
+        require(input != null)
+        asString = input
+        require(asString.toUpperCase() in euLanderIsoKoder) { "Ugyldig landskode" }
+    }
+
+    companion object {
+        object tabeller {
+            val euLanderIsoKoder = listOf(
+                "BEL","BGR","DNK","EST","FIN","FRA","GRC","IRL","ISL","ITA","HRV","CYP",
+                "LVA","LIE","LTU","LUX","MLT","NLD","POL","PRT","ROU","SVK","SVN","ESP",
+                "GBR","CHE","SWE","CZE","DEU","HUN","AUT"
+            )
+            val euLander = listOf(
+                "BELGIA","BULGARIA","DANMARK","ESTLAND","FINLAND","FRANKRIKE","HELLAS","IRLAND","ISLAND",
+                "ITALIA","KROATIA","KYPROS","LATVIA","LIECHTENSTEIN","LITAUEN","LUXEMBOURG","MALTA",
+                "NEDERLAND","POLEN","PORTUGAL","ROMANIA","SLOVAKIA","SLOVENIA","SPANIA","STORBRITANNIA OG NORD-IRLAND",
+                "SVEITS","SVERIGE","TSJEKKIA","TYSKLAND","UNGARN","ØSTERRIKE"
+            )
+        }
+
+        fun isValid(asString: String?): Boolean {
+            return try {
+                BostedlandValidator(asString)
+                true
+            } catch (t: Throwable) {
+                false
+            }
         }
     }
 }

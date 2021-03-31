@@ -36,7 +36,7 @@ class PDFGenerator {
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Antall dager: ${refusjonskrav.periode.antallDagerMedRefusjon}    Refusjonsbeløp: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beloep)}")
+        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Antall dager: ${refusjonskrav.periode.antallDagerMedRefusjon}    Refusjonsbeløp: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.dagsats)}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Opprettet: ${Companion.TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
         contentStream.endText()

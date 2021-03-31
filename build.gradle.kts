@@ -58,7 +58,7 @@ dependencies {
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                strictly("4.1.59.Final")
+                strictly("4.1.60.Final")
             }
             because("snyk control")
         }
@@ -76,10 +76,12 @@ dependencies {
         }
         implementation("io.netty:netty-transport-native-epoll") {
             version {
-                strictly("4.1.59.Final")
+                strictly("4.1.60.Final")
             }
             because("snyk control")
         }
+
+
     }
     implementation("commons-codec:commons-codec:1.13") // overstyrer transiente 1.10
     implementation("io.netty:netty-codec:4.1.59.Final") // overstyrer transiente 4.1.44
@@ -126,7 +128,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:6.4")
     implementation("org.codehaus.janino:janino:3.0.6")
     implementation("org.flywaydb:flyway-core:7.3.0")
-    implementation("org.apache.pdfbox:pdfbox:2.0.21")
+    implementation("org.apache.pdfbox:pdfbox:2.0.23")
 
     implementation("no.nav.tjenestespesifikasjoner:altinn-correspondence-agency-external-basic:1.2019.09.25-00.21-49b69f0625e0")
 

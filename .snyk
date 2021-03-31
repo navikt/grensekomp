@@ -10,4 +10,25 @@ ignore:
     - '*':
         reason: None Given
         expires: 2021-06-03T12:39:32.328Z
+
+  'snyk:lic:maven:org.syslog4j:syslog4j:LGPL-3.0':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
+  'snyk:lic:maven:junit:junit:EPL-1.0':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
+  'snyk:lic:maven:ch.qos.logback.contrib:logback-json-core:(EPL-1.0_OR_LGPL-2.0)':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
+  'snyk.io/vuln/snyk:lic:maven:ch.qos.logback.contrib:logback-json-classic:(EPL-1.0_OR_LGPL-2.0)':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
+  'snyk:lic:maven:ch.qos.logback.contrib:logback-jackson:(EPL-1.0_OR_LGPL-2.0)':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
 patch: {}

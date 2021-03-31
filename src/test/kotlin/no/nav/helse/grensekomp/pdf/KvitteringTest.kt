@@ -27,6 +27,7 @@ internal class KvitteringTest {
                         2,
                         4500800.50
                 ),
+                bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )
@@ -51,6 +52,7 @@ internal class KvitteringTest {
                         2,
                         250.50
                 ),
+                bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )

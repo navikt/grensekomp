@@ -36,7 +36,8 @@ class RefusjonskravProcessorTest {
                 identitetsnummer = "123",
                 virksomhetsnummer = "213",
                 periode = TestData.gyldigKrav.periode,
-                status = RefusjonskravStatus.JOBB
+                status = RefusjonskravStatus.JOBB,
+                bostedland = "SWE"
         )
     }
 

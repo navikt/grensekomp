@@ -28,7 +28,8 @@ internal class ArbeidsforholdContraintTest {
                 5,
                 100.0
             ),
-            true
+            true,
+            "SWE"
         )
 
         val aaregMock = object: AaregArbeidsforholdClient {

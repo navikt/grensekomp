@@ -6,7 +6,7 @@ data class Periode(
         val fom: LocalDate,
         val tom: LocalDate,
         val antallDagerMedRefusjon: Int,
-        val beloep: Double
+        val dagsats: Double
 ): Comparable<Periode> {
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)

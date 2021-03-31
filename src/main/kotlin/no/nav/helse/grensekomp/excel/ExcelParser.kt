@@ -78,6 +78,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
         val tom = row.extractLocalDate(3, "Til og med")
         val antallDager = row.extractDouble(4, "Antall arbeidsdager med refusjon").toInt()
         val beloep = row.extractDouble(5, "Beløp")
+        val bostedsland = row.extract(6, "Bostedland")
 
 
         // create DTO instance for validation
@@ -85,7 +86,8 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
                 identitetsnummer,
                 virksomhetsNummer,
                 Periode(fom, tom, antallDager, beloep),
-                true
+                true,
+            bostedsland
         )
 
         // authorize the use
@@ -100,6 +102,7 @@ class ExcelParser(private val authorizer: AltinnAuthorizer) {
                 refusjonskrav.virksomhetsnummer,
                 refusjonskrav.periode,
                 refusjonskrav.bekreftet,
+                refusjonskrav.bostedsland,
                 kilde = "XLSX-$correlationId"
         )
     }
