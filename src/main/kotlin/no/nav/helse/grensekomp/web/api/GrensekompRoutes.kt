@@ -30,6 +30,7 @@ import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
+import java.util.*
 import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
 
@@ -49,6 +50,18 @@ fun Route.grensekompRoutes(
     }
 
     route("/refusjonskrav") {
+        get("/list/{virksomhetsnummer}") {
+            val innloggetFnr = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
+            val om = application.get<ObjectMapper>()
+            val virksomhetnr = call.parameters["virksomhetsnummer"]
+
+            if(virksomhetnr == null)
+                call.respond(HttpStatusCode.NotAcceptable, "Må ha virksomhetsnummer")
+            else {
+                val refusjonkravliste = refusjonskravService.getAllForVirksomhet(virksomhetnr)
+                call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonkravliste))
+            }
+        }
         post("/list") {
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
