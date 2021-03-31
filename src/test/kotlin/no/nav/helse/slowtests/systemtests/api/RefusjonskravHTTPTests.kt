@@ -17,24 +17,20 @@ import org.koin.core.get
 
 class RefusjonskravHTTPTests : SystemTestBase() {
     private val refusjonsKravUrl = "/api/v1/refusjonskrav"
-
     lateinit var repo: PostgresRefusjonskravRepository
     val testKrav = TestData.gyldigKrav
 
     @BeforeEach
     internal fun setUp() {
         val ds = HikariDataSource(createTestHikariConfig())
-
         repo = PostgresRefusjonskravRepository(ds, get())
         repo.insert(testKrav)
-
     }
 
     @AfterEach
     internal fun tearDown() {
         repo.delete(testKrav.id)
     }
-
 
     @Test
     fun `Skal returnere krav list`() = suspendableTest {
@@ -43,7 +39,6 @@ class RefusjonskravHTTPTests : SystemTestBase() {
             contentType(ContentType.Application.Json)
             loggedInAs("123456789")
         }
-    print(response.readText())
         Assertions.assertThat(response.status).isEqualTo(HttpStatusCode.OK)
         Assertions.assertThat(response.content).isNotNull
     }
