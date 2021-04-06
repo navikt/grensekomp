@@ -30,6 +30,7 @@ import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
+import java.time.LocalDateTime
 import java.util.*
 import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
@@ -68,6 +69,11 @@ fun Route.grensekompRoutes(
             val jsonTree = om.readTree(refusjonskravJson)
             val responseBody = ArrayList<PostListResponseDto>(jsonTree.size())
             val domeneListeMedIndex = mutableMapOf<Int, Refusjonskrav>()
+            val opprettetAv = hentIdentitetsnummerFraLoginToken(
+                application.environment.config,
+                call.request
+            )
+            val innsendingstidspunkt = LocalDateTime.now()
 
             for (i in 0 until jsonTree.size())
                 responseBody.add(i, PostListResponseDto(PostListResponseDto.Status.GENERIC_ERROR))
@@ -78,17 +84,14 @@ fun Route.grensekompRoutes(
                     authorize(authorizer, dto.virksomhetsnummer)
                     validerArbeidsforhold(aaregClient, dto)
 
-                    val opprettetAv = hentIdentitetsnummerFraLoginToken(
-                        application.environment.config,
-                        call.request
-                    ) //burde denne være lengre opp?
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
                         dto.identitetsnummer,
                         dto.virksomhetsnummer,
                         dto.periode,
                         dto.bekreftet,
-                        dto.bostedsland
+                        dto.bostedsland,
+                        opprettet = innsendingstidspunkt
                     )
                 } catch (forbiddenEx: ForbiddenException) {
                     responseBody[i] = PostListResponseDto(
