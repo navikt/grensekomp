@@ -93,6 +93,7 @@ fun Route.grensekompRoutes(
             for (i in 0 until jsonTree.size()) {
                 try {
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
+                    dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     validerArbeidsforhold(aaregClient, dto)
 
