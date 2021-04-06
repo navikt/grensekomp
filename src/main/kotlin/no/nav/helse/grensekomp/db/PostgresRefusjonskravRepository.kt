@@ -48,6 +48,10 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
 
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
 
+    override fun cancelById(id: UUID): Refusjonskrav? {
+        TODO("Not yet implemented")
+    }
+
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         ds.connection.use { con ->
             val resultList = ArrayList<Refusjonskrav>()

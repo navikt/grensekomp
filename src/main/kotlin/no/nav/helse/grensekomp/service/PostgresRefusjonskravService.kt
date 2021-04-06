@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
 import java.time.LocalDateTime
+import java.util.*
 import javax.sql.DataSource
 
 class PostgresRefusjonskravService(
@@ -76,6 +77,19 @@ class PostgresRefusjonskravService(
 
     }
 
+    override fun getKrav(id: UUID): Refusjonskrav? {
+        return refusjonskravRepository.getById(id)
+    }
+
+    override fun cancelKrav(id: UUID): Refusjonskrav? {
+        val refusjonskrav = refusjonskravRepository.getById(id)
+        if (refusjonskrav != null) {
+            logger.debug("sletter krav ", refusjonskrav.id)
+            refusjonskrav.status = RefusjonskravStatus.SLETTET
+            refusjonskravRepository.update(refusjonskrav)
+        }
+        return refusjonskrav
+    }
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         return refusjonskravRepository.getAllForVirksomhet(virksomhetsnummer)
