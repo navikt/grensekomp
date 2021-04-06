@@ -14,8 +14,7 @@ data class RefusjonskravDto(
         val bekreftet: Boolean,
         val bostedsland: String
 ) {
-
-    init {
+    fun validate() {
         val obj = this
         validate(this) {
             validate(RefusjonskravDto::identitetsnummer).isValidIdentitetsnummer()
