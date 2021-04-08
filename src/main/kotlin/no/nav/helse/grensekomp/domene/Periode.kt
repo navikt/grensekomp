@@ -3,10 +3,10 @@ package no.nav.helse.grensekomp.domene
 import java.time.LocalDate
 
 data class Periode(
-        val fom: LocalDate,
-        val tom: LocalDate,
-        val antallDagerMedRefusjon: Int,
-        val dagsats: Double
+    val fom: LocalDate,
+    val tom: LocalDate,
+    var antallDagerMedRefusjon: Int,
+    var dagsats: Double
 ): Comparable<Periode> {
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)

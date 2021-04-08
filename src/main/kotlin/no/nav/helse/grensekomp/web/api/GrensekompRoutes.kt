@@ -63,6 +63,20 @@ fun Route.grensekompRoutes(
             }
         }
 
+
+        delete("/{id}"){
+            val reufusjonskravId = UUID.fromString(call.parameters["id"])
+            var refusjonskrav = refusjonskravService.getKrav(reufusjonskravId)
+            val om = application.get<ObjectMapper>()
+            if(refusjonskrav == null)
+                call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
+            else {
+                refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
+                call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
+            }
+        }
+
+
         post("/list") {
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
