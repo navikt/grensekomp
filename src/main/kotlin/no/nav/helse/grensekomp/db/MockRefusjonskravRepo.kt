@@ -15,10 +15,6 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         }
     }
 
-    override fun cancelById(id: UUID): Refusjonskrav? {
-        TODO("Not yet implemented")
-    }
-
     override fun insert(refusjonskrav: Refusjonskrav, connection: Connection): Refusjonskrav {
         return insert(refusjonskrav)
     }
