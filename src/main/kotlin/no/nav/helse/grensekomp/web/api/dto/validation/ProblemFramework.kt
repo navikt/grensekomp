@@ -43,7 +43,7 @@ class ValidationProblemDetail(
 fun ConstraintViolation.getContextualMessage(): String {
     return when {
         (this.constraint.name =="True" && this.property.endsWith(RefusjonskravDto::bekreftet.name)) ->  "Du må bekreftet at opplysningene er riktige"
-        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::dagsats.name)) ->  "Refusjonsbeløpet må være et positivt tall eller null"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::dagsats.name)) ->  "Dagsatsen må være et positivt tall eller null"
         (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::dagsats.name)) ->  "Refusjonsbeløpet er for høyt"
         (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "Fra-dato må være før til-dato"
         (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "Det kan ikke kreves refusjon for datoer fremover i tid"

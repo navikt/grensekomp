@@ -52,17 +52,17 @@ fun Route.grensekompRoutes(
 
     route("/refusjonskrav") {
         get("/list/{virksomhetsnummer}") {
-            val innloggetFnr = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
-            val om = application.get<ObjectMapper>()
             val virksomhetnr = call.parameters["virksomhetsnummer"]
 
-            if(virksomhetnr == null)
+            if(virksomhetnr == null) {
                 call.respond(HttpStatusCode.NotAcceptable, "Må ha virksomhetsnummer")
-            else {
+            } else {
+                authorize(authorizer, virksomhetnr)
                 val refusjonkravliste = refusjonskravService.getAllForVirksomhet(virksomhetnr)
-                call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonkravliste))
+                call.respond(HttpStatusCode.OK, refusjonkravliste)
             }
         }
+
 
         delete("/{id}"){
             val reufusjonskravId = UUID.fromString(call.parameters["id"])
@@ -75,6 +75,7 @@ fun Route.grensekompRoutes(
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
         }
+
 
         post("/list") {
             val refusjonskravJson = call.receiveText()
