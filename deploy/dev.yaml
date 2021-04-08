@@ -78,6 +78,8 @@ spec:
       value: https://api-gw-q1.oera.no/ekstern/altinn/api/serviceowner
     - name: ENHETSREGISTERET
       value: data.brreg.no/enhetsregisteret/api/underenheter
+    - name: PROXY_SCOPE
+      value: api://dev-fss.helsearbeidsgiver.helsearbeidsgiver-proxy/.default
 
   gcp:
     sqlInstances:
