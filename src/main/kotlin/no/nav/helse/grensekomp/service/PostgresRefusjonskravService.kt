@@ -82,13 +82,17 @@ class PostgresRefusjonskravService(
     }
 
     override fun cancelKrav(id: UUID): Refusjonskrav? {
-        val refusjonskrav = refusjonskravRepository.getById(id)
-        if (refusjonskrav != null) {
-            logger.debug("sletter krav ", refusjonskrav.id)
-            refusjonskrav.status = RefusjonskravStatus.SLETTET
-            refusjonskravRepository.update(refusjonskrav)
+        ds.connection.use { con ->
+            con.autoCommit = false
+            val refusjonskrav = refusjonskravRepository.getById(id)
+            if (refusjonskrav != null) {
+                logger.debug("sletter krav ", refusjonskrav.id)
+                refusjonskrav.status = RefusjonskravStatus.SLETTET
+                refusjonskravRepository.update(refusjonskrav)
+                lagreRefusjonskravJobb(refusjonskrav, con)
+            }
+            return refusjonskrav
         }
-        return refusjonskrav
     }
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {

@@ -44,9 +44,10 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    fun `Skal returnere oppdatere status på krav til slettet`() = suspendableTest {
-        val response = httpClient.get<HttpResponse> {
-            appUrl("$refusjonsKravUrl/cancel/${testKrav.id}")
+    fun `Skal returnere oppdatert status på krav til slettet`() = suspendableTest {
+
+        val response = httpClient.delete<HttpResponse> {
+            appUrl("$refusjonsKravUrl/${testKrav.id}")
             contentType(ContentType.Application.Json)
             loggedInAs("123456789")
         }
