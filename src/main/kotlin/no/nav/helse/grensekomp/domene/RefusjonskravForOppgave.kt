@@ -3,35 +3,29 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class RefusjonskravForOppgave(
+        val id: UUID,
+        val status: RefusjonskravStatus,
         val identitetsnummer: String,
         val virksomhetsnummer: String,
+        val bostedland: String,
+
         val periode: Periode,
 
-        var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
-        var feilmelding: String? = null,
-        var oppgaveId: String? = null,
-        var joarkReferanse: String? = null,
-        var kilde: String = "WEBSKJEMA",
+        val erEØSStatsborger: Boolean,
 
-        val opprettet: LocalDateTime = LocalDateTime.now(),
-        val id: UUID = UUID.randomUUID(),
-        var kvitteringId: UUID? = null,
-        var indeksertInflux: Boolean = false,
+        val opprettet: LocalDateTime,
 
         val soekerForSegSelv: Boolean
 )
 fun Refusjonskrav.toRefusjonskravForOppgave() = RefusjonskravForOppgave(
+        id = id,
+        status = status,
         identitetsnummer = identitetsnummer,
         virksomhetsnummer = virksomhetsnummer,
+        bostedland = bostedland,
+
         periode = periode,
-        status = status,
-        feilmelding = feilmelding,
-        oppgaveId = oppgaveId,
-        joarkReferanse = joarkReferanse,
-        kilde = kilde,
         opprettet = opprettet,
-        id = id,
-        kvitteringId = kvitteringId,
-        indeksertInflux = indeksertInflux,
-        soekerForSegSelv = identitetsnummer == opprettetAv
+        soekerForSegSelv = identitetsnummer == opprettetAv,
+        erEØSStatsborger = erEØSStatsborger
 )

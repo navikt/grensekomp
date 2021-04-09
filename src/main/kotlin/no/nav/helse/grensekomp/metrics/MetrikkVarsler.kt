@@ -24,6 +24,12 @@ val MANGLENDE_ARBEIDSFORHOLD = Counter.build()
         .help("Antall ganger vi har fått bom i sjekken mot arbeidsforhold")
         .register()
 
+val PDL_VALIDERINGER = Counter.build()
+        .name("grensekomp_pdl_sjekker_feilet")
+        .labelNames("reason")
+        .help("Antall ganger vi har fått bom i sjekkene mot PDL")
+        .register()
+
 
 val INNKOMMENDE_REFUSJONSKRAV_COUNTER: Counter = Counter.build()
         .namespace(METRICS_NS)

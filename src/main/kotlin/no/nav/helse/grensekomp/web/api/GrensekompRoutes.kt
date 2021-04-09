@@ -15,6 +15,7 @@ import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
+import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClient
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
@@ -27,11 +28,11 @@ import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
+import no.nav.helse.grensekomp.web.api.dto.validation.validerPdlBaserteRegler
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
 import java.time.LocalDateTime
-import java.util.*
 import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
 
@@ -42,7 +43,8 @@ val logger = LoggerFactory.getLogger("grensekompRoutes")
 fun Route.grensekompRoutes(
     authorizer: AltinnAuthorizer,
     refusjonskravService: RefusjonskravService,
-    aaregClient: AaregArbeidsforholdClient
+    aaregClient: AaregArbeidsforholdClient,
+    pdlClient: PdlClient
 ) {
     route("/login-expiry") {
         get {
@@ -83,6 +85,8 @@ fun Route.grensekompRoutes(
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
+                    val personData = pdlClient.fullPerson(dto.identitetsnummer)
+                    validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aaregClient, dto)
 
                     domeneListeMedIndex[i] = Refusjonskrav(

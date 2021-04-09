@@ -39,7 +39,7 @@ fun Application.grensekompModule(config: ApplicationConfig = environment.config)
         route("$apiBasePath/api/v1") {
             systemRoutes()
             authenticate {
-                grensekompRoutes(get(), get(), get())
+                grensekompRoutes(get(), get(), get(),get())
                 altinnRoutes(get())
             }
         }

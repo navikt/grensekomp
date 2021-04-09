@@ -12,7 +12,7 @@ data class Refusjonskrav(
     var bostedland: String,
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
-    var feilmelding: String? = null,
+    val erEØSStatsborger: Boolean = true,
     var oppgaveId: String? = null,
     var joarkReferanse: String? = null,
     var kilde: String = "WEBSKJEMA",
