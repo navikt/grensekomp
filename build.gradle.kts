@@ -17,8 +17,6 @@ val valiktorVersion = "0.12.0"
 val cxfVersion = "3.4.1"
 val jaxwsVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.3"
-val apachePoiVersion = "4.1.2"
-val influxVersion = "2.20"
 val githubPassword: String by project
 
 
@@ -89,11 +87,6 @@ dependencies {
     implementation("org.eclipse.jetty:jetty-server:9.4.37.v20210219")
     implementation("com.google.guava:guava:30.0-jre") //[Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] overstyrer versjon 29.0
     // -- end snyk fixes
-
-    implementation("org.apache.poi:poi:$apachePoiVersion")
-    implementation("org.apache.poi:poi-ooxml:$apachePoiVersion")
-    implementation("org.influxdb:influxdb-java:${influxVersion}")
-
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")

@@ -157,45 +157,10 @@ fun Route.grensekompRoutes(
                 val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                 savedList.forEach { item ->
                     INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.periode.dagsats.div(1000))
                     responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
                 }
             }
             call.respond(HttpStatusCode.OK, responseBody)
-        }
-    }
-
-    route("/bulk") {
-
-        get("/template") {
-            val template = javaClass.getResourceAsStream("/bulk-upload/inntektskompensasjon_mal_v10-03-2021.xlsx")
-            call.response.headers.append("Content-Disposition", "attachment; filename=\"inntektskompensasjon.xlsx\"")
-            call.respondBytes(template.readAllBytes(), excelContentType)
-        }
-
-        post("/upload") {
-            throw ForbiddenException("Denne funksjonen er ikke implementert")
-
-            /*val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
-            val multipart = call.receiveMultipart()
-
-            val fileItem = multipart.readAllParts()
-                .filterIsInstance<PartData.FileItem>()
-                .firstOrNull()
-                ?: throw IllegalArgumentException()
-
-            val maxUploadSize = 250 * 1024
-
-            val bytes = fileItem.streamProvider().readNBytes(maxUploadSize + 1)
-
-            if (bytes.size > maxUploadSize) {
-                throw IOException("Den opplastede filen er for stor")
-            }
-
-            ExcelBulkService(refusjonskravService, ExcelParser(authorizer))
-                .processExcelFile(bytes.inputStream(), id)
-
-            call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")*/
         }
     }
 }

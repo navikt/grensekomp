@@ -19,8 +19,7 @@ data class Refusjonskrav(
 
     val opprettet: LocalDateTime = LocalDateTime.now(),
     val id: UUID = UUID.randomUUID(),
-    var kvitteringId: UUID? = null,
-    var indeksertInflux: Boolean = false,
+    var kvitteringId: UUID? = null
 ): Comparable<Refusjonskrav> {
     override fun compareTo(other: Refusjonskrav): Int {
         if (other.identitetsnummer > identitetsnummer)

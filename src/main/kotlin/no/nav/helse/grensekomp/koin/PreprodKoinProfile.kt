@@ -55,7 +55,7 @@ fun preprodConfig(config: ApplicationConfig) = module {
 
     single {
         AltinnKvitteringSender(
-            AltinnKvitteringMapper(config.getString("altinn_melding.service_id")),
+            AltinnKvitteringMapper(config.getString("altinn_melding.service_id"), get()),
             get(),
             config.getString("altinn_melding.username"),
             config.getString("altinn_melding.password"),

@@ -15,7 +15,7 @@ object TestData {
             opprettetAv,
             validIdentitetsnummer,
             validOrgNr,
-            Periode(of(2020, 4,4), of(2020, 4,10), 2, 1000.0),
+            Periode(of(2020, 4,4), of(2020, 4,10), 1000),
             true,
         "SWE",
             RefusjonskravStatus.MOTTATT

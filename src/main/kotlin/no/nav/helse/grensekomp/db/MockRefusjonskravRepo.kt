@@ -66,10 +66,6 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         }
     }
 
-    override fun getByIkkeIndeksertInflux(limit: Int): List<Refusjonskrav> {
-        TODO("Not yet implemented")
-    }
-
     override fun update(krav: Refusjonskrav) {
 
     }

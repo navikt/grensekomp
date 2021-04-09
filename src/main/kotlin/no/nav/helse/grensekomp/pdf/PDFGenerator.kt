@@ -30,13 +30,13 @@ class PDFGenerator {
         val startX = mediaBox.lowerLeftX + MARGIN_X
         val startY = mediaBox.upperRightY - MARGIN_Y
         contentStream.newLineAtOffset(startX, startY)
-        contentStream.showText("Fødselsnummer: ${refusjonskrav.identitetsnummer}")
+        contentStream.showText("FNR/DNR: ${refusjonskrav.identitetsnummer}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
         contentStream.showText("Virksomhetsnummer: ${refusjonskrav.virksomhetsnummer}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Antall dager: ${refusjonskrav.periode.antallDagerMedRefusjon}    Refusjonsbeløp: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.dagsats)}")
+        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Beregnet månedsinntekt: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beregnetMånedsinntekt)}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Opprettet: ${Companion.TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
         contentStream.endText()

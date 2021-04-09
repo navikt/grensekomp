@@ -4,7 +4,6 @@ CREATE TABLE refusjonskrav (
 
 CREATE INDEX status ON refusjonskrav ((data  ->> 'status'));
 CREATE INDEX id ON refusjonskrav ((data ->> 'id'));
-CREATE INDEX influx on refusjonskrav ((data ->> 'indeksertInflux'));
 CREATE INDEX virksomhetsnummer ON refusjonskrav ((data ->> 'virksomhetsnummer'));
 CREATE INDEX identitetsnummer ON refusjonskrav ((data  ->> 'identitetsnummer'));
 

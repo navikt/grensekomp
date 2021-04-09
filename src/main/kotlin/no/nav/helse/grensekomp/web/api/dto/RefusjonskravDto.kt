@@ -15,25 +15,19 @@ data class RefusjonskravDto(
         val bostedsland: String
 ) {
     fun validate() {
-        val obj = this
         validate(this) {
             validate(RefusjonskravDto::identitetsnummer).isValidIdentitetsnummer()
             validate(RefusjonskravDto::virksomhetsnummer).isValidOrganisasjonsnummer()
             validate(RefusjonskravDto::bekreftet).isTrue()
 
             validate(RefusjonskravDto::periode).validate {
-                validate(Periode::dagsats).isPositive()
-                validate(Periode::dagsats).isLessThanOrEqualTo(1_000_000.0)
-                validate(Periode::antallDagerMedRefusjon).isPositiveOrZero()
+                validate(Periode::beregnetMånedsinntekt).isPositive()
+
                 validate(Periode::tom).isGreaterThanOrEqualTo(it.fom)
                 validate(Periode::tom).isLessThanOrEqualTo(LocalDate.now())
 
-                // antall refusjonsdager kan ikke være lenger enn periodens lengde
-                validate(Periode::antallDagerMedRefusjon).refusjonsDagerIkkeOverstigerPeriodelengder(obj.periode.fom, obj.periode.tom)
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
-                // tom periode kan ikke ha refusjonsbeløp
-                validate(Periode::dagsats).tomPeriodeKanIkkeHaBeloepConstraint(obj.periode.antallDagerMedRefusjon)
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }

@@ -32,10 +32,6 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             WHERE data ->> 'kvitteringId' IS NULL OR data ->> 'kvitteringId' = ''
             LIMIT 1;"""
 
-
-    private val getByIkkeIInflux = """SELECT * FROM $tableName 
-            WHERE data ->> 'indeksertInflux' IS NULL OR data ->> 'indeksertInflux' = '' OR data ->> 'indeksertInflux' = 'false' LIMIT ?;"""
-
     private val getByIdStatement = """SELECT * FROM $tableName WHERE data ->> 'id' = ?"""
 
     private val saveStatement = "INSERT INTO $tableName (data) VALUES (?::json);"
@@ -94,20 +90,6 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             val res = con.prepareStatement(getByStatuses).apply {
                 setString(1, status.toString())
                 setInt(2, limit)
-            }.executeQuery()
-
-            while (res.next()) {
-                resultList.add(extractRefusjonskrav(res))
-            }
-            return resultList
-        }
-    }
-
-    override fun getByIkkeIndeksertInflux(limit: Int): List<Refusjonskrav> {
-        ds.connection.use { con ->
-            val resultList = ArrayList<Refusjonskrav>()
-            val res = con.prepareStatement(getByIkkeIInflux).apply {
-                setInt(1, limit)
             }.executeQuery()
 
             while (res.next()) {

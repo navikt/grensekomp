@@ -57,18 +57,18 @@ suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusj
         )
     }
 
-    val arbeidsforholdVart4Uker = ansPeriode.fom!!.isBefore(refusjonskrav.periode.fom.minusDays(28))
-    if (!arbeidsforholdVart4Uker) {
-        MANGLENDE_ARBEIDSFORHOLD.labels("yngre_enn_4_uker").inc()
-        throw ConstraintViolationException(
-            setOf(
-                DefaultConstraintViolation(
-                    "identitetsnummer",
-                    constraint = ArbeidsforholdLengdeConstraint(),
-                    value = refusjonskrav.virksomhetsnummer
-                )
-            )
-        )
-    }
-
+    // B: må endres til et flagg på modellen eller droppes
+//    val arbeidsforholdVart4Uker = ansPeriode.fom!!.isBefore(refusjonskrav.periode.fom.minusDays(28))
+//    if (!arbeidsforholdVart4Uker) {
+//        MANGLENDE_ARBEIDSFORHOLD.labels("yngre_enn_4_uker").inc()
+//        throw ConstraintViolationException(
+//            setOf(
+//                DefaultConstraintViolation(
+//                    "identitetsnummer",
+//                    constraint = ArbeidsforholdLengdeConstraint(),
+//                    value = refusjonskrav.virksomhetsnummer
+//                )
+//            )
+//        )
+//    }
 }

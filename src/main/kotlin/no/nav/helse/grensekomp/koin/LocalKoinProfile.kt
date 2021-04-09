@@ -10,6 +10,7 @@ import no.nav.helse.arbeidsgiver.system.getString
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.arbeidsgiver.web.auth.DefaultAltinnAuthorizer
 import no.nav.helse.grensekomp.db.*
+import no.nav.helse.grensekomp.integration.GrunnbeløpClient
 import no.nav.helse.grensekomp.service.JoarkService
 import no.nav.helse.grensekomp.service.OppgaveService
 import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
@@ -26,6 +27,7 @@ import javax.sql.DataSource
 @KtorExperimentalAPI
 fun localDevConfig(config: ApplicationConfig) = module {
     mockExternalDependecies()
+    single { GrunnbeløpClient(get()) }
 
     single { HikariDataSource(createHikariConfig(config.getjdbcUrlFromProperties(), config.getString("database.username"), config.getString("database.password"))) } bind DataSource::class
 

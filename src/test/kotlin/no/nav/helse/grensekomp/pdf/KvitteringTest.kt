@@ -24,8 +24,7 @@ internal class KvitteringTest {
                     Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
-                        2,
-                        4500800.50
+                        4500800
                 ),
                 bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
@@ -49,8 +48,7 @@ internal class KvitteringTest {
                 periode = Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
-                        2,
-                        250.50
+                        250
                 ),
                 bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
