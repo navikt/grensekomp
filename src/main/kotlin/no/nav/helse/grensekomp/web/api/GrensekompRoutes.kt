@@ -29,6 +29,8 @@ import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
 import no.nav.helse.grensekomp.web.api.dto.validation.validerPdlBaserteRegler
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.euLanderIsoKoder
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
@@ -104,6 +106,8 @@ fun Route.grensekompRoutes(
                     validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aaregClient, dto)
 
+                    val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> euLanderIsoKoder.contains(s.land) } ?: false
+
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
                         dto.identitetsnummer,
@@ -111,6 +115,7 @@ fun Route.grensekompRoutes(
                         dto.periode,
                         dto.bekreftet,
                         dto.bostedsland,
+                        erEØSStatsborger = erEØSBorger,
                         opprettet = innsendingstidspunkt
                     )
                 } catch (forbiddenEx: ForbiddenException) {
