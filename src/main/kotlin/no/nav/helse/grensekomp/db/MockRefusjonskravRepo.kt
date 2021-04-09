@@ -15,10 +15,6 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         }
     }
 
-    override fun cancelById(id: UUID): Refusjonskrav? {
-        TODO("Not yet implemented")
-    }
-
     override fun insert(refusjonskrav: Refusjonskrav, connection: Connection): Refusjonskrav {
         return insert(refusjonskrav)
     }
@@ -39,6 +35,12 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
 
     override fun getRandomVirksomhetWithoutKvittering(): String? {
         TODO("Not yet implemented")
+    }
+
+    override fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav> {
+        return refusjonskravListe.filter {
+            it.identitetsnummer == identitetsnummer
+        }
     }
 
     override fun insert(refusjonskrav: Refusjonskrav): Refusjonskrav {

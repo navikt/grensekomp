@@ -3,6 +3,7 @@ package no.nav.helse.grensekomp
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.domene.RefusjonskravStatus
+import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import java.time.LocalDate.of
 
 object TestData {
@@ -20,4 +21,12 @@ object TestData {
         "SWE",
             RefusjonskravStatus.MOTTATT
     )
+    val gyldigSoknad = RefusjonskravDto(
+        identitetsnummer = gyldigKrav.identitetsnummer,
+        virksomhetsnummer = gyldigKrav.virksomhetsnummer,
+        periode = gyldigKrav.periode,
+        bekreftet = gyldigKrav.bekreftet,
+        bostedsland = "SWE"
+    )
 }
+

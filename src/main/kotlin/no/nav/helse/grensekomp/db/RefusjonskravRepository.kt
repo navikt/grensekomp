@@ -20,4 +20,5 @@ interface RefusjonskravRepository {
     fun bulkInsert(kravListe: List<Refusjonskrav>, connection: Connection): List<Int>
     fun getAllForVirksomhetWithoutKvittering(virksomhetsnummer: String): List<Refusjonskrav>
     fun getRandomVirksomhetWithoutKvittering(): String?
+    fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav>
 }

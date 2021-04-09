@@ -48,6 +48,8 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
 
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
 
+    private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
+
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         ds.connection.use { con ->
             val resultList = ArrayList<Refusjonskrav>()
@@ -203,6 +205,36 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             }
 
             return existingYpList.firstOrNull()
+        }
+    }
+
+    override fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav> {
+        ds.connection.use {
+            val existingYpList = ArrayList<Refusjonskrav>()
+            val res = it.prepareStatement(getByIdentitetsnummerStatement).apply {
+                setString(1, identitetsnummer)
+            }.executeQuery()
+
+            while (res.next()) {
+                existingYpList.add(extractRefusjonskrav(res))
+            }
+
+            return existingYpList
+        }
+    }
+
+    private fun getKravById(id: UUID): ArrayList<Refusjonskrav> {
+        ds.connection.use {
+            val existingYpList = ArrayList<Refusjonskrav>()
+            val res = it.prepareStatement(getByIdStatement).apply {
+                setString(1, id.toString())
+            }.executeQuery()
+
+            while (res.next()) {
+                existingYpList.add(extractRefusjonskrav(res))
+            }
+
+            return existingYpList
         }
     }
 

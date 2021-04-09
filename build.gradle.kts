@@ -164,6 +164,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testRuntimeOnly("org.glassfish.jersey.core:jersey-common:3.0.1")
 }
 
 tasks.named<KotlinCompile>("compileKotlin")

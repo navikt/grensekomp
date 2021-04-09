@@ -4,6 +4,7 @@ import io.ktor.util.*
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
+import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator
@@ -54,6 +55,8 @@ class BostedslandConstraints : CustomConstraint
 
 fun <E> Validator<E>.Property<String?>.isValidBostedsland() =
     this.validate(BostedslandConstraints()) { BostedlandValidator.isValid(it)}
+
+class OverloependePerioderConstraints : CustomConstraint
 
 @KtorExperimentalAPI
 suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
@@ -111,4 +114,27 @@ suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusj
         )
     }
 
+}
+
+/*
+Backend må holde rede på hvilke periodet det allerede er søkt for på en gitt bruker.
+Backend må melde feil ved forsøke på søknad for periode det allerede er søkt for (hele perioden eller deler av perioden. Vi må hindre søknader med overløpende perioder)
+samme person i samme org
+
+*/
+fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: RefusjonskravService) {
+    val refKrav = refusjonskravService.getPersonKrav(refusjonskrav.identitetsnummer)
+    refKrav.forEach { it ->
+        if(refusjonskrav.periode.overlap(it.periode)) {
+            throw ConstraintViolationException(
+                setOf(
+                    DefaultConstraintViolation(
+                        "fom",
+                        constraint = OverloependePerioderConstraints(),
+                        value = refusjonskrav.identitetsnummer
+                    )
+                )
+            )
+        }
+    }
 }

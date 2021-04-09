@@ -27,6 +27,7 @@ import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
 import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
+import no.nav.helse.grensekomp.web.api.dto.validation.validerKravPerioden
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
@@ -57,7 +58,7 @@ fun Route.grensekompRoutes(
             if(virksomhetnr == null) {
                 call.respond(HttpStatusCode.NotAcceptable, "Må ha virksomhetsnummer")
             } else {
-                authorize(authorizer, virksomhetnr)
+              // authorize(authorizer, virksomhetnr)
                 val refusjonkravliste = refusjonskravService.getAllForVirksomhet(virksomhetnr)
                 call.respond(HttpStatusCode.OK, refusjonkravliste)
             }
@@ -71,6 +72,7 @@ fun Route.grensekompRoutes(
             if(refusjonskrav == null)
                 call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
             else {
+               // authorize(authorizer, refusjonskrav.virksomhetsnummer)
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
@@ -98,6 +100,7 @@ fun Route.grensekompRoutes(
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     validerArbeidsforhold(aaregClient, dto)
+                    validerKravPerioden(dto,refusjonskravService)
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,

@@ -11,4 +11,5 @@ interface RefusjonskravService {
     fun bulkInsert(kravListe: List<Refusjonskrav>): List<Int>
     fun getKrav(id: UUID) : Refusjonskrav?
     fun cancelKrav(id: UUID) : Refusjonskrav?
+    fun getPersonKrav(identitetsnummer: String) : List<Refusjonskrav>
 }

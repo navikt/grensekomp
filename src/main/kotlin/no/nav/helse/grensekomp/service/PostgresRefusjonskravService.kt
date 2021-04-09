@@ -157,4 +157,8 @@ class PostgresRefusjonskravService(
                 ), connection
         )
     }
+
+    override fun getPersonKrav(identitetsnummer: String) : List<Refusjonskrav> {
+        return refusjonskravRepository.getByIdentitetsnummer(identitetsnummer)
+    }
 }
