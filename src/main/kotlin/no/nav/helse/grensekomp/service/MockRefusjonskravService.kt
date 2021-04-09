@@ -3,11 +3,20 @@ package no.nav.helse.grensekomp.service
 import no.nav.helse.grensekomp.db.RefusjonskravRepository
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.service.RefusjonskravService
+import java.util.*
 
 class MockRefusjonskravService(val refusjonskravRepo: RefusjonskravRepository) : RefusjonskravService {
 
     override fun saveKravWithKvittering(krav: Refusjonskrav): Refusjonskrav {
         return refusjonskravRepo.insert(krav)
+    }
+
+    override fun getKrav(id: UUID): Refusjonskrav? {
+        TODO("Not yet implemented")
+    }
+
+    override fun cancelKrav(id: UUID): Refusjonskrav? {
+        TODO("Not yet implemented")
     }
 
     override fun saveKravListWithKvittering(kravList: Map<Int, Refusjonskrav>): Map<Int, Refusjonskrav> {

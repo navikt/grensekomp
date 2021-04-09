@@ -43,4 +43,16 @@ class RefusjonskravHTTPTests : SystemTestBase() {
         Assertions.assertThat(response.content).isNotNull
     }
 
+    @Test
+    fun `Skal returnere oppdatert status på krav til slettet`() = suspendableTest {
+
+        val response = httpClient.delete<HttpResponse> {
+            appUrl("$refusjonsKravUrl/${testKrav.id}")
+            contentType(ContentType.Application.Json)
+            loggedInAs("123456789")
+        }
+        Assertions.assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        Assertions.assertThat(response.content).isNotNull
+    }
+
 }
