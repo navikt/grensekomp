@@ -75,6 +75,8 @@ fun Route.grensekompRoutes(
             if(refusjonskrav == null)
                 call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
             else {
+                val virksomhetnr = refusjonskrav.virksomhetsnummer
+                authorize(authorizer, virksomhetnr)
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
