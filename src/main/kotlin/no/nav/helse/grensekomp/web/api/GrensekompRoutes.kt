@@ -158,13 +158,13 @@ fun Route.grensekompRoutes(
             if (domeneListeMedIndex.isNotEmpty()) {
                 val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                 savedList.forEach { item ->
-                    INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
                     responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
                 }
             }
             call.respond(HttpStatusCode.OK, responseBody)
         }
     }
+
 }
 
 @KtorExperimentalAPI

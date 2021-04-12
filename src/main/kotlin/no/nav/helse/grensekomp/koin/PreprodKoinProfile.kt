@@ -62,7 +62,7 @@ fun preprodConfig(config: ApplicationConfig) = module {
             get())
     } bind KvitteringSender::class
 
-    single { RefusjonskravProcessor(get(), get(), get(), get(), get()) }
+    single { RefusjonskravProcessor(get(), get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 
 

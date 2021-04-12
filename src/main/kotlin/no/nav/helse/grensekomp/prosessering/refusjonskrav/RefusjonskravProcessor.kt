@@ -8,11 +8,10 @@ import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlIdent
 import no.nav.helse.grensekomp.db.RefusjonskravRepository
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.domene.RefusjonskravStatus
+import no.nav.helse.grensekomp.integration.GrunnbeløpClient
+import no.nav.helse.grensekomp.metrics.*
 import no.nav.helse.grensekomp.service.JoarkService
 import no.nav.helse.grensekomp.service.OppgaveService
-import no.nav.helse.grensekomp.metrics.JOURNALFOERING_COUNTER
-import no.nav.helse.grensekomp.metrics.KRAV_TIME
-import no.nav.helse.grensekomp.metrics.OPPGAVE_COUNTER
 import no.nav.helse.grensekomp.utils.MDCOperations
 import no.nav.helse.grensekomp.utils.withMDC
 import org.slf4j.LoggerFactory
@@ -23,6 +22,7 @@ class RefusjonskravProcessor(val joarkService: JoarkService,
                              val oppgaveService: OppgaveService,
                              val repository: RefusjonskravRepository,
                              val pdlClient: PdlClient,
+                             val grunnbeløpClient: GrunnbeløpClient,
                              val om: ObjectMapper) : BakgrunnsjobbProsesserer {
 
     val logger = LoggerFactory.getLogger(RefusjonskravProcessor::class.java)
@@ -74,11 +74,21 @@ class RefusjonskravProcessor(val joarkService: JoarkService,
             try {
                 timer.close()
                 repository.update(refusjonskrav)
+                tryDoMetrics(refusjonskrav)
             } catch (t: Throwable) {
                 logger.error("Feilet i lagring av ${refusjonskrav.id} med  joarkRef: ${refusjonskrav.joarkReferanse} oppgaveId ${refusjonskrav.oppgaveId} ")
                 throw t
             }
         }
+    }
+
+    private fun tryDoMetrics(refusjonskrav: Refusjonskrav) {
+        INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
+        INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
+            .labels(refusjonskrav.bostedland, refusjonskrav.erEØSStatsborger.toString())
+            .inc(
+            refusjonskrav.periode.estimertUtbetaling(grunnbeløpClient.hentGrunnbeløp().grunnbeløp * 6)
+        )
     }
 
     companion object {

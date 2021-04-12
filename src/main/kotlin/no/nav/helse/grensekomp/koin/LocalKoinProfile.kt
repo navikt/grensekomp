@@ -44,6 +44,6 @@ fun localDevConfig(config: ApplicationConfig) = module {
     single { OppgaveService(get(), get()) } bind OppgaveService::class
     single { DummyKvitteringSender() } bind KvitteringSender::class
 
-    single { RefusjonskravProcessor(get(), get(), get(), get(), get()) }
+    single { RefusjonskravProcessor(get(), get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 }
