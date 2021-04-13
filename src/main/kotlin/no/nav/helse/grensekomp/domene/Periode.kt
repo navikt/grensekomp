@@ -8,7 +8,7 @@ import kotlin.math.min
 data class Periode(
     val fom: LocalDate,
     val tom: LocalDate,
-    val beregnetMånedsinntekt: Int
+    val beregnetMaanedsinntekt: Int
 ) : Comparable<Periode> {
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)
@@ -29,6 +29,24 @@ data class Periode(
             .filter { d -> !weekend.contains(d.dayOfWeek) }
             .count()
 
-        return min(beregnetMånedsinntekt * 12, seksG) / 260 * antallUkedager * justeringsFaktor
+        return min(beregnetMaanedsinntekt * 12, seksG) / 260 * antallUkedager * justeringsFaktor
+    }
+
+    //https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+    //DateRangesOverlap = max(start1, start2) < min(end1, end2)
+    fun overlap(other: Periode) : Boolean {
+        return maxFom(other.fom) < minTom(other.tom)
+    }
+
+    private fun maxFom(otherFom : LocalDate) : LocalDate{
+        return if (otherFom.isAfter(fom))
+            otherFom
+        else fom
+    }
+
+    private fun minTom(otherTom : LocalDate) : LocalDate{
+        return if (otherTom.isAfter(tom))
+            tom
+        else otherTom
     }
 }

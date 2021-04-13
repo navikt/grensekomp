@@ -21,7 +21,7 @@ data class RefusjonskravDto(
             validate(RefusjonskravDto::bekreftet).isTrue()
 
             validate(RefusjonskravDto::periode).validate {
-                validate(Periode::beregnetMånedsinntekt).isPositive()
+                validate(Periode::beregnetMaanedsinntekt).isPositive()
 
                 validate(Periode::tom).isGreaterThanOrEqualTo(it.fom)
                 validate(Periode::tom).isLessThanOrEqualTo(LocalDate.now())

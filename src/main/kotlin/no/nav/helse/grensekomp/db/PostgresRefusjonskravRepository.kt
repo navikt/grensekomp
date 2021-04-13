@@ -43,6 +43,9 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             AND data ->> 'virksomhetsnummer' = ?;"""
 
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
+    private val deleteAllStatement = "DELETE FROM $tableName"
+
+    private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         ds.connection.use { con ->
@@ -188,6 +191,36 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
         }
     }
 
+    override fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav> {
+        ds.connection.use {
+            val existingYpList = ArrayList<Refusjonskrav>()
+            val res = it.prepareStatement(getByIdentitetsnummerStatement).apply {
+                setString(1, identitetsnummer)
+            }.executeQuery()
+
+            while (res.next()) {
+                existingYpList.add(extractRefusjonskrav(res))
+            }
+
+            return existingYpList
+        }
+    }
+
+    private fun getKravById(id: UUID): ArrayList<Refusjonskrav> {
+        ds.connection.use {
+            val existingYpList = ArrayList<Refusjonskrav>()
+            val res = it.prepareStatement(getByIdStatement).apply {
+                setString(1, id.toString())
+            }.executeQuery()
+
+            while (res.next()) {
+                existingYpList.add(extractRefusjonskrav(res))
+            }
+
+            return existingYpList
+        }
+    }
+
     override fun insert(refusjonskrav: Refusjonskrav): Refusjonskrav {
         val json = mapper.writeValueAsString(refusjonskrav)
         ds.connection.use {
@@ -231,6 +264,12 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             return it.prepareStatement(deleteStatement).apply {
                 setString(1, id.toString())
             }.executeUpdate()
+        }
+    }
+
+    fun deleteAll(): Int {
+        ds.connection.use {
+            return it.prepareStatement(deleteAllStatement).executeUpdate()
         }
     }
 

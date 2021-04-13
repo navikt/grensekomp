@@ -37,6 +37,12 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         TODO("Not yet implemented")
     }
 
+    override fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav> {
+        return refusjonskravListe.filter {
+            it.identitetsnummer == identitetsnummer
+        }
+    }
+
     override fun insert(refusjonskrav: Refusjonskrav): Refusjonskrav {
         refusjonskravListe.add(refusjonskrav)
         return refusjonskrav

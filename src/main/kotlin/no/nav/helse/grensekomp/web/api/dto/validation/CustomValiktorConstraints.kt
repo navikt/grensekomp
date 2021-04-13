@@ -1,9 +1,13 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
+import no.nav.helse.grensekomp.service.RefusjonskravService
+import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator
 import no.nav.helse.grensekomp.web.dto.validation.OrganisasjonsnummerValidator
 import org.valiktor.Constraint
+import org.valiktor.ConstraintViolationException
+import org.valiktor.DefaultConstraintViolation
 import org.valiktor.Validator
 
 interface CustomConstraint : Constraint {
@@ -25,3 +29,21 @@ class BostedslandConstraints : CustomConstraint
 
 fun <E> Validator<E>.Property<String?>.isValidBostedsland() =
     this.validate(BostedslandConstraints()) { BostedlandValidator.isValid(it)}
+
+class OverloependePerioderConstraints : CustomConstraint
+fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: RefusjonskravService) {
+    val refKrav = refusjonskravService.getPersonKrav(refusjonskrav.identitetsnummer)
+    refKrav.forEach { it ->
+        if(refusjonskrav.periode.overlap(it.periode)) {
+            throw ConstraintViolationException(
+                setOf(
+                    DefaultConstraintViolation(
+                        "fom",
+                        constraint = OverloependePerioderConstraints(),
+                        value = refusjonskrav.identitetsnummer
+                    )
+                )
+            )
+        }
+    }
+}
