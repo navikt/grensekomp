@@ -39,7 +39,7 @@ val INNKOMMENDE_REFUSJONSKRAV_COUNTER: Counter = Counter.build()
 
 val INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER: Counter = Counter.build()
         .namespace(METRICS_NS)
-        .labelNames("bosted", "erEØSStatsborger" )
+        .labelNames("bosted", "isEEA" )
         .name("sum_refusjonskrav")
         .help("Counts the number of incoming messages")
         .register()

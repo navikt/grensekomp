@@ -107,7 +107,7 @@ dependencies {
     implementation("no.nav.security:token-client-core:$tokenSupportVersion")
     implementation("no.nav.security:token-validation-ktor:$tokenSupportVersion")
 
-    implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    //implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
     implementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
     implementation("no.nav.helsearbeidsgiver:helse-arbeidsgiver-felles-backend:2021.04.08-10-26-e9fd3")
     implementation("no.nav.common:log:2.2020.10.15_11.43-b1f02e7bd6ae")

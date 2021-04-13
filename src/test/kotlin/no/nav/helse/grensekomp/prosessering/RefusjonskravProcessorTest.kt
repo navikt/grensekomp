@@ -11,6 +11,8 @@ import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.db.PostgresRefusjonskravRepository
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.domene.RefusjonskravStatus
+import no.nav.helse.grensekomp.integration.GrunnbeløpClient
+import no.nav.helse.grensekomp.integration.GrunnbeløpInfo
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
 import no.nav.helse.grensekomp.service.JoarkService
 import no.nav.helse.grensekomp.service.OppgaveService
@@ -20,17 +22,21 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.IOException
+import java.time.LocalDate.now
 
 class RefusjonskravProcessorTest {
     val joarkMock = mockk<JoarkService>(relaxed = true)
     val oppgaveMock = mockk<OppgaveService>(relaxed = true)
     val repositoryMock = mockk<PostgresRefusjonskravRepository>(relaxed = true)
     val pdlClientMock = mockk<PdlClient>(relaxed = true)
-    val refusjonskravBehandler = RefusjonskravProcessor(joarkMock, oppgaveMock, repositoryMock, pdlClientMock, ObjectMapper())
+    val grunnbeløpMock = mockk<GrunnbeløpClient>(relaxed = true)
+    val refusjonskravBehandler = RefusjonskravProcessor(joarkMock, oppgaveMock, repositoryMock, pdlClientMock, grunnbeløpMock, ObjectMapper())
     lateinit var refusjonskrav: Refusjonskrav
 
     @BeforeEach
     fun setup() {
+        every { grunnbeløpMock.hentGrunnbeløp() } returns GrunnbeløpInfo(now(), 1000, 100, 100, 1.2)
+
         refusjonskrav = Refusjonskrav(
                 opprettetAv = "123",
                 identitetsnummer = "123",
