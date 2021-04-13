@@ -10,7 +10,6 @@ import no.nav.helse.grensekomp.integration.altinn.ManglerAltinnRettigheterExcept
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.time.Instant
 import java.util.*
-import javax.ws.rs.ForbiddenException
 
 @KtorExperimentalAPI
 fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnAuthorizer, arbeidsgiverId: String) {
