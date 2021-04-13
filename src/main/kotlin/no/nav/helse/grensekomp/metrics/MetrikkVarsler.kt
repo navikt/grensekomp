@@ -6,26 +6,16 @@ import no.nav.helse.arbeidsgiver.bakgrunnsjobb.Bakgrunnsvarsler
 
 const val METRICS_NS = "grensekomp"
 
-
-class MetrikkVarsler() : Bakgrunnsvarsler {
-    override fun rapporterPermanentFeiletJobb() {
-        FEILET_JOBB_COUNTER.inc()
-    }
-}
-
-val FEILET_JOBB_COUNTER = Counter.build()
-        .name("grensekomp_feilet_jobb")
-        .help("Countes the number of permanently failed jobs")
-        .register()
-
 val MANGLENDE_ARBEIDSFORHOLD = Counter.build()
+        .namespace(METRICS_NS)
         .name("grensekomp_mangler_arbeidsforhold")
         .labelNames("reason")
         .help("Antall ganger vi har fått bom i sjekken mot arbeidsforhold")
         .register()
 
 val PDL_VALIDERINGER = Counter.build()
-        .name("grensekomp_pdl_sjekker_feilet")
+        .namespace(METRICS_NS)
+        .name("pdl_sjekker_feilet")
         .labelNames("reason")
         .help("Antall ganger vi har fått bom i sjekkene mot PDL")
         .register()
