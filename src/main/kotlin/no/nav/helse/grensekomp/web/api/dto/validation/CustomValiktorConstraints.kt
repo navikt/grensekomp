@@ -116,12 +116,6 @@ suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusj
 
 }
 
-/*
-Backend må holde rede på hvilke periodet det allerede er søkt for på en gitt bruker.
-Backend må melde feil ved forsøke på søknad for periode det allerede er søkt for (hele perioden eller deler av perioden. Vi må hindre søknader med overløpende perioder)
-samme person i samme org
-
-*/
 fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: RefusjonskravService) {
     val refKrav = refusjonskravService.getPersonKrav(refusjonskrav.identitetsnummer)
     refKrav.forEach { it ->

@@ -1,6 +1,7 @@
 package no.nav.helse.grensekomp.web.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.application.ApplicationCall
 import io.ktor.application.application
@@ -55,24 +56,24 @@ fun Route.grensekompRoutes(
         get("/list/{virksomhetsnummer}") {
             val virksomhetnr = call.parameters["virksomhetsnummer"]
 
-            if(virksomhetnr == null) {
+            if (virksomhetnr == null) {
                 call.respond(HttpStatusCode.NotAcceptable, "Må ha virksomhetsnummer")
             } else {
-              // authorize(authorizer, virksomhetnr)
+                // authorize(authorizer, virksomhetnr)
                 val refusjonkravliste = refusjonskravService.getAllForVirksomhet(virksomhetnr)
                 call.respond(HttpStatusCode.OK, refusjonkravliste)
             }
         }
 
 
-        delete("/{id}"){
+        delete("/{id}") {
             val reufusjonskravId = UUID.fromString(call.parameters["id"])
             var refusjonskrav = refusjonskravService.getKrav(reufusjonskravId)
             val om = application.get<ObjectMapper>()
-            if(refusjonskrav == null)
-                call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
+            if (refusjonskrav == null)
+                call.respond(HttpStatusCode.NotFound, "Fant ikke refusjonskrav med id " + reufusjonskravId)
             else {
-               // authorize(authorizer, refusjonskrav.virksomhetsnummer)
+                // authorize(authorizer, refusjonskrav.virksomhetsnummer)
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
@@ -83,6 +84,7 @@ fun Route.grensekompRoutes(
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
             val jsonTree = om.readTree(refusjonskravJson)
+
             val responseBody = ArrayList<PostListResponseDto>(jsonTree.size())
             val domeneListeMedIndex = mutableMapOf<Int, Refusjonskrav>()
             val opprettetAv = hentIdentitetsnummerFraLoginToken(
@@ -100,7 +102,7 @@ fun Route.grensekompRoutes(
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     validerArbeidsforhold(aaregClient, dto)
-                    validerKravPerioden(dto,refusjonskravService)
+                    validerKravPerioden(dto, refusjonskravService)
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -170,26 +172,26 @@ fun Route.grensekompRoutes(
         post("/upload") {
             throw ForbiddenException("Denne funksjonen er ikke implementert")
 
-            /*val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
-            val multipart = call.receiveMultipart()
+/*val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
+val multipart = call.receiveMultipart()
 
-            val fileItem = multipart.readAllParts()
-                .filterIsInstance<PartData.FileItem>()
-                .firstOrNull()
-                ?: throw IllegalArgumentException()
+val fileItem = multipart.readAllParts()
+    .filterIsInstance<PartData.FileItem>()
+    .firstOrNull()
+    ?: throw IllegalArgumentException()
 
-            val maxUploadSize = 250 * 1024
+val maxUploadSize = 250 * 1024
 
-            val bytes = fileItem.streamProvider().readNBytes(maxUploadSize + 1)
+val bytes = fileItem.streamProvider().readNBytes(maxUploadSize + 1)
 
-            if (bytes.size > maxUploadSize) {
-                throw IOException("Den opplastede filen er for stor")
-            }
+if (bytes.size > maxUploadSize) {
+    throw IOException("Den opplastede filen er for stor")
+}
 
-            ExcelBulkService(refusjonskravService, ExcelParser(authorizer))
-                .processExcelFile(bytes.inputStream(), id)
+ExcelBulkService(refusjonskravService, ExcelParser(authorizer))
+    .processExcelFile(bytes.inputStream(), id)
 
-            call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")*/
+call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")*/
         }
     }
 }

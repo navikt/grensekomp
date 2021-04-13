@@ -34,7 +34,7 @@ data class Periode(
 
     private fun minTom(otherTom : LocalDate) : LocalDate{
         return if (otherTom.isAfter(tom))
-            fom
+            tom
         else otherTom
     }
 }

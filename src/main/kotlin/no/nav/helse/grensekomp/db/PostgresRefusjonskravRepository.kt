@@ -47,6 +47,7 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             AND data ->> 'virksomhetsnummer' = ?;"""
 
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
+    private val deleteAllStatement = "DELETE FROM $tableName"
 
     private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
 
@@ -281,6 +282,12 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             return it.prepareStatement(deleteStatement).apply {
                 setString(1, id.toString())
             }.executeUpdate()
+        }
+    }
+
+    fun deleteAll(): Int {
+        ds.connection.use {
+            return it.prepareStatement(deleteAllStatement).executeUpdate()
         }
     }
 
