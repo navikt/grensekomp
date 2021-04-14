@@ -107,6 +107,7 @@ fun Route.grensekompRoutes(
                     validerArbeidsforhold(aaregClient, dto)
 
                     val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
+                    val erDød = personData?.hentPerson?.trekkUtDoedsfalldato() != null
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -115,6 +116,7 @@ fun Route.grensekompRoutes(
                         dto.periode,
                         dto.bekreftet,
                         dto.bostedsland,
+                        erDød = erDød,
                         erEØSStatsborger = erEØSBorger,
                         opprettet = innsendingstidspunkt
                     )

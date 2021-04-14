@@ -6,28 +6,13 @@ import no.nav.helse.grensekomp.metrics.PDL_VALIDERINGER
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
-import java.util.*
 
 
-class DødConstraint : CustomConstraint
 class BosattINorgeConstraint : CustomConstraint
 class NorskStatsborgerConstraint : CustomConstraint
 
 @KtorExperimentalAPI
 fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: RefusjonskravDto) {
-
-    if (personData?.hentPerson?.trekkUtDoedsfalldato() != null) {
-        PDL_VALIDERINGER.labels("doed").inc()
-        throw ConstraintViolationException(
-            setOf(
-                DefaultConstraintViolation(
-                    "identitetsnummer",
-                    constraint = DødConstraint(),
-                    value = refusjonskrav.identitetsnummer
-                )
-            )
-        )
-    }
 
     val bosattINorge = personData?.hentPerson?.bostedsadresse?.any { adr ->
         adr.matrikkeladresse != null || adr.ukjentBosted != null || adr.vegadresse != null

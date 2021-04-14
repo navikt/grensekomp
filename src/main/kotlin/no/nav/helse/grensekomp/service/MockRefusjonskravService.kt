@@ -6,11 +6,6 @@ import no.nav.helse.grensekomp.service.RefusjonskravService
 import java.util.*
 
 class MockRefusjonskravService(val refusjonskravRepo: RefusjonskravRepository) : RefusjonskravService {
-
-    override fun saveKravWithKvittering(krav: Refusjonskrav): Refusjonskrav {
-        return refusjonskravRepo.insert(krav)
-    }
-
     override fun getKrav(id: UUID): Refusjonskrav? {
         TODO("Not yet implemented")
     }
@@ -31,9 +26,4 @@ class MockRefusjonskravService(val refusjonskravRepo: RefusjonskravRepository) :
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         return refusjonskravRepo.getAllForVirksomhet(virksomhetsnummer)
     }
-
-    override fun bulkInsert(kravListe: List<Refusjonskrav>): List<Int> {
-        return refusjonskravRepo.bulkInsert(kravListe)
-    }
-
 }

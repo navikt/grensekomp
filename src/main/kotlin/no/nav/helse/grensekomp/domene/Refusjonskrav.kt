@@ -13,6 +13,8 @@ data class Refusjonskrav(
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
     val erEØSStatsborger: Boolean = true,
+    val erDød: Boolean = false,
+    val etteranmeldtArbeidsforhold: Boolean = false,
     var oppgaveId: String? = null,
     var joarkReferanse: String? = null,
     var kilde: String = "WEBSKJEMA",
@@ -41,8 +43,6 @@ data class Refusjonskrav(
 enum class RefusjonskravStatus {
     MOTTATT,
     SENDT_TIL_BEHANDLING,
-    FEILET,
-    JOBB,
     AVBRUTT, // Denne er ment som en måte å skru av prosesseringen for krav som skal ignoreres, men ikke skal slettes
     SLETTET
 }

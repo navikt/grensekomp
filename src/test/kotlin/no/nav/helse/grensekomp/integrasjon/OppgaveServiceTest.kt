@@ -42,7 +42,7 @@ internal class OppgaveServiceTest : KoinTest{
         every { objectMapperMock.writeValueAsString(any())} returns mockJson
         coEvery { oppgaveKlientMock.opprettOppgave(capture(mappedRequest), any()) } returns OpprettOppgaveResponse(mockOppgaveId)
 
-        val result = oppgaveService.opprettOppgave(
+        val result = oppgaveService.opprettBehandlingsoppgave(
                 TestData.gyldigKrav,
                 mockJoarkRef,
                 mockAktørId,
@@ -77,7 +77,7 @@ internal class OppgaveServiceTest : KoinTest{
 
         val oppgaveServiceMedMapper = OppgaveService(oppgaveKlientMock, om)
 
-        oppgaveServiceMedMapper.opprettOppgave(
+        oppgaveServiceMedMapper.opprettBehandlingsoppgave(
                 TestData.gyldigKrav,
                 mockJoarkRef,
                 mockAktørId,
@@ -96,7 +96,7 @@ internal class OppgaveServiceTest : KoinTest{
     fun `Alle feil propagerer opp`() {
         every { objectMapperMock.writeValueAsString(any()) } throws IOException()
         assertThrows<IOException> {
-            oppgaveService.opprettOppgave(
+            oppgaveService.opprettBehandlingsoppgave(
                     TestData.gyldigKrav,
                     mockJoarkRef,
                     mockAktørId,

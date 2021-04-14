@@ -15,8 +15,10 @@ data class RefusjonskravForOppgave(
 
         val opprettet: LocalDateTime,
 
-        val soekerForSegSelv: Boolean
-)
+        val soekerForSegSelv: Boolean,
+        val erDød: Boolean,
+        val etteranmeldtArbeidsforhold: Boolean
+        )
 fun Refusjonskrav.toRefusjonskravForOppgave() = RefusjonskravForOppgave(
         id = id,
         status = status,
@@ -27,5 +29,7 @@ fun Refusjonskrav.toRefusjonskravForOppgave() = RefusjonskravForOppgave(
         periode = periode,
         opprettet = opprettet,
         soekerForSegSelv = identitetsnummer == opprettetAv,
-        erEØSStatsborger = erEØSStatsborger
+        erEØSStatsborger = erEØSStatsborger,
+        erDød = erDød,
+        etteranmeldtArbeidsforhold = etteranmeldtArbeidsforhold
 )
