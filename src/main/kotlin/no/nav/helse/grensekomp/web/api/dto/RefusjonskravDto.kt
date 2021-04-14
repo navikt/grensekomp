@@ -21,18 +21,13 @@ data class RefusjonskravDto(
             validate(RefusjonskravDto::bekreftet).isTrue()
 
             validate(RefusjonskravDto::periode).validate {
-                validate(Periode::dagsats).isPositive()
-                validate(Periode::dagsats).isLessThanOrEqualTo(1_000_000.0)
-                validate(Periode::antallDagerMedRefusjon).isPositiveOrZero()
+                validate(Periode::beregnetMånedsinntekt).isPositive()
+
                 validate(Periode::tom).isGreaterThanOrEqualTo(it.fom)
                 validate(Periode::tom).isLessThanOrEqualTo(LocalDate.now())
 
-                // antall refusjonsdager kan ikke være lenger enn periodens lengde
-                validate(Periode::antallDagerMedRefusjon).refusjonsDagerIkkeOverstigerPeriodelengder(periode.fom, periode.tom)
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
-                // tom periode kan ikke ha refusjonsbeløp
-                validate(Periode::dagsats).tomPeriodeKanIkkeHaBeloepConstraint(periode.antallDagerMedRefusjon)
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }

@@ -17,8 +17,6 @@ val valiktorVersion = "0.12.0"
 val cxfVersion = "3.4.1"
 val jaxwsVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.3"
-val apachePoiVersion = "4.1.2"
-val influxVersion = "2.20"
 val githubPassword: String by project
 
 
@@ -89,11 +87,6 @@ dependencies {
     implementation("org.eclipse.jetty:jetty-server:9.4.37.v20210219")
     implementation("com.google.guava:guava:30.0-jre") //[Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] overstyrer versjon 29.0
     // -- end snyk fixes
-
-    implementation("org.apache.poi:poi:$apachePoiVersion")
-    implementation("org.apache.poi:poi-ooxml:$apachePoiVersion")
-    implementation("org.influxdb:influxdb-java:${influxVersion}")
-
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -114,9 +107,9 @@ dependencies {
     implementation("no.nav.security:token-client-core:$tokenSupportVersion")
     implementation("no.nav.security:token-validation-ktor:$tokenSupportVersion")
 
-    implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    //implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
     implementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
-    implementation("no.nav.helsearbeidsgiver:helse-arbeidsgiver-felles-backend:2021.03.16-14-10-b80a8")
+    implementation("no.nav.helsearbeidsgiver:helse-arbeidsgiver-felles-backend:2021.04.08-10-26-e9fd3")
     implementation("no.nav.common:log:2.2020.10.15_11.43-b1f02e7bd6ae")
 
     implementation(kotlin("stdlib"))
@@ -132,7 +125,7 @@ dependencies {
 
     implementation("no.nav.tjenestespesifikasjoner:altinn-correspondence-agency-external-basic:1.2019.09.25-00.21-49b69f0625e0")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.+")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11+")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
@@ -164,8 +157,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
-    testRuntimeOnly("org.glassfish.jersey.core:jersey-common:3.0.1")
-
 }
 
 tasks.named<KotlinCompile>("compileKotlin")

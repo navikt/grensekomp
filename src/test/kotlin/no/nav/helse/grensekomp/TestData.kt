@@ -7,7 +7,8 @@ import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import java.time.LocalDate.of
 
 object TestData {
-    val validIdentitetsnummer = "10107400090"
+    val validIdentitetsnummer = "20015001543"
+    //val validIdentitetsnummer = "10107400090"
     val notValidIdentitetsnummer = "50012001987"
     val validOrgNr = "917404437"
     val notValidOrgNr = "123456789"
@@ -16,7 +17,10 @@ object TestData {
             opprettetAv,
             validIdentitetsnummer,
             validOrgNr,
-            Periode(of(2021, 1,30), of(2021, 2,5), 2, 1000.0),
+            Periode(
+                of(2021, 1,30),
+                of(2021, 2,5),
+                1000),
             true,
         "SWE",
             RefusjonskravStatus.MOTTATT
@@ -24,8 +28,10 @@ object TestData {
     val gyldigSoeknad = RefusjonskravDto(
         identitetsnummer = validIdentitetsnummer,
         virksomhetsnummer = validOrgNr,
-        periode = Periode(of(2021, 1,30), of(2021, 2,5), 2, 1000.0),
+        periode = Periode(
+            of(2021, 1,30),
+            of(2021, 2,5),
+            1000),
         bekreftet = true,
         bostedsland = "SWE")
 }
-

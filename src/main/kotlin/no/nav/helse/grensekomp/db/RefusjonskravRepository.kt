@@ -13,7 +13,6 @@ interface RefusjonskravRepository {
     fun delete(id: UUID): Int
     fun getById(id: UUID): Refusjonskrav?
     fun getByStatus(status: RefusjonskravStatus, limit: Int): List<Refusjonskrav>
-    fun getByIkkeIndeksertInflux(limit: Int): List<Refusjonskrav>
     fun update(krav: Refusjonskrav)
     fun update(krav: Refusjonskrav, connection: Connection)
     fun bulkInsert(kravListe: List<Refusjonskrav>): List<Int>

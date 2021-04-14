@@ -39,7 +39,7 @@ fun Module.mockExternalDependecies() {
         object : AaregArbeidsforholdClient {
             override suspend fun hentArbeidsforhold(ident: String, callId: String): List<Arbeidsforhold> =
                 listOf<Arbeidsforhold>(Arbeidsforhold(Arbeidsgiver("test", "917404437"), Opplysningspliktig("Juice", "810007702"), emptyList(), Ansettelsesperiode(Periode(
-                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.minusDays(30), null))))
+                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null))))
         }
     } bind AaregArbeidsforholdClient::class
 
@@ -48,6 +48,8 @@ fun Module.mockExternalDependecies() {
             override fun fullPerson(ident: String) =
                 PdlHentFullPerson(
                     PdlHentFullPerson.PdlFullPersonliste(
+                        emptyList(),
+                        emptyList(),
                         emptyList(),
                         emptyList(),
                         emptyList(),

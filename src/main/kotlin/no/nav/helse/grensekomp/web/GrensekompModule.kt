@@ -39,7 +39,7 @@ fun Application.grensekompModule(config: ApplicationConfig = environment.config)
         route("$apiBasePath/api/v1") {
             systemRoutes()
             authenticate {
-                grensekompRoutes(get(), get(), get())
+                grensekompRoutes(get(), get(), get(),get())
                 altinnRoutes(get())
             }
         }
@@ -52,6 +52,7 @@ private fun Application.configureCORSAccess(config: ApplicationConfig) {
         method(HttpMethod.Options)
         method(HttpMethod.Post)
         method(HttpMethod.Get)
+        method(HttpMethod.Delete)
 
         when (config.getEnvironment()) {
             AppEnv.PROD -> host("arbeidsgiver.nav.no", schemes = listOf("https"))

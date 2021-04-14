@@ -1,41 +1,38 @@
 package no.nav.helse.grensekomp.web.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.ApplicationCall
-import io.ktor.application.application
-import io.ktor.application.call
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.receiveText
-import io.ktor.response.respond
-import io.ktor.response.respondBytes
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.routing.get
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.pipeline.PipelineContext
+import io.ktor.util.*
+import io.ktor.util.pipeline.*
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
+import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClient
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
-import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
-import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.domene.Refusjonskrav
-import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
-import no.nav.helse.grensekomp.metrics.INNKOMMENDE_REFUSJONSKRAV_COUNTER
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
-import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
-import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
-import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
-import no.nav.helse.grensekomp.web.api.dto.validation.validerKravPerioden
+import no.nav.helse.grensekomp.web.api.dto.validation.*
+import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
+import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.godkjenteBostedsKoder
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
 import java.time.LocalDateTime
 import java.util.*
-import javax.ws.rs.ForbiddenException
 import kotlin.collections.ArrayList
+import kotlin.collections.any
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.map
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 private val excelContentType = ContentType.parse("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 val logger = LoggerFactory.getLogger("grensekompRoutes")
@@ -44,7 +41,8 @@ val logger = LoggerFactory.getLogger("grensekompRoutes")
 fun Route.grensekompRoutes(
     authorizer: AltinnAuthorizer,
     refusjonskravService: RefusjonskravService,
-    aaregClient: AaregArbeidsforholdClient
+    aaregClient: AaregArbeidsforholdClient,
+    pdlClient: PdlClient
 ) {
     route("/login-expiry") {
         get {
@@ -56,24 +54,25 @@ fun Route.grensekompRoutes(
         get("/list/{virksomhetsnummer}") {
             val virksomhetnr = call.parameters["virksomhetsnummer"]
 
-            if (virksomhetnr == null) {
+            if(virksomhetnr == null) {
                 call.respond(HttpStatusCode.NotAcceptable, "Må ha virksomhetsnummer")
             } else {
-                // authorize(authorizer, virksomhetnr)
+                authorize(authorizer, virksomhetnr)
                 val refusjonkravliste = refusjonskravService.getAllForVirksomhet(virksomhetnr)
                 call.respond(HttpStatusCode.OK, refusjonkravliste)
             }
         }
 
 
-        delete("/{id}") {
+        delete("/{id}"){
             val reufusjonskravId = UUID.fromString(call.parameters["id"])
             var refusjonskrav = refusjonskravService.getKrav(reufusjonskravId)
             val om = application.get<ObjectMapper>()
-            if (refusjonskrav == null)
-                call.respond(HttpStatusCode.NotFound, "Fant ikke refusjonskrav med id " + reufusjonskravId)
+            if(refusjonskrav == null)
+                call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
             else {
-                // authorize(authorizer, refusjonskrav.virksomhetsnummer)
+                val virksomhetnr = refusjonskrav.virksomhetsnummer
+                authorize(authorizer, virksomhetnr)
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
@@ -84,7 +83,6 @@ fun Route.grensekompRoutes(
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
             val jsonTree = om.readTree(refusjonskravJson)
-
             val responseBody = ArrayList<PostListResponseDto>(jsonTree.size())
             val domeneListeMedIndex = mutableMapOf<Int, Refusjonskrav>()
             val opprettetAv = hentIdentitetsnummerFraLoginToken(
@@ -101,8 +99,12 @@ fun Route.grensekompRoutes(
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
+                    val personData = pdlClient.fullPerson(dto.identitetsnummer)
+                    validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aaregClient, dto)
                     validerKravPerioden(dto, refusjonskravService)
+
+                    val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -111,6 +113,7 @@ fun Route.grensekompRoutes(
                         dto.periode,
                         dto.bekreftet,
                         dto.bostedsland,
+                        erEØSStatsborger = erEØSBorger,
                         opprettet = innsendingstidspunkt
                     )
                 } catch (forbiddenEx: ForbiddenException) {
@@ -152,8 +155,6 @@ fun Route.grensekompRoutes(
             if (domeneListeMedIndex.isNotEmpty()) {
                 val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                 savedList.forEach { item ->
-                    INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
-                    INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER.inc(item.value.periode.dagsats.div(1000))
                     responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
                 }
             }
@@ -161,39 +162,6 @@ fun Route.grensekompRoutes(
         }
     }
 
-    route("/bulk") {
-
-        get("/template") {
-            val template = javaClass.getResourceAsStream("/bulk-upload/inntektskompensasjon_mal_v10-03-2021.xlsx")
-            call.response.headers.append("Content-Disposition", "attachment; filename=\"inntektskompensasjon.xlsx\"")
-            call.respondBytes(template.readAllBytes(), excelContentType)
-        }
-
-        post("/upload") {
-            throw ForbiddenException("Denne funksjonen er ikke implementert")
-
-/*val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
-val multipart = call.receiveMultipart()
-
-val fileItem = multipart.readAllParts()
-    .filterIsInstance<PartData.FileItem>()
-    .firstOrNull()
-    ?: throw IllegalArgumentException()
-
-val maxUploadSize = 250 * 1024
-
-val bytes = fileItem.streamProvider().readNBytes(maxUploadSize + 1)
-
-if (bytes.size > maxUploadSize) {
-    throw IOException("Den opplastede filen er for stor")
-}
-
-ExcelBulkService(refusjonskravService, ExcelParser(authorizer))
-    .processExcelFile(bytes.inputStream(), id)
-
-call.respond(HttpStatusCode.OK, "Søknaden er mottatt.")*/
-        }
-    }
 }
 
 @KtorExperimentalAPI

@@ -12,15 +12,14 @@ data class Refusjonskrav(
     var bostedland: String,
 
     var status: RefusjonskravStatus = RefusjonskravStatus.MOTTATT,
-    var feilmelding: String? = null,
+    val erEØSStatsborger: Boolean = true,
     var oppgaveId: String? = null,
     var joarkReferanse: String? = null,
     var kilde: String = "WEBSKJEMA",
 
     val opprettet: LocalDateTime = LocalDateTime.now(),
     val id: UUID = UUID.randomUUID(),
-    var kvitteringId: UUID? = null,
-    var indeksertInflux: Boolean = false,
+    var kvitteringId: UUID? = null
 ): Comparable<Refusjonskrav> {
     override fun compareTo(other: Refusjonskrav): Int {
         if (other.identitetsnummer > identitetsnummer)

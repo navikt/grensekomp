@@ -3,7 +3,7 @@ package no.nav.helse.grensekomp.web.dto.validation
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator.Companion.tabeller.kontrollsiffer1
 import no.nav.helse.grensekomp.web.dto.validation.FoedselsNrValidator.Companion.tabeller.kontrollsiffer2
 import no.nav.helse.grensekomp.web.dto.validation.OrganisasjonsnummerValidator.Companion.tabeller.weights
-import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.euLanderIsoKoder
+import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.godkjenteBostedsKoder
 
 
 class FoedselsNrValidator(input: String?) {
@@ -117,21 +117,16 @@ class BostedlandValidator(input: String?) {
     init {
         require(input != null)
         asString = input
-        require(asString.toUpperCase() in euLanderIsoKoder) { "Ugyldig landskode" }
+        require(asString.toUpperCase() in godkjenteBostedsKoder) { "Ugyldig landskode" }
     }
 
     companion object {
         object tabeller {
-            val euLanderIsoKoder = listOf(
+            val godkjenteBostedsKoder = listOf(
                 "BEL","BGR","DNK","EST","FIN","FRA","GRC","IRL","ISL","ITA","HRV","CYP",
                 "LVA","LIE","LTU","LUX","MLT","NLD","POL","PRT","ROU","SVK","SVN","ESP",
-                "GBR","CHE","SWE","CZE","DEU","HUN","AUT"
-            )
-            val euLander = listOf(
-                "BELGIA","BULGARIA","DANMARK","ESTLAND","FINLAND","FRANKRIKE","HELLAS","IRLAND","ISLAND",
-                "ITALIA","KROATIA","KYPROS","LATVIA","LIECHTENSTEIN","LITAUEN","LUXEMBOURG","MALTA",
-                "NEDERLAND","POLEN","PORTUGAL","ROMANIA","SLOVAKIA","SLOVENIA","SPANIA","STORBRITANNIA OG NORD-IRLAND",
-                "SVEITS","SVERIGE","TSJEKKIA","TYSKLAND","UNGARN","ØSTERRIKE"
+                "GBR","CHE","SWE","CZE","DEU","HUN","AUT",
+                "XUK" // Støtte for "øvrige land"
             )
         }
 
