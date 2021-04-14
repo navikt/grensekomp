@@ -49,7 +49,7 @@ class AltinnKvitteringMapper(
                                 <td style="padding:12px">${krav.opprettet.format(dateTimeFormatterPlain)}</td>    
                                 <td style="padding:12px">${krav.identitetsnummer}</td>
                                 <td style="padding:12px">${krav.periode.fom.format(dateFormatter)} - ${krav.periode.tom.format(dateFormatter)}</td>
-                                <td style="padding:12px">${krav.periode.beregnetMaanedsinntekt}</td>
+                                <td style="padding:12px">${krav.periode.beregnetMånedsinntekt}</td>
                                 <td style="padding:12px">${NUMBER_FORMAT.format(krav.periode.estimertUtbetaling(seksG))}</td>
                                 </tr>
                                         """.trimIndent()

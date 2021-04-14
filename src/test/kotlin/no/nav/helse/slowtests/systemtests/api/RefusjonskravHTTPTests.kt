@@ -8,6 +8,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.utils.io.charsets.*
 import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.db.PostgresRefusjonskravRepository
 import no.nav.helse.grensekomp.db.createTestHikariConfig
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.koin.core.get
 import java.time.LocalDate
+import kotlin.text.Charsets
 
 class RefusjonskravHTTPTests : SystemTestBase() {
     private val refusjonsKravUrl = "/api/v1/refusjonskrav"
@@ -42,7 +44,7 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    //@Disabled
+    @Disabled
     fun `Skal returnere krav list`() = suspendableTest {
         val response = httpClient.get<HttpResponse> {
             appUrl("$refusjonsKravUrl/list/${TestData.validOrgNr}")
@@ -54,7 +56,7 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    //@Disabled
+    @Disabled
     fun `Skal returnere oppdatert status på krav til slettet`() = suspendableTest {
 
         val response = httpClient.delete<HttpResponse> {
@@ -68,10 +70,12 @@ class RefusjonskravHTTPTests : SystemTestBase() {
 
 
     @Test
-    fun `Skal retunere OverloependePerioderConstraints`()= suspendableTest {
+    fun `Skal retunere OverloependePerioderConstraints hvis periodene overlapper hverandre for samme person`()= suspendableTest {
         val response = httpClient.post<HttpResponse> {
             appUrl("$refusjonsKravUrl/list")
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.Json.withParameter("charset", "utf-8"))
+            (Charsets.UTF_8)
+
             loggedInAs("123456789")
             body=  listOf(TestData.gyldigSoeknad)
         }
@@ -87,11 +91,10 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    //@Disabled
-    fun `Skal ikke retunere OverloependePerioderConstraints`()= suspendableTest {
+    fun `Skal ikke retunere OverloependePerioderConstraints hvis periodene ikke overlapper hverandre for samme person`()= suspendableTest {
         val response = httpClient.post<HttpResponse> {
             appUrl("$refusjonsKravUrl/list")
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.Json.withParameter("charset", "utf-8"))
             loggedInAs("123456789")
             val dtocopy = TestData.gyldigSoeknad.copy(periode =
             Periode(
@@ -112,11 +115,10 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    //@Disabled
-    fun `Hvis samme periode brukes for samme person skal retunere OverloependePerioderConstraints`()= suspendableTest {
+    fun `Skal retunere OverloependePerioderConstraints hvis samme periode brukes for samme person`()= suspendableTest {
         val response = httpClient.post<HttpResponse> {
             appUrl("$refusjonsKravUrl/list")
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.Json.withParameter("charset", "utf-8"))
             loggedInAs("123456789")
             body= listOf(TestData.gyldigSoeknad.copy(periode =
             Periode(

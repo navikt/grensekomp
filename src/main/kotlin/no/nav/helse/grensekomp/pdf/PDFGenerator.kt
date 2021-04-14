@@ -36,7 +36,7 @@ class PDFGenerator {
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Beregnet månedsinntekt: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beregnetMaanedsinntekt)}")
+        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Beregnet månedsinntekt: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beregnetMånedsinntekt)}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Opprettet: ${Companion.TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
         contentStream.endText()
