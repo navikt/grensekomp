@@ -2,6 +2,7 @@ package no.nav.helse.grensekomp.web.api.dto.validation
 
 import io.ktor.util.*
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlHentFullPerson
+import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.metrics.PDL_VALIDERINGER
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import org.valiktor.ConstraintViolationException
@@ -15,8 +16,13 @@ class NorskStatsborgerConstraint : CustomConstraint
 fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: RefusjonskravDto) {
 
     val bosattINorge = personData?.hentPerson?.bostedsadresse?.any { adr ->
-        adr.matrikkeladresse != null || adr.ukjentBosted != null || adr.vegadresse != null
+        val harKjentNorskAddress = adr.matrikkeladresse != null || adr.ukjentBosted != null || adr.vegadresse != null
+        val erUtvandretFraDenneAddressenFørCutoff =
+            adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato)
+
+        harKjentNorskAddress && !erUtvandretFraDenneAddressenFørCutoff
     } ?: false
+
 
     if (bosattINorge) {
         PDL_VALIDERINGER.labels("bosatt_i_norge").inc()
