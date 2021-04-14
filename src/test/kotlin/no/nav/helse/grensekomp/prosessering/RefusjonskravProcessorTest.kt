@@ -42,7 +42,7 @@ class RefusjonskravProcessorTest {
                 identitetsnummer = "123",
                 virksomhetsnummer = "213",
                 periode = TestData.gyldigKrav.periode,
-                status = RefusjonskravStatus.JOBB,
+                status = RefusjonskravStatus.MOTTATT,
                 bostedland = "SWE"
         )
     }
@@ -58,7 +58,7 @@ class RefusjonskravProcessorTest {
     fun `skal ikke lage oppgave når det allerede foreligger en oppgaveId `() {
         refusjonskrav.oppgaveId = "ppggssv"
         refusjonskravBehandler.behandle(refusjonskrav)
-        verify(exactly = 0) { oppgaveMock.opprettOppgave(any(), any(), any(), MDCOperations.generateCallId()) }
+        verify(exactly = 0) { oppgaveMock.opprettBehandlingsoppgave(any(), any(), any(), MDCOperations.generateCallId()) }
     }
 
     @Test
@@ -70,7 +70,7 @@ class RefusjonskravProcessorTest {
         every { joarkMock.journalfør(refusjonskrav, any()) } returns joarkref
         every { pdlClientMock.fullPerson(any()) } returns PdlHentFullPerson(null, PdlHentFullPerson.PdlIdentResponse(listOf(PdlIdent(aktørId, PdlIdent.PdlIdentGruppe.AKTORID))), null)
 
-        every { oppgaveMock.opprettOppgave(refusjonskrav, joarkref, aktørId, any()) } returns opgref
+        every { oppgaveMock.opprettBehandlingsoppgave(refusjonskrav, joarkref, aktørId, any()) } returns opgref
 
         refusjonskravBehandler.behandle(refusjonskrav)
 
@@ -79,29 +79,29 @@ class RefusjonskravProcessorTest {
         assertThat(refusjonskrav.oppgaveId).isEqualTo(opgref)
 
         verify(exactly = 1) { joarkMock.journalfør(any(), any()) }
-        verify(exactly = 1) { oppgaveMock.opprettOppgave(any(), any(), any(), any()) }
+        verify(exactly = 1) { oppgaveMock.opprettBehandlingsoppgave(any(), any(), any(), any()) }
         verify(exactly = 1) { repositoryMock.update(refusjonskrav) }
     }
 
 
     @Test
-    fun `Ved feil skal kravet fortsatt ha status JOBB og joarkref om det finnes  og kaste exception oppover`() {
+    fun `Ved feil skal kravet fortsatt ha status MOTTATT og joarkref om det finnes  og kaste exception oppover`() {
         val joarkref = "joarkref"
         val aktørId = "aktørId"
 
         every { joarkMock.journalfør(refusjonskrav, any()) } returns joarkref
         every { pdlClientMock.fullPerson(any()) } returns PdlHentFullPerson(null, PdlHentFullPerson.PdlIdentResponse(listOf(PdlIdent(aktørId, PdlIdent.PdlIdentGruppe.AKTORID))), null)
 
-        every { oppgaveMock.opprettOppgave(refusjonskrav, joarkref, aktørId, any()) } throws IOException()
+        every { oppgaveMock.opprettBehandlingsoppgave(refusjonskrav, joarkref, aktørId, any()) } throws IOException()
 
         assertThrows<IOException> { refusjonskravBehandler.behandle(refusjonskrav) }
 
-        assertThat(refusjonskrav.status).isEqualTo(RefusjonskravStatus.JOBB)
+        assertThat(refusjonskrav.status).isEqualTo(RefusjonskravStatus.MOTTATT)
         assertThat(refusjonskrav.joarkReferanse).isEqualTo(joarkref)
         assertThat(refusjonskrav.oppgaveId).isNull()
 
         verify(exactly = 1) { joarkMock.journalfør(any(), any()) }
-        verify(exactly = 1) { oppgaveMock.opprettOppgave(any(), any(), any(), any()) }
+        verify(exactly = 1) { oppgaveMock.opprettBehandlingsoppgave(any(), any(), any(), any()) }
         verify(exactly = 1) { repositoryMock.update(refusjonskrav) }
     }
 }

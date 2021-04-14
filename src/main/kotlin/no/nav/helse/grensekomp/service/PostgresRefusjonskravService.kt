@@ -30,28 +30,6 @@ class PostgresRefusjonskravService(
 
     private val logger = LoggerFactory.getLogger(PostgresRefusjonskravService::class.java)
 
-    override fun saveKravWithKvittering(krav: Refusjonskrav): Refusjonskrav {
-        ds.connection.use {
-            it.autoCommit = false
-
-            val kvittering = Kvittering(
-                    virksomhetsnummer = krav.virksomhetsnummer,
-                    refusjonsListe = listOf(krav),
-                    tidspunkt = LocalDateTime.now(),
-                    status = KvitteringStatus.JOBB
-            )
-            val savedKvittering = kvitteringRepository.insert(kvittering, it)
-            krav.kvitteringId = savedKvittering.id
-            krav.status = RefusjonskravStatus.JOBB
-            val savedKrav = refusjonskravRepository.insert(krav, it)
-            lagreKvitteringJobb(savedKvittering, it)
-            lagreRefusjonskravJobb(savedKrav, it)
-            it.commit()
-            return savedKrav
-        }
-    }
-
-
     override fun saveKravListWithKvittering(kravList: Map<Int, Refusjonskrav>): Map<Int, Refusjonskrav> {
         //Alle innsendingene må være på samme virksomhet
         ds.connection.use { con ->
@@ -67,7 +45,7 @@ class PostgresRefusjonskravService(
             val savedMap = mutableMapOf<Int, Refusjonskrav>()
             kravList.forEach {
                 it.value.kvitteringId = savedKvittering.id
-                it.value.status = RefusjonskravStatus.JOBB
+                it.value.status = RefusjonskravStatus.MOTTATT
                 savedMap[it.key] = refusjonskravRepository.insert(it.value, con)
                 lagreRefusjonskravJobb(it.value, con)
             }
@@ -97,42 +75,6 @@ class PostgresRefusjonskravService(
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         return refusjonskravRepository.getAllForVirksomhet(virksomhetsnummer)
-    }
-
-    override fun bulkInsert(kravListe: List<Refusjonskrav>): List<Int> {
-        ds.connection.use { con ->
-            con.autoCommit = false
-            try {
-                val resultList = mutableListOf<Int>()
-                kravListe.groupBy {
-                    it.virksomhetsnummer
-                }.forEach {
-                    val savedKvittering = kvitteringRepository.insert(
-                            Kvittering(virksomhetsnummer = it.key,
-                                    refusjonsListe = it.value,
-                                    status = KvitteringStatus.JOBB,
-                                    tidspunkt = LocalDateTime.now()), con)
-                    it.value.forEach { krav ->
-                        krav.kvitteringId = savedKvittering.id
-                        krav.status = RefusjonskravStatus.JOBB
-                        lagreRefusjonskravJobb(krav, con)
-                    }
-                    lagreKvitteringJobb(savedKvittering, con)
-                    resultList.addAll(refusjonskravRepository.bulkInsert(it.value, con))
-                }
-                con.commit()
-                return resultList
-            } catch (e: SQLException) {
-                logger.error("Ruller tilbake bulkinnsetting")
-                try {
-                    con.rollback()
-                } catch (ex: Exception) {
-                    logger.error("Klarte ikke rulle tilbake bulkinnsettingen", ex)
-                }
-                throw e
-            }
-
-        }
     }
 
     fun lagreKvitteringJobb(kvittering: Kvittering, connection: Connection) {
