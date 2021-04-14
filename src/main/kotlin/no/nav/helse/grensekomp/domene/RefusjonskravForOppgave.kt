@@ -18,7 +18,8 @@ data class RefusjonskravForOppgave(
         val soekerForSegSelv: Boolean,
         val erDød: Boolean,
         val etteranmeldtArbeidsforhold: Boolean
-        )
+)
+
 fun Refusjonskrav.toRefusjonskravForOppgave() = RefusjonskravForOppgave(
         id = id,
         status = status,

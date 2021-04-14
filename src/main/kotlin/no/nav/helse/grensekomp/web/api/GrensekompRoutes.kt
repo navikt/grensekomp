@@ -13,6 +13,7 @@ import io.ktor.util.pipeline.*
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClient
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
+import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
@@ -27,6 +28,7 @@ import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
@@ -103,11 +105,17 @@ fun Route.grensekompRoutes(
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     val personData = pdlClient.fullPerson(dto.identitetsnummer)
+                    val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(dto.identitetsnummer, UUID.randomUUID().toString())
+                        .filter { it.arbeidsgiver.organisasjonsnummer == dto.virksomhetsnummer }
+                        .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
+                        .lastOrNull()
+
                     validerPdlBaserteRegler(personData, dto)
-                    validerArbeidsforhold(aaregClient, dto)
+                    validerArbeidsforhold(aktueltArbeidsforhold, dto,)
 
                     val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
                     val erDød = personData?.hentPerson?.trekkUtDoedsfalldato() != null
+                    val etteranmeldtArbeidsforhold = aktueltArbeidsforhold?.registrert?.toLocalDate()?.isAfter(Periode.refusjonFraDato) ?: false
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -116,6 +124,7 @@ fun Route.grensekompRoutes(
                         dto.periode,
                         dto.bekreftet,
                         dto.bostedsland,
+                        etteranmeldtArbeidsforhold = etteranmeldtArbeidsforhold,
                         erDød = erDød,
                         erEØSStatsborger = erEØSBorger,
                         opprettet = innsendingstidspunkt

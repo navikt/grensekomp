@@ -39,7 +39,7 @@ fun Module.mockExternalDependecies() {
         object : AaregArbeidsforholdClient {
             override suspend fun hentArbeidsforhold(ident: String, callId: String): List<Arbeidsforhold> =
                 listOf<Arbeidsforhold>(Arbeidsforhold(Arbeidsgiver("test", "810007842"), Opplysningspliktig("Juice", "810007702"), emptyList(), Ansettelsesperiode(Periode(
-                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null))))
+                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null)), no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.atStartOfDay()))
         }
     } bind AaregArbeidsforholdClient::class
 
