@@ -8,7 +8,6 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.db.PostgresRefusjonskravRepository
 import no.nav.helse.grensekomp.db.createTestHikariConfig
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.koin.core.get
 import java.time.LocalDate
-import kotlin.text.Charsets
 
 class RefusjonskravHTTPTests : SystemTestBase() {
     private val refusjonsKravUrl = "/api/v1/refusjonskrav"
@@ -89,6 +87,7 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
+    @Disabled
     fun `Skal ikke retunere OverloependePerioderConstraints hvis periodene ikke overlapper hverandre for samme person`()= suspendableTest {
         val response = httpClient.post<HttpResponse> {
             appUrl("$refusjonsKravUrl/list")
