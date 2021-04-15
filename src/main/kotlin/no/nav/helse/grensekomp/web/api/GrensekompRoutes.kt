@@ -22,7 +22,6 @@ import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.api.dto.validation.*
 import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
-import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.godkjenteBostedsKoder
 import org.koin.ktor.ext.get
 import org.slf4j.LoggerFactory
@@ -37,9 +36,6 @@ import kotlin.collections.isNotEmpty
 import kotlin.collections.map
 import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-
-private val excelContentType = ContentType.parse("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-val logger = LoggerFactory.getLogger("grensekompRoutes")
 
 @KtorExperimentalAPI
 fun Route.grensekompRoutes(
@@ -81,6 +77,8 @@ fun Route.grensekompRoutes(
 
 
         post("/list") {
+            val logger = LoggerFactory.getLogger("API")
+
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
             val jsonTree = om.readTree(refusjonskravJson)
@@ -101,6 +99,8 @@ fun Route.grensekompRoutes(
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     val personData = pdlClient.fullPerson(dto.identitetsnummer)
+                    logger.info(personData.toString())
+
                     val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(dto.identitetsnummer, UUID.randomUUID().toString())
                         .filter { it.arbeidsgiver.organisasjonsnummer == dto.virksomhetsnummer }
                         .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
@@ -132,6 +132,7 @@ fun Route.grensekompRoutes(
                         genericMessage = "Ingen tilgang til virksomheten"
                     )
                 }catch (pdlError: PdlClientImpl.PdlException) {
+                    logger.error(pdlError)
                     PDL_VALIDERINGER.labels("finnes_ikke").inc()
                     responseBody[i] = PostListResponseDto(
                         status = PostListResponseDto.Status.VALIDATION_ERRORS,
