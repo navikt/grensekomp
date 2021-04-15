@@ -22,7 +22,7 @@ class ArbeidsgivereHTTPTests : SystemTestBase() {
                 contentType(ContentType.Application.Json)
             }
         }
-        Assertions.assertThat(exception.message).isEqualTo("Client request(http://localhost:8989/api/v1/arbeidsgivere/) invalid: 401 Unauthorized. Text: \"\"")
+        Assertions.assertThat(exception.message).contains("invalid: 401 Unauthorized")
     }
 
     @Test
