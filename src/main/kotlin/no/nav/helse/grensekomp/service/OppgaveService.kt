@@ -18,6 +18,14 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: O
         return "${response.id}"
     }
 
+    fun opprettSletteBehandlingsoppgave(refusjonskrav: Refusjonskrav, journalpostId: String, aktørId: String, callId: String): String {
+        val response = runBlocking {
+            val request = mapAnnulleringssoppgave(journalpostId, aktørId, mapStrukturert(refusjonskrav))
+            oppgaveKlient.opprettOppgave(request, callId)
+        }
+        return "${response.id}"
+    }
+
     private fun mapStrukturert(refusjonskrav: Refusjonskrav): String {
         val kravForOppgave = refusjonskrav.toRefusjonskravForOppgave()
         return om.writeValueAsString(kravForOppgave)

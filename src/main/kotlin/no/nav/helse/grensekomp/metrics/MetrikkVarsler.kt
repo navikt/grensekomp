@@ -27,6 +27,12 @@ val INNKOMMENDE_REFUSJONSKRAV_COUNTER: Counter = Counter.build()
         .help("Counts the number of incoming messages")
         .register()
 
+val ANNULLERTE_REFUSJONSKRAV: Counter = Counter.build()
+        .namespace(METRICS_NS)
+        .name("annullerte_refusjonskrav")
+        .help("Antall annullerte/slettede krav")
+        .register()
+
 val INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER: Counter = Counter.build()
         .namespace(METRICS_NS)
         .labelNames("bosted", "isEEA" )

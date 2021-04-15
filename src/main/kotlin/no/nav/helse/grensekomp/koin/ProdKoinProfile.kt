@@ -20,6 +20,7 @@ import no.nav.helse.grensekomp.service.PostgresRefusjonskravService
 import no.nav.helse.grensekomp.kvittering.AltinnKvitteringMapper
 import no.nav.helse.grensekomp.kvittering.AltinnKvitteringSender
 import no.nav.helse.grensekomp.kvittering.KvitteringSender
+import no.nav.helse.grensekomp.prosessering.refusjonskrav.SletteRefusjonskravProcessor
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -63,6 +64,7 @@ fun prodConfig(config: ApplicationConfig) = module {
     } bind KvitteringSender::class
 
     single { RefusjonskravProcessor(get(), get(), get(), get(), get(), get()) }
+    single { SletteRefusjonskravProcessor(get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 
 

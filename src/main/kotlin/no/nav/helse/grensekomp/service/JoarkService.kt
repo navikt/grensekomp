@@ -44,4 +44,38 @@ class JoarkService(val dokarkivKlient: DokarkivKlient, val brreg: BrregClient, v
                         datoMottatt = refusjonskrav.opprettet.toLocalDate()
                 ), true, callId).journalpostId
     }
+
+    fun journalførSletting(refusjonskrav: Refusjonskrav, callId: String): String {
+        val base64EnkodetPdf = Base64.getEncoder().encodeToString(pdfGenerator.lagSlettingPDF(refusjonskrav))
+        val base64EnkodetJson = Base64.getEncoder().encodeToString(om.writeValueAsBytes(refusjonskrav))
+        val virksomhetsNavn = runBlocking {
+            brreg.getVirksomhetsNavn(refusjonskrav.virksomhetsnummer)
+        }
+
+        return dokarkivKlient.journalførDokument(
+                JournalpostRequest(
+                        journalposttype = Journalposttype.INNGAAENDE,
+                        kanal = "NAV_NO",
+                        eksternReferanseId = refusjonskrav.id.toString(),
+                        tittel = "Annuller refusjonskrav for utestengt arbeidstaker",
+                        bruker = Bruker(
+                                id = refusjonskrav.identitetsnummer,
+                                idType = IdType.FNR
+                        ),
+                        avsenderMottaker = AvsenderMottaker(
+                                id = refusjonskrav.virksomhetsnummer,
+                                idType = IdType.ORGNR,
+                                navn = virksomhetsNavn
+                        ),
+                        dokumenter = listOf(Dokument(
+                                brevkode = "annuller_refusjonskrav_utestengt_arbeider_korona",
+                                tittel = "Annullering av refusjonskrav utestengt arbeider korona",
+                                dokumentVarianter = listOf(
+                                    DokumentVariant(fysiskDokument = base64EnkodetPdf),
+                                    DokumentVariant(fysiskDokument = base64EnkodetJson, filtype = "JSON", variantFormat = "ORIGINAL")
+                                )
+                        )),
+                        datoMottatt = refusjonskrav.opprettet.toLocalDate()
+                ), true, callId).journalpostId
+    }
 }

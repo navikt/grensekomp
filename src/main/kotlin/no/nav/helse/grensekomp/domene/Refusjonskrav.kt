@@ -17,6 +17,10 @@ data class Refusjonskrav(
     val etteranmeldtArbeidsforhold: Boolean = false,
     var oppgaveId: String? = null,
     var joarkReferanse: String? = null,
+
+    var sletteOppgaveId: String? = null,
+    var sletteJoarkReferanse: String? = null,
+
     var kilde: String = "WEBSKJEMA",
 
     val opprettet: LocalDateTime = LocalDateTime.now(),

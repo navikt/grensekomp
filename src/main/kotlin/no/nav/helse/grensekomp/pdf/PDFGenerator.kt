@@ -48,6 +48,38 @@ class PDFGenerator {
         return ba
     }
 
+    fun lagSlettingPDF(refusjonskrav: Refusjonskrav): ByteArray {
+        val doc = PDDocument()
+        val page = PDPage()
+        val font = PDType0Font.load(doc, this::class.java.classLoader.getResource(FONT_NAME).openStream())
+        doc.addPage(page)
+        val contentStream = PDPageContentStream(doc, page)
+        contentStream.beginText()
+        contentStream.setFont(font, FONT_SIZE)
+        val mediaBox = page.mediaBox
+        val startX = mediaBox.lowerLeftX + MARGIN_X
+        val startY = mediaBox.upperRightY - MARGIN_Y
+        contentStream.newLineAtOffset(startX, startY)
+        contentStream.showText("Tidligere krav med journalføringreferanse ${refusjonskrav.joarkReferanse} er annulert.")
+        contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
+        contentStream.showText("FNR/DNR: ${refusjonskrav.identitetsnummer}")
+        contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
+        contentStream.showText("Virksomhetsnummer: ${refusjonskrav.virksomhetsnummer}")
+        contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
+        contentStream.showText("Periode:")
+        contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
+        contentStream.showText("Fra: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.fom)}    Til: ${Companion.DATE_FORMAT.format(refusjonskrav.periode.tom)}    Beregnet månedsinntekt: ${Companion.NUMBER_FORMAT.format(refusjonskrav.periode.beregnetMånedsinntekt)}")
+        contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
+        contentStream.showText("Tidspunkt: ${Companion.TIMESTAMP_FORMAT.format(LocalDateTime.now())}")
+        contentStream.endText()
+        contentStream.close()
+        val out = ByteArrayOutputStream()
+        doc.save(out)
+        val ba = out.toByteArray()
+        doc.close()
+        return ba
+    }
+
     companion object {
         val NUMBER_FORMAT = DecimalFormat("#,###.00")
         val DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
