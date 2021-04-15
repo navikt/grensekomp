@@ -36,6 +36,8 @@ internal class ArbeidsforholdContraintTest {
                 return ObjectMapper().registerModules(KotlinModule(), JavaTimeModule()).readValue("""
                     [
                         {
+                            "registrert": "2021-01-22T12:07:35.785",
+
                             "arbeidsgiver": {
                                 "type": "Organisasjon",
                                 "organisasjonsnummer": "810007842"
@@ -67,7 +69,7 @@ internal class ArbeidsforholdContraintTest {
 
 
         runBlocking {
-            validerArbeidsforhold(aaregMock, krav)
+            validerArbeidsforhold(aaregMock.hentArbeidsforhold("", "").first(), krav)
         }
 
 

@@ -10,9 +10,9 @@ import java.time.LocalDate
 
 class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: ObjectMapper) {
 
-    fun opprettOppgave(refusjonskrav: Refusjonskrav, journalpostId: String, aktørId: String, callId: String): String {
+    fun opprettBehandlingsoppgave(refusjonskrav: Refusjonskrav, journalpostId: String, aktørId: String, callId: String): String {
         val response = runBlocking {
-            val request = mapOppgave(journalpostId, aktørId, mapStrukturert(refusjonskrav))
+            val request = mapBehandlingsoppgave(journalpostId, aktørId, mapStrukturert(refusjonskrav))
             oppgaveKlient.opprettOppgave(request, callId)
         }
         return "${response.id}"
@@ -23,15 +23,33 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: O
         return om.writeValueAsString(kravForOppgave)
     }
 
-    private fun mapOppgave(journalpostId: String, aktørId: String, beskrivelse: String): OpprettOppgaveRequest {
+    private fun mapBehandlingsoppgave(journalpostId: String, aktørId: String, beskrivelse: String): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             aktoerId = aktørId,
             journalpostId = journalpostId,
             beskrivelse = beskrivelse,
             tema = "SYK",
-            oppgavetype = "ROB_BEH",
-            behandlingstema = "ab0433",
+            oppgavetype = "ROB_BEH", // For Krav: ROB_BEH
+
+            behandlingstema = "ab0447", // kalles også "gjelder" felt
             aktivDato = LocalDate.now(),
+
+            fristFerdigstillelse = LocalDate.now().plusDays(7),
+            prioritet = "NORM"
+        )
+    }
+
+    private fun mapAnnulleringssoppgave(journalpostId: String, aktørId: String, beskrivelse: String): OpprettOppgaveRequest {
+        return OpprettOppgaveRequest(
+            aktoerId = aktørId,
+            journalpostId = journalpostId,
+            beskrivelse = beskrivelse,
+            tema = "SYK",
+            oppgavetype = "VUR_KONS_YTE", // Vurder konsekvens for ytelse
+
+            behandlingstema = "ab0448",
+            aktivDato = LocalDate.now(),
+
             fristFerdigstillelse = LocalDate.now().plusDays(7),
             prioritet = "NORM"
         )

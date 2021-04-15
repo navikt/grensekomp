@@ -1,14 +1,14 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
 import io.ktor.util.*
-import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Arbeidsforhold
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
 import java.time.LocalDate
-import java.util.*
+import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Periode as AaregPeriode
 
 
 class ArbeidsforholdConstraint : CustomConstraint
@@ -16,15 +16,9 @@ class ArbeidsforholdStartConstraint : CustomConstraint
 class ArbeidsforholdLengdeConstraint : CustomConstraint
 
 @KtorExperimentalAPI
-suspend fun validerArbeidsforhold(aaregClient: AaregArbeidsforholdClient, refusjonskrav: RefusjonskravDto) {
-    val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(refusjonskrav.identitetsnummer, UUID.randomUUID().toString())
-        .filter { it.arbeidsgiver.organisasjonsnummer == refusjonskrav.virksomhetsnummer }
-        .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
-        .lastOrNull()
+fun validerArbeidsforhold(aktueltArbeidsforhold: Arbeidsforhold?, refusjonskrav: RefusjonskravDto) {
 
-
-    val ansPeriode = aktueltArbeidsforhold?.ansettelsesperiode?.periode ?:
-    no.nav.helse.arbeidsgiver.integrasjoner.aareg.Periode(LocalDate.MAX, LocalDate.MAX)
+    val ansPeriode = aktueltArbeidsforhold?.ansettelsesperiode?.periode ?: AaregPeriode(LocalDate.MAX, LocalDate.MAX)
 
     val kravPeriodeSubsettAvAnsPeriode = ansPeriode.tom == null ||
             refusjonskrav.periode.tom.isBefore(ansPeriode.tom) ||

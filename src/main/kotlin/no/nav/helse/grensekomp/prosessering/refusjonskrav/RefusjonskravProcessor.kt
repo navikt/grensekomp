@@ -61,7 +61,7 @@ class RefusjonskravProcessor(val joarkService: JoarkService,
                     ?.trekkUtIdent(PdlIdent.PdlIdentGruppe.AKTORID)
                     ?: throw IllegalStateException("Kunne ikke finne Aktørid for personen i kravet")
 
-                refusjonskrav.oppgaveId = oppgaveService.opprettOppgave(
+                refusjonskrav.oppgaveId = oppgaveService.opprettBehandlingsoppgave(
                         refusjonskrav,
                         refusjonskrav.joarkReferanse!!,
                         aktørId,
