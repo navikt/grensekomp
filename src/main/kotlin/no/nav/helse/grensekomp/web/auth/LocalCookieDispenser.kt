@@ -37,7 +37,8 @@ fun Application.localCookieDispenser(config: ApplicationConfig) {
             val token = server.issueToken(
                 subject = call.request.queryParameters["subject"].toString(),
                 issuerId = issuerName,
-                audience = audience
+                audience = audience,
+                expiry = 3600 * 24
             )
 
             call.response.cookies.append(Cookie(cookieName, token.serialize(), CookieEncoding.RAW, domain = domain, path = "/"))
