@@ -44,7 +44,6 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    @Disabled
     fun `Skal returnere krav list`() = suspendableTest {
         val response = httpClient.get<HttpResponse> {
             appUrl("$refusjonsKravUrl/list/${TestData.validOrgNr}")
@@ -56,7 +55,6 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    @Disabled
     fun `Skal returnere oppdatert status på krav til slettet`() = suspendableTest {
 
         val response = httpClient.delete<HttpResponse> {
