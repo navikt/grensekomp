@@ -91,7 +91,7 @@ fun Route.grensekompRoutes(
             val innsendingstidspunkt = LocalDateTime.now()
 
             for (i in 0 until jsonTree.size())
-                responseBody.add(i, PostListResponseDto(PostListResponseDto.Status.GENERIC_ERROR))
+                responseBody.add(i, PostListResponseDto(PostListResponseDto.Status.OK))
 
             for (i in 0 until jsonTree.size()) {
                 try {
@@ -188,9 +188,12 @@ fun Route.grensekompRoutes(
             val hasErrors = responseBody.any { it.status != PostListResponseDto.Status.OK }
 
             if (hasErrors) {
+                logger.info("Har feil")
                 responseBody.filter { it.status == PostListResponseDto.Status.OK }.forEach { it.status = PostListResponseDto.Status.VALIDATION_ERRORS }
             } else {
+                logger.info("Har ikke feil")
                 if (domeneListeMedIndex.isNotEmpty()) {
+                    logger.info("Lagrer")
                     val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                     savedList.forEach { item ->
                         responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
