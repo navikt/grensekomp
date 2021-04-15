@@ -77,7 +77,10 @@ fun Route.grensekompRoutes(
             else {
                 val virksomhetnr = refusjonskrav.virksomhetsnummer
                 authorize(authorizer, virksomhetnr)
+
+
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
+
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
         }

@@ -13,6 +13,7 @@ import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringJobData
 import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravJobData
 import no.nav.helse.grensekomp.prosessering.refusjonskrav.RefusjonskravProcessor
+import no.nav.helse.grensekomp.prosessering.refusjonskrav.SletteRefusjonskravProcessor
 import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
@@ -67,7 +68,7 @@ class PostgresRefusjonskravService(
                 logger.debug("sletter krav ", refusjonskrav.id)
                 refusjonskrav.status = RefusjonskravStatus.SLETTET
                 refusjonskravRepository.update(refusjonskrav)
-                lagreRefusjonskravJobb(refusjonskrav, con)
+                lagreSlettRefusjonskravJobb(refusjonskrav, con)
             }
             return refusjonskrav
         }
@@ -90,6 +91,20 @@ class PostgresRefusjonskravService(
         bakgrunnsjobbRepository.save(
                 Bakgrunnsjobb(
                         type = RefusjonskravProcessor.JOBB_TYPE,
+                        data = mapper.writeValueAsString(
+                            RefusjonskravJobData(
+                                refusjonskrav.id
+                        )
+                        ),
+                        maksAntallForsoek = 14
+                ), connection
+        )
+    }
+
+    fun lagreSlettRefusjonskravJobb(refusjonskrav: Refusjonskrav, connection: Connection) {
+        bakgrunnsjobbRepository.save(
+                Bakgrunnsjobb(
+                        type = SletteRefusjonskravProcessor.JOBB_TYPE,
                         data = mapper.writeValueAsString(
                             RefusjonskravJobData(
                                 refusjonskrav.id
