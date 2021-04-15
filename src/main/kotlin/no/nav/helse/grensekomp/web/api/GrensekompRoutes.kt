@@ -20,10 +20,7 @@ import no.nav.helse.grensekomp.metrics.PDL_VALIDERINGER
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.PostListResponseDto
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
-import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
-import no.nav.helse.grensekomp.web.api.dto.validation.getContextualMessage
-import no.nav.helse.grensekomp.web.api.dto.validation.validerArbeidsforhold
-import no.nav.helse.grensekomp.web.api.dto.validation.validerPdlBaserteRegler
+import no.nav.helse.grensekomp.web.api.dto.validation.*
 import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helse.grensekomp.web.auth.hentUtløpsdatoFraLoginToken
 import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator.Companion.tabeller.godkjenteBostedsKoder
@@ -114,6 +111,7 @@ fun Route.grensekompRoutes(
 
                     validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aktueltArbeidsforhold, dto,)
+                    validerKravPerioden(dto, refusjonskravService)
 
                     val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
                     val erDød = personData?.hentPerson?.trekkUtDoedsfalldato() != null

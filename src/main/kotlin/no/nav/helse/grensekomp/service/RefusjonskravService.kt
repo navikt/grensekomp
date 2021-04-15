@@ -8,4 +8,5 @@ interface RefusjonskravService {
     fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav>
     fun getKrav(id: UUID) : Refusjonskrav?
     fun cancelKrav(id: UUID) : Refusjonskrav?
+    fun getPersonKrav(identitetsnummer: String) : List<Refusjonskrav>
 }

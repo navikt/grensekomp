@@ -14,6 +14,10 @@ class MockRefusjonskravService(val refusjonskravRepo: RefusjonskravRepository) :
         TODO("Not yet implemented")
     }
 
+    override fun getPersonKrav(identitetsnummer: String): List<Refusjonskrav> {
+        return refusjonskravRepo.getByIdentitetsnummer(identitetsnummer)
+    }
+
     override fun saveKravListWithKvittering(kravList: Map<Int, Refusjonskrav>): Map<Int, Refusjonskrav> {
         var savedMap = mutableMapOf<Int, Refusjonskrav>()
         var i = 0
