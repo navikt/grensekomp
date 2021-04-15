@@ -31,7 +31,7 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: O
             tema = "SYK",
             oppgavetype = "ROB_BEH", // For Krav: ROB_BEH
 
-            behandlingstema = "ab0433", // kalles også "gjelder" felt
+            behandlingstema = "ab0447", // kalles også "gjelder" felt
             aktivDato = LocalDate.now(),
 
             fristFerdigstillelse = LocalDate.now().plusDays(7),
@@ -45,9 +45,9 @@ class OppgaveService(private val oppgaveKlient: OppgaveKlient, private val om: O
             journalpostId = journalpostId,
             beskrivelse = beskrivelse,
             tema = "SYK",
-            oppgavetype = "VUR_KONS_YT", // Vurder konsekvens for ytelse
+            oppgavetype = "VUR_KONS_YTE", // Vurder konsekvens for ytelse
 
-            behandlingstema = "ab0433",
+            behandlingstema = "ab0448",
             aktivDato = LocalDate.now(),
 
             fristFerdigstillelse = LocalDate.now().plusDays(7),
