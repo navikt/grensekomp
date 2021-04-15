@@ -37,8 +37,8 @@ fun Application.grensekompModule(config: ApplicationConfig = environment.config)
     routing {
         val apiBasePath = config.getString("ktor.application.basepath")
         route("$apiBasePath/api/v1") {
-            systemRoutes()
             authenticate {
+                systemRoutes()
                 grensekompRoutes(get(), get(), get(),get())
                 altinnRoutes(get())
             }
