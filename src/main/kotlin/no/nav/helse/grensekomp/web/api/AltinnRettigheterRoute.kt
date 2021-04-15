@@ -12,7 +12,7 @@ import no.nav.helse.grensekomp.web.auth.hentIdentitetsnummerFraLoginToken
 @KtorExperimentalAPI
 fun Route.altinnRoutes(authRepo: AltinnOrganisationsRepository) {
      route("/arbeidsgivere") {
-        get("/") {
+        get() {
             val id = hentIdentitetsnummerFraLoginToken(application.environment.config, call.request)
             try {
                 val rettigheter = authRepo.hentOrgMedRettigheterForPerson(id)

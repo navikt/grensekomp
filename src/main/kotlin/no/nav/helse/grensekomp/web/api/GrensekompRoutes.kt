@@ -48,11 +48,6 @@ fun Route.grensekompRoutes(
     aaregClient: AaregArbeidsforholdClient,
     pdlClient: PdlClient
 ) {
-    route("/login-expiry") {
-        get {
-            call.respond(HttpStatusCode.OK, hentUtløpsdatoFraLoginToken(application.environment.config, call.request))
-        }
-    }
 
     route("/refusjonskrav") {
         get("/list/{virksomhetsnummer}") {
