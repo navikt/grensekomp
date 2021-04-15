@@ -3,8 +3,8 @@ package no.nav.helse.grensekomp.web.api.dto
 import no.nav.helse.grensekomp.web.api.dto.validation.ValidationProblemDetail
 
 data class PostListResponseDto(
-    val status: Status,
-    val validationErrors: List<ValidationProblemDetail>? = null,
+    var status: Status,
+    val validationErrors: List<ValidationProblemDetail>? = emptyList(),
     val genericMessage: String? = null,
     val referenceNumber: String? = null
 ) {

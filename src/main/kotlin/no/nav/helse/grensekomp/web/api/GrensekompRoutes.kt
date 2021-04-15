@@ -67,7 +67,6 @@ fun Route.grensekompRoutes(
             }
         }
 
-
         delete("/{id}"){
             val reufusjonskravId = UUID.fromString(call.parameters["id"])
             var refusjonskrav = refusjonskravService.getKrav(reufusjonskravId)
@@ -181,12 +180,20 @@ fun Route.grensekompRoutes(
                     }
                 }
             }
-            if (domeneListeMedIndex.isNotEmpty()) {
-                val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
-                savedList.forEach { item ->
-                    responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
+
+            val hasErrors = responseBody.any { it.status != PostListResponseDto.Status.OK }
+
+            if (hasErrors) {
+                responseBody.filter { it.status == PostListResponseDto.Status.OK }.forEach { it.status = PostListResponseDto.Status.VALIDATION_ERRORS }
+            } else {
+                if (domeneListeMedIndex.isNotEmpty()) {
+                    val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
+                    savedList.forEach { item ->
+                        responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
+                    }
                 }
             }
+
             call.respond(HttpStatusCode.OK, responseBody)
         }
     }
