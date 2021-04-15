@@ -106,6 +106,8 @@ fun Route.grensekompRoutes(
                         .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
                         .lastOrNull()
 
+                    logger.info(aktueltArbeidsforhold.toString())
+
                     validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aktueltArbeidsforhold, dto,)
                     validerKravPerioden(dto, refusjonskravService)
@@ -113,6 +115,8 @@ fun Route.grensekompRoutes(
                     val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
                     val erDød = personData?.hentPerson?.trekkUtDoedsfalldato() != null
                     val etteranmeldtArbeidsforhold = aktueltArbeidsforhold?.registrert?.toLocalDate()?.isAfter(Periode.refusjonFraDato) ?: false
+
+                    logger.info("EØS: $erEØSBorger Død: $erDød etteranmeldt: $etteranmeldtArbeidsforhold")
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -127,6 +131,7 @@ fun Route.grensekompRoutes(
                         opprettet = innsendingstidspunkt
                     )
                 } catch (forbiddenEx: ForbiddenException) {
+                    logger.error(forbiddenEx)
                     responseBody[i] = PostListResponseDto(
                         status = PostListResponseDto.Status.GENERIC_ERROR,
                         genericMessage = "Ingen tilgang til virksomheten"
@@ -154,6 +159,9 @@ fun Route.grensekompRoutes(
                         validationErrors = problems
                     )
                 } catch (genericEx: Exception) {
+                    logger.info("Feil under prosessering $genericEx")
+                    logger.error("Feil under prosessering", genericEx)
+
                     if (genericEx.cause is ConstraintViolationException) {
                         val problems = (genericEx.cause as ConstraintViolationException).constraintViolations.map {
                             ValidationProblemDetail(
