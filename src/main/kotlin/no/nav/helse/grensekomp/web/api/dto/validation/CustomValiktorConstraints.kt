@@ -38,7 +38,7 @@ fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: R
             throw ConstraintViolationException(
                 setOf(
                     DefaultConstraintViolation(
-                        "fom",
+                        "periode.fom",
                         constraint = OverloependePerioderConstraints(),
                         value = refusjonskrav.identitetsnummer
                     )
@@ -47,3 +47,4 @@ fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: R
         }
     }
 }
+

@@ -1,17 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktorVersion = "1.4.1"
+val ktorVersion = "1.5.3"
 val logback_version = "1.2.1"
 val logback_contrib_version = "0.1.5"
-val jacksonVersion = "2.10.3"
+val jacksonVersion = "2.12.3"
 val prometheusVersion = "0.6.0"
 val hikariVersion = "3.3.1"
 val mainClass = "no.nav.helse.grensekomp.AppKt"
 val junitJupiterVersion = "5.7.0"
 val assertJVersion = "3.12.2"
 val mockKVersion = "1.9.3"
-val tokenSupportVersion = "1.3.1"
-val mockOAuth2ServerVersion = "0.2.1"
+val tokenSupportVersion = "1.3.5"
+val mockOAuth2ServerVersion = "0.3.2"
 val koinVersion = "2.0.1"
 val valiktorVersion = "0.12.0"
 val cxfVersion = "3.4.1"
@@ -56,7 +56,7 @@ dependencies {
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                strictly("4.1.60.Final")
+                strictly("4.1.61.Final")
             }
             because("snyk control")
         }
@@ -84,7 +84,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.13") // overstyrer transiente 1.10
     implementation("io.netty:netty-codec:4.1.59.Final") // overstyrer transiente 4.1.44
     implementation("io.netty:netty-codec-http:4.1.59.Final") // overstyrer transiente 4.1.51.Final gjennom ktor-server-netty
-    implementation("org.eclipse.jetty:jetty-server:9.4.37.v20210219")
+    implementation("org.eclipse.jetty:jetty-server:9.4.39.v20210325")
     implementation("com.google.guava:guava:30.0-jre") //[Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] overstyrer versjon 29.0
     // -- end snyk fixes
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -125,7 +125,7 @@ dependencies {
 
     implementation("no.nav.tjenestespesifikasjoner:altinn-correspondence-agency-external-basic:1.2019.09.25-00.21-49b69f0625e0")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11+")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
