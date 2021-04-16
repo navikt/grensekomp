@@ -87,7 +87,6 @@ class RefusjonskravHTTPTests : SystemTestBase() {
     }
 
     @Test
-    @Disabled
     fun `Skal ikke retunere OverloependePerioderConstraints hvis periodene ikke overlapper hverandre for samme person`()= suspendableTest {
         val response = httpClient.post<HttpResponse> {
             appUrl("$refusjonsKravUrl/list")
