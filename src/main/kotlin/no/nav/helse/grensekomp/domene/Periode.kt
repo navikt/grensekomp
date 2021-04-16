@@ -4,11 +4,12 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.*
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 data class Periode(
     val fom: LocalDate,
     val tom: LocalDate,
-    val beregnetMånedsinntekt: Int
+    val beregnetMånedsinntekt: Double
 ) : Comparable<Periode> {
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)
@@ -24,12 +25,12 @@ data class Periode(
         return 0
     }
 
-    fun estimertUtbetaling(seksG: Int): Double {
+    fun estimertUtbetaling(seksG: Double): Double {
         val antallUkedager = fom.datesUntil(tom.plusDays(1))
             .filter { d -> !weekend.contains(d.dayOfWeek) }
             .count()
 
-        return min(beregnetMånedsinntekt * 12, seksG) / 260 * antallUkedager * justeringsFaktor
+        return (min(beregnetMånedsinntekt * 12, seksG) / 260).roundToInt() * antallUkedager * justeringsFaktor
     }
 
     //https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
