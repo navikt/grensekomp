@@ -25,7 +25,7 @@ internal class ArbeidsforholdContraintTest {
             Periode(
                 LocalDate.of(2021, 3, 9),
                 LocalDate.of(2021, 3, 15),
-                100
+                100.0
             ),
             true,
             "SWE"

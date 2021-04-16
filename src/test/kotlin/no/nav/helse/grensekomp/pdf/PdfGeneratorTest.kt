@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertTrue
 
-internal class KvitteringTest {
+internal class PdfGeneratorTest {
 
     @Test
     fun lagPDF() {
@@ -24,14 +24,14 @@ internal class KvitteringTest {
                     Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
-                        4500800
+                        4500800.0
                 ),
                 bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )
         val kv = PDFGenerator()
-        val ba = kv.lagPDF(refusjonskrav)
+        val ba = kv.lagPDF(refusjonskrav, "Min Virksomhet")
 //        val file = File("kvittering_vanlig.pdf")
         val file = File.createTempFile("kvittering_vanlig", "pdf")
         Files.write(ba, file)
@@ -48,14 +48,13 @@ internal class KvitteringTest {
                 periode = Periode(
                         LocalDate.of(2020, 4, 1),
                         LocalDate.of(2020, 4, 5),
-                        250
+                        250.0
                 ),
                 bostedland = TestData.gyldigKrav.bostedland,
                 opprettet = LocalDateTime.now(),
                 status = RefusjonskravStatus.MOTTATT
         )
-        val ba = kv.lagPDF(refusjonskrav)
-//        val file = File("kvittering_spesialtegn.pdf")
+        val ba = kv.lagPDF(refusjonskrav, "Min virksomhet")
         val file = File.createTempFile("kvittering_spesialtegn", "pdf")
         Files.write(ba, file)
         assertTrue { file.exists() }

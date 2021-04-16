@@ -12,11 +12,11 @@ class JoarkService(val dokarkivKlient: DokarkivKlient, val brreg: BrregClient, v
     val pdfGenerator = PDFGenerator()
 
     fun journalfør(refusjonskrav: Refusjonskrav, callId: String): String {
-        val base64EnkodetPdf = Base64.getEncoder().encodeToString(pdfGenerator.lagPDF(refusjonskrav))
-        val base64EnkodetJson = Base64.getEncoder().encodeToString(om.writeValueAsBytes(refusjonskrav))
         val virksomhetsNavn = runBlocking {
             brreg.getVirksomhetsNavn(refusjonskrav.virksomhetsnummer)
         }
+        val base64EnkodetPdf = Base64.getEncoder().encodeToString(pdfGenerator.lagPDF(refusjonskrav, virksomhetsNavn))
+        val base64EnkodetJson = Base64.getEncoder().encodeToString(om.writeValueAsBytes(refusjonskrav))
 
         return dokarkivKlient.journalførDokument(
                 JournalpostRequest(

@@ -11,6 +11,9 @@ data class Periode(
     val tom: LocalDate,
     val beregnetMånedsinntekt: Double
 ) : Comparable<Periode> {
+
+    constructor(fom: LocalDate,tom: LocalDate, beregnetMånedsinntekt: Int) : this(fom, tom, beregnetMånedsinntekt.toDouble())
+
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)
         val weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)

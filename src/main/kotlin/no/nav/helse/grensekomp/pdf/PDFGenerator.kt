@@ -18,7 +18,7 @@ class PDFGenerator {
     private val MARGIN_Y = 40f
     private val FONT_NAME = "fonts/SourceSansPro-Regular.ttf"
 
-    fun lagPDF(refusjonskrav: Refusjonskrav): ByteArray {
+    fun lagPDF(refusjonskrav: Refusjonskrav, virksomhetsNavn: String = "UKJENT VIRKSOMHETSNAVN"): ByteArray {
         val doc = PDDocument()
         val page = PDPage()
         val font = PDType0Font.load(doc, this::class.java.classLoader.getResource(FONT_NAME).openStream())
@@ -32,7 +32,7 @@ class PDFGenerator {
         contentStream.newLineAtOffset(startX, startY)
         contentStream.showText("FNR/DNR: ${refusjonskrav.identitetsnummer}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Virksomhetsnummer: ${refusjonskrav.virksomhetsnummer}")
+        contentStream.showText("Virksomhet: $virksomhetsNavn (${refusjonskrav.virksomhetsnummer})")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
@@ -48,7 +48,7 @@ class PDFGenerator {
         return ba
     }
 
-    fun lagSlettingPDF(refusjonskrav: Refusjonskrav): ByteArray {
+    fun lagSlettingPDF(refusjonskrav: Refusjonskrav, virksomhetsNavn: String = "UKJENT VIRKSOMHETSNAVN"): ByteArray {
         val doc = PDDocument()
         val page = PDPage()
         val font = PDType0Font.load(doc, this::class.java.classLoader.getResource(FONT_NAME).openStream())
@@ -64,7 +64,7 @@ class PDFGenerator {
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
         contentStream.showText("FNR/DNR: ${refusjonskrav.identitetsnummer}")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)
-        contentStream.showText("Virksomhetsnummer: ${refusjonskrav.virksomhetsnummer}")
+        contentStream.showText("Virksomhet: $virksomhetsNavn (${refusjonskrav.virksomhetsnummer})")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT * 2)
         contentStream.showText("Periode:")
         contentStream.newLineAtOffset(0F, -LINE_HEIGHT)

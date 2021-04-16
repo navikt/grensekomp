@@ -15,7 +15,7 @@ class AltinnKvitteringMapper(
         val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val dateTimeFormatterMedKl = DateTimeFormatter.ofPattern("dd.MM.yyyy 'kl.' HH:mm")
         val dateTimeFormatterPlain = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        val seksG = grunnbeløpClient.hentGrunnbeløp().grunnbeløp * 6
+        val seksG = grunnbeløpClient.hentGrunnbeløp().grunnbeløp * 6.0
 
         val tittel = "Kvittering for krav om utvidet refusjon ved koronaviruset"
 
