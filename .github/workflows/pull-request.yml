@@ -45,7 +45,12 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Oslo"
+          timezoneWindows: "Europe/Oslo"
+          timezoneMacos: "Europe/Oslo"
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
