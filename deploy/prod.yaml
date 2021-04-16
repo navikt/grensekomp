@@ -49,6 +49,7 @@ spec:
         - host: altinn.no
         - host: www.altinn.no
         - host: data.brreg.no
+        - host: g.nav.no
 
       rules:
         - application: helsearbeidsgiver-proxy

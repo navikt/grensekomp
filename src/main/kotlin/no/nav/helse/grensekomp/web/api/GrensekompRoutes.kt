@@ -99,14 +99,11 @@ fun Route.grensekompRoutes(
                     dto.validate()
                     authorize(authorizer, dto.virksomhetsnummer)
                     val personData = pdlClient.fullPerson(dto.identitetsnummer)
-                    logger.info(personData.toString())
 
                     val aktueltArbeidsforhold = aaregClient.hentArbeidsforhold(dto.identitetsnummer, UUID.randomUUID().toString())
                         .filter { it.arbeidsgiver.organisasjonsnummer == dto.virksomhetsnummer }
                         .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
                         .lastOrNull()
-
-                    logger.info(aktueltArbeidsforhold.toString())
 
                     validerPdlBaserteRegler(personData, dto)
                     validerArbeidsforhold(aktueltArbeidsforhold, dto,)
@@ -115,8 +112,6 @@ fun Route.grensekompRoutes(
                     val erEØSBorger = personData?.hentPerson?.statsborgerskap?.any { s -> godkjenteBostedsKoder.contains(s.land) } ?: false
                     val erDød = personData?.hentPerson?.trekkUtDoedsfalldato() != null
                     val etteranmeldtArbeidsforhold = aktueltArbeidsforhold?.registrert?.toLocalDate()?.isAfter(Periode.refusjonFraDato) ?: false
-
-                    logger.info("EØS: $erEØSBorger Død: $erDød etteranmeldt: $etteranmeldtArbeidsforhold")
 
                     domeneListeMedIndex[i] = Refusjonskrav(
                         opprettetAv,
@@ -188,12 +183,9 @@ fun Route.grensekompRoutes(
             val hasErrors = responseBody.any { it.status != PostListResponseDto.Status.OK }
 
             if (hasErrors) {
-                logger.info("Har feil")
                 responseBody.filter { it.status == PostListResponseDto.Status.OK }.forEach { it.status = PostListResponseDto.Status.VALIDATION_ERRORS }
             } else {
-                logger.info("Har ikke feil")
                 if (domeneListeMedIndex.isNotEmpty()) {
-                    logger.info("Lagrer")
                     val savedList = refusjonskravService.saveKravListWithKvittering(domeneListeMedIndex)
                     savedList.forEach { item ->
                         responseBody[item.key] = PostListResponseDto(status = PostListResponseDto.Status.OK)
