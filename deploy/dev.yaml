@@ -47,6 +47,7 @@ spec:
         - host: helsearbeidsgiver-proxy.dev-fss-pub.nais.io
         - host: tt02.altinn.no
         - host: altinn.no
+        - host: www.altinn.no
         - host: data.brreg.no
 
       rules:
