@@ -22,25 +22,20 @@ class AltinnKvitteringSender(
 
     override fun send(kvittering: Kvittering) {
         try {
+            log.info("Starter sending til altinn")
             val receiptExternal = iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
                     username, password,
                     SYSTEM_USER_CODE, kvittering.id.toString(),
                     altinnKvitteringMapper.mapKvitteringTilInsertCorrespondence(kvittering)
             )
+            log.info("Ferdig sendt til Altinn med svar: $receiptExternal")
             if (receiptExternal.receiptStatusCode != ReceiptStatusEnum.OK) {
-                log.error("Fikk uventet statuskode fra Altinn {}", receiptExternal.receiptStatusCode)
-                throw RuntimeException("Feil ved sending kvittering til Altinn")
+                throw RuntimeException("Fikk uventet statuskode fra Altinn ${receiptExternal.receiptStatusCode}")
             } else {
                 kvittering.status = KvitteringStatus.SENDT
             }
         } catch (e: ICorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage) {
-            log.error("Feil ved sending kvittering til Altinn", e)
-            log.error("${e.faultInfo} ${e.cause} ${e.message}")
-            log.error("Feil ved sending kvittering til Altinn", e)
-            throw RuntimeException("Feil ved sending kvittering til Altinn", e)
-        } catch (e: Exception) {
-            log.error("Feil ved sending kvittering til Altinn", e)
-            throw e
+            throw RuntimeException("Feil ved sending kvittering til Altinn. ${e.faultInfo} ${e.cause} ${e.message}", e)
         }
         finally {
             db.update(kvittering)
