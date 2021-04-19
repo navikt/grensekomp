@@ -67,8 +67,9 @@ class PostgresRefusjonskravService(
             if (refusjonskrav != null) {
                 logger.debug("sletter krav ", refusjonskrav.id)
                 refusjonskrav.status = RefusjonskravStatus.SLETTET
-                refusjonskravRepository.update(refusjonskrav)
+                refusjonskravRepository.update(refusjonskrav, con)
                 lagreSlettRefusjonskravJobb(refusjonskrav, con)
+                con.commit()
             }
             return refusjonskrav
         }
