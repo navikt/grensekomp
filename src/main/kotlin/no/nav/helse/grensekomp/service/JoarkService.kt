@@ -56,7 +56,7 @@ class JoarkService(val dokarkivKlient: DokarkivKlient, val brreg: BrregClient, v
                 JournalpostRequest(
                         journalposttype = Journalposttype.INNGAAENDE,
                         kanal = "NAV_NO",
-                        eksternReferanseId = refusjonskrav.id.toString(),
+                        eksternReferanseId = "${refusjonskrav.id}-annul",
                         tittel = "Annuller refusjonskrav for utestengt arbeidstaker",
                         bruker = Bruker(
                                 id = refusjonskrav.identitetsnummer,
