@@ -1,5 +1,6 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
+import no.nav.helse.grensekomp.domene.RefusjonskravStatus
 import no.nav.helse.grensekomp.service.RefusjonskravService
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.dto.validation.BostedlandValidator
@@ -33,7 +34,9 @@ fun <E> Validator<E>.Property<String?>.isValidBostedsland() =
 class OverloependePerioderConstraints : CustomConstraint
 fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: RefusjonskravService) {
     val refKrav = refusjonskravService.getPersonKrav(refusjonskrav.identitetsnummer)
-    refKrav.forEach { it ->
+    refKrav
+        .filter { it.status != RefusjonskravStatus.SLETTET && it.virksomhetsnummer == refusjonskrav.virksomhetsnummer }
+        .forEach { it ->
         if(refusjonskrav.periode.overlap(it.periode)) {
             throw ConstraintViolationException(
                 setOf(
