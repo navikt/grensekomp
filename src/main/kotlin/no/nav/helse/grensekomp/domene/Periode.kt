@@ -28,12 +28,14 @@ data class Periode(
         return 0
     }
 
-    fun estimertUtbetaling(seksG: Double): Double {
+    fun estimertUtbetaling(seksG: Double): Int {
         val antallUkedager = fom.datesUntil(tom.plusDays(1))
             .filter { d -> !weekend.contains(d.dayOfWeek) }
-            .count()
+            .count().toInt()
 
-        return (min(beregnetMånedsinntekt * 12, seksG) / 260).roundToInt() * antallUkedager * justeringsFaktor
+        val dagsats = (min(beregnetMånedsinntekt * 12, seksG) / 260).roundToInt()
+        val nedjustertDagsats = (dagsats * justeringsFaktor).roundToInt()
+        return nedjustertDagsats * antallUkedager
     }
 
     //https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap

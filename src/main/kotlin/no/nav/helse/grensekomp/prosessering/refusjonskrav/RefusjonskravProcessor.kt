@@ -87,9 +87,7 @@ class RefusjonskravProcessor(val joarkService: JoarkService,
             INNKOMMENDE_REFUSJONSKRAV_COUNTER.inc()
             INNKOMMENDE_REFUSJONSKRAV_BELOEP_COUNTER
                 .labels(refusjonskrav.bostedland, refusjonskrav.erEØSStatsborger.toString())
-                .inc(
-                refusjonskrav.periode.estimertUtbetaling(grunnbeløpClient.hentGrunnbeløp().grunnbeløp * 6.0)
-            )
+                .inc(refusjonskrav.periode.estimertUtbetaling(grunnbeløpClient.hentGrunnbeløp().grunnbeløp * 6.0).toDouble())
         } catch (t: Throwable) {
             logger.error("Feilet i å telle metrikker", t)
         }

@@ -63,18 +63,14 @@ fun Route.grensekompRoutes(
             var refusjonskrav = refusjonskravService.getKrav(reufusjonskravId)
             val om = application.get<ObjectMapper>()
             if(refusjonskrav == null)
-                call.respond(HttpStatusCode.NotFound,"Fant ikke refusjonskrav med id " + reufusjonskravId)
+                call.respond(HttpStatusCode.NotFound, "Fant ikke refusjonskrav med id $reufusjonskravId")
             else {
                 val virksomhetnr = refusjonskrav.virksomhetsnummer
                 authorize(authorizer, virksomhetnr)
-
-
                 refusjonskrav = refusjonskravService.cancelKrav(refusjonskrav.id)
-
                 call.respond(HttpStatusCode.OK, om.writeValueAsString(refusjonskrav))
             }
         }
-
 
         post("/list") {
             val logger = LoggerFactory.getLogger("API")
