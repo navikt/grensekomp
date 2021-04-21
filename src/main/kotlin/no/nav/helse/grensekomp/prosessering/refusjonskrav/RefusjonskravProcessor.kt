@@ -70,11 +70,11 @@ class RefusjonskravProcessor(val joarkService: JoarkService,
                 OPPGAVE_COUNTER.inc()
             }
             refusjonskrav.status = RefusjonskravStatus.SENDT_TIL_BEHANDLING
+            tryDoMetrics(refusjonskrav)
         } finally {
             try {
                 timer.close()
                 repository.update(refusjonskrav)
-                tryDoMetrics(refusjonskrav)
             } catch (t: Throwable) {
                 logger.error("Feilet i lagring av ${refusjonskrav.id} med  joarkRef: ${refusjonskrav.joarkReferanse} oppgaveId ${refusjonskrav.oppgaveId} ")
                 throw t
