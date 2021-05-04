@@ -5,6 +5,7 @@ import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import org.valiktor.ConstraintViolation
 import org.valiktor.i18n.toMessage
 import java.net.URI
+import java.util.*
 
 
 /**
@@ -31,7 +32,7 @@ open class Problem(
 class ValidationProblem(
         val violations: Set<ValidationProblemDetail>
 ) : Problem(
-        URI.create("urn:sporenstreks:validation-error"),
+        URI.create("urn:grensekomp:validation-error"),
         "Valideringen av input feilet",
         422,
         "Ett eller flere felter har feil."
@@ -40,7 +41,15 @@ class ValidationProblem(
 class ValidationProblemDetail(
         val validationType: String, val message: String, val propertyPath: String, val invalidValue: Any?)
 
-fun ConstraintViolation.getContextualMessage(): String {
+fun ConstraintViolation.getContextualMessage(locale: Locale): String {
+    return if (locale.equals(Locale.ENGLISH)) {
+        getContextualMessageEN()
+    } else {
+        getContextualMessageNO()
+    }
+}
+
+fun ConstraintViolation.getContextualMessageNO(): String {
     return when {
         (this.constraint.name =="True" && this.property.endsWith(RefusjonskravDto::bekreftet.name)) ->  "Du må bekreftet at opplysningene er riktige"
         (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::beregnetMånedsinntekt.name)) ->  "Beløpet må være et positivt tall eller null"
@@ -51,20 +60,13 @@ fun ConstraintViolation.getContextualMessage(): String {
     }
 }
 
-/**
- * Problem extension for excel-validation-feil.
- * Inneholder en liste over rader og kolonner som feilet parsing eller
- */
-class ExcelProblem(
-    val problemDetails: Set<ExcelProblemDetail>,
-    var message: String? = "En eller flere rader/kolonner har feil."
-) : Problem(
-        URI.create("urn:sporenstreks:excel-error"),
-        "Det var en eller flere feil med excelarket",
-        422,
-        message
-)
-
-class ExcelProblemDetail(
-        val message: String, val row: String, val column: String)
-
+fun ConstraintViolation.getContextualMessageEN(): String {
+    return when {
+        (this.constraint.name =="True" && this.property.endsWith(RefusjonskravDto::bekreftet.name)) ->  "You have to attest to the validity of the information"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::beregnetMånedsinntekt.name)) ->  "The amount must be positive"
+        (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::beregnetMånedsinntekt.name)) ->  "The amount is too large"
+        (this.constraint.name =="GreaterOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "From-date must be before To-date"
+        (this.constraint.name =="LessOrEqual" && this.property.endsWith(Periode::tom.name)) ->  "Future dates not accepted"
+        else -> this.toMessage(locale = Locale.ENGLISH).message
+    }
+}

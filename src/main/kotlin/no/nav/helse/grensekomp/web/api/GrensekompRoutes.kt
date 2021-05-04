@@ -74,6 +74,7 @@ fun Route.grensekompRoutes(
 
         post("/list") {
             val logger = LoggerFactory.getLogger("API")
+            val locale = if (call.request.headers[HttpHeaders.AcceptLanguage] == "en") Locale.ENGLISH else Locale.forLanguageTag("no-NB")
 
             val refusjonskravJson = call.receiveText()
             val om = application.get<ObjectMapper>()
@@ -143,7 +144,7 @@ fun Route.grensekompRoutes(
 
                 } catch (validationEx: ConstraintViolationException) {
                     val problems = validationEx.constraintViolations.map {
-                        ValidationProblemDetail(it.constraint.name, it.getContextualMessage(), it.property, it.value)
+                        ValidationProblemDetail(it.constraint.name, it.getContextualMessage(locale), it.property, it.value)
                     }
                     responseBody[i] = PostListResponseDto(
                         status = PostListResponseDto.Status.VALIDATION_ERRORS,
@@ -157,7 +158,7 @@ fun Route.grensekompRoutes(
                         val problems = (genericEx.cause as ConstraintViolationException).constraintViolations.map {
                             ValidationProblemDetail(
                                 it.constraint.name,
-                                it.getContextualMessage(),
+                                it.getContextualMessage(locale),
                                 it.property,
                                 it.value
                             )

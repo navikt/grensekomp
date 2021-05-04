@@ -36,8 +36,10 @@ fun Application.configureExceptionHandling() {
         }
 
         suspend fun handleValidationError(call: ApplicationCall, cause: ConstraintViolationException) {
+            val locale = if (call.request.headers[HttpHeaders.AcceptLanguage] == "en") Locale.ENGLISH else Locale.forLanguageTag("no-NB")
+
             val problems = cause.constraintViolations.map {
-                ValidationProblemDetail(it.constraint.name, it.getContextualMessage(), it.property, it.value)
+                ValidationProblemDetail(it.constraint.name, it.getContextualMessage(locale), it.property, it.value)
             }.toSet()
 
             call.respond(HttpStatusCode.UnprocessableEntity, ValidationProblem(problems))
