@@ -21,7 +21,7 @@ internal class AaregConstraintsKtTest {
             opplysningspliktig,
             emptyList(),
             Ansettelsesperiode(Periode(
-                LocalDate.of(2020, 8, 1),
+                LocalDate.of(2019, 1, 1),
                 LocalDate.of(2021, 2, 28)
             )),
             LocalDateTime.now()

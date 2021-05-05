@@ -5,6 +5,7 @@ import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Arbeidsforhold
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.metrics.MANGLENDE_ARBEIDSFORHOLD
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
+import org.slf4j.LoggerFactory
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
 import java.time.LocalDate
@@ -14,15 +15,20 @@ import no.nav.helse.arbeidsgiver.integrasjoner.aareg.Periode as AaregPeriode
 class ArbeidsforholdConstraint : CustomConstraint
 class ArbeidsforholdStartConstraint : CustomConstraint
 class ArbeidsforholdLengdeConstraint : CustomConstraint
+val MAKS_DAGER_OPPHOLD = 3L
 
 @KtorExperimentalAPI
 fun validerArbeidsforhold(aktuelleArbeidsforhold: List<Arbeidsforhold>, refusjonskrav: RefusjonskravDto) {
+    val logger = LoggerFactory.getLogger("AAREG-validator")
 
     val sisteArbeidsforhold = aktuelleArbeidsforhold
         .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
         .takeLast(2)
 
-    val ansPeriode = if (sisteArbeidsforhold.size <= 1 || oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold, 3))
+    logger.info(sisteArbeidsforhold.toString())
+
+    val oppholdMellomPerioderOverstigerMaks = oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold, MAKS_DAGER_OPPHOLD)
+    val ansPeriode = if (sisteArbeidsforhold.size <= 1 || oppholdMellomPerioderOverstigerMaks)
         sisteArbeidsforhold.lastOrNull()?.ansettelsesperiode?.periode ?: AaregPeriode(LocalDate.MAX, LocalDate.MAX)
     else
         AaregPeriode(
