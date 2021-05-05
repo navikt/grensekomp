@@ -16,15 +16,25 @@ class ArbeidsforholdStartConstraint : CustomConstraint
 class ArbeidsforholdLengdeConstraint : CustomConstraint
 
 @KtorExperimentalAPI
-fun validerArbeidsforhold(aktueltArbeidsforhold: Arbeidsforhold?, refusjonskrav: RefusjonskravDto) {
+fun validerArbeidsforhold(aktuelleArbeidsforhold: List<Arbeidsforhold>, refusjonskrav: RefusjonskravDto) {
 
-    val ansPeriode = aktueltArbeidsforhold?.ansettelsesperiode?.periode ?: AaregPeriode(LocalDate.MAX, LocalDate.MAX)
+    val sisteArbeidsforhold = aktuelleArbeidsforhold
+        .sortedBy { it.ansettelsesperiode.periode.tom ?: LocalDate.MAX }
+        .takeLast(2)
+
+    val ansPeriode = if (sisteArbeidsforhold.size <= 1 || oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold, 3))
+        sisteArbeidsforhold.lastOrNull()?.ansettelsesperiode?.periode ?: AaregPeriode(LocalDate.MAX, LocalDate.MAX)
+    else
+        AaregPeriode(
+            sisteArbeidsforhold.first().ansettelsesperiode.periode.fom,
+            sisteArbeidsforhold.first().ansettelsesperiode.periode.tom
+        )
 
     val kravPeriodeSubsettAvAnsPeriode = ansPeriode.tom == null ||
             refusjonskrav.periode.tom.isBefore(ansPeriode.tom) ||
             refusjonskrav.periode.tom == ansPeriode.tom
 
-    if (aktueltArbeidsforhold == null || !kravPeriodeSubsettAvAnsPeriode) {
+    if (aktuelleArbeidsforhold == null || !kravPeriodeSubsettAvAnsPeriode) {
         MANGLENDE_ARBEIDSFORHOLD.labels("arbeidsforhold_mangler").inc()
         throw ConstraintViolationException(
             setOf(
@@ -65,4 +75,9 @@ fun validerArbeidsforhold(aktueltArbeidsforhold: Arbeidsforhold?, refusjonskrav:
 //            )
 //        )
 //    }
+}
+
+fun oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold: List<Arbeidsforhold>, dager: Long): Boolean {
+    return sisteArbeidsforhold.first().ansettelsesperiode.periode.tom?.plusDays(dager)
+        ?.isBefore(sisteArbeidsforhold.last().ansettelsesperiode.periode.fom) ?: true
 }

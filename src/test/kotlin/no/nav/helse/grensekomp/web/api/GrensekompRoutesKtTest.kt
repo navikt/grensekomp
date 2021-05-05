@@ -69,7 +69,7 @@ internal class ArbeidsforholdContraintTest {
 
 
         runBlocking {
-            validerArbeidsforhold(aaregMock.hentArbeidsforhold("", "").first(), krav)
+            validerArbeidsforhold(aaregMock.hentArbeidsforhold("", ""), krav)
         }
 
 
