@@ -33,7 +33,7 @@ fun validerArbeidsforhold(aktuelleArbeidsforhold: List<Arbeidsforhold>, refusjon
     else
         AaregPeriode(
             sisteArbeidsforhold.first().ansettelsesperiode.periode.fom,
-            sisteArbeidsforhold.first().ansettelsesperiode.periode.tom
+            sisteArbeidsforhold.last().ansettelsesperiode.periode.tom
         )
 
     val kravPeriodeSubsettAvAnsPeriode = ansPeriode.tom == null ||
