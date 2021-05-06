@@ -55,6 +55,10 @@ internal class AaregConstraintsKtTest {
         }
 
         assertThrows<ConstraintViolationException> {
+            validerArbeidsforhold(emptyList(), TestData.gyldigSoeknad)
+        }
+
+        assertThrows<ConstraintViolationException> {
             val forLangtOpphold = arbeidsForhold2.copy(ansettelsesperiode = Ansettelsesperiode(Periode(
                 LocalDate.of(2021, 3, 4),
                 null

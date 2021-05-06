@@ -27,8 +27,7 @@ fun validerArbeidsforhold(aktuelleArbeidsforhold: List<Arbeidsforhold>, refusjon
 
     logger.info(sisteArbeidsforhold.toString())
 
-    val oppholdMellomPerioderOverstigerMaks = oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold, MAKS_DAGER_OPPHOLD)
-    val ansPeriode = if (sisteArbeidsforhold.size <= 1 || oppholdMellomPerioderOverstigerMaks)
+    val ansPeriode = if (sisteArbeidsforhold.size <= 1 || oppholdMellomPerioderOverstigerDager(sisteArbeidsforhold, MAKS_DAGER_OPPHOLD))
         sisteArbeidsforhold.lastOrNull()?.ansettelsesperiode?.periode ?: AaregPeriode(LocalDate.MAX, LocalDate.MAX)
     else
         AaregPeriode(
