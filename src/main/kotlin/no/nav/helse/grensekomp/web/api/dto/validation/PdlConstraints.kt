@@ -20,7 +20,10 @@ fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: Refus
         val erUtvandretFraDenneAddressenFørCutoff =
             adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato)
 
-        harKjentNorskAddress && !erUtvandretFraDenneAddressenFørCutoff
+        val erInnvandretTilDenneAddressenEtterPerioden =
+            adr.gyldigFraOgMed != null && adr.gyldigFraOgMed!!.toLocalDate().isAfter(refusjonskrav.periode.tom)
+
+        harKjentNorskAddress && !erUtvandretFraDenneAddressenFørCutoff && !erInnvandretTilDenneAddressenEtterPerioden
     } ?: false
 
 
