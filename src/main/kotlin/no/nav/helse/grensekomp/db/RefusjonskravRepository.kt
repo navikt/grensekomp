@@ -20,4 +20,6 @@ interface RefusjonskravRepository {
     fun getAllForVirksomhetWithoutKvittering(virksomhetsnummer: String): List<Refusjonskrav>
     fun getRandomVirksomhetWithoutKvittering(): String?
     fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav>
+
+    fun countByStatus(): Map<RefusjonskravStatus, Int>
 }

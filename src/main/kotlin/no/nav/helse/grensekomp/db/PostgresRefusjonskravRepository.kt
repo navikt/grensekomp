@@ -13,6 +13,7 @@ import java.sql.SQLException
 import java.util.*
 import javax.sql.DataSource
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapper) : RefusjonskravRepository {
     private val logger = LoggerFactory.getLogger(PostgresRefusjonskravRepository::class.java)
@@ -45,7 +46,22 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
     private val deleteAllStatement = "DELETE FROM $tableName"
 
+    private val countByStatus = """SELECT data ->> 'status', count(*) FROM $tableName GROUP BY data ->> 'status'"""
+
     private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
+
+    override fun countByStatus(): Map<RefusjonskravStatus, Int> {
+        ds.connection.use { con ->
+            val resultMap = HashMap<RefusjonskravStatus, Int>()
+            val res = con.prepareStatement(countByStatus).apply {
+            }.executeQuery()
+
+            while (res.next()) {
+                resultMap.put(RefusjonskravStatus.valueOf(res.getString(0)), res.getInt(1))
+            }
+            return resultMap
+        }
+    }
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         ds.connection.use { con ->
