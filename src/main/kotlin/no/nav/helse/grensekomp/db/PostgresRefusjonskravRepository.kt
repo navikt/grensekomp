@@ -65,7 +65,7 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
             }.executeQuery()
 
             while (res.next()) {
-                resultMap[res.getInt(0)] = Pair(res.getInt(1), res.getFloat(2))
+                resultMap[res.getInt(1)] = Pair(res.getInt(2), res.getFloat(3))
             }
             return resultMap
         }
