@@ -9,6 +9,7 @@ import no.nav.helse.arbeidsgiver.bakgrunnsjobb.PostgresBakgrunnsjobbRepository
 import no.nav.helse.arbeidsgiver.system.getString
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.arbeidsgiver.web.auth.DefaultAltinnAuthorizer
+import no.nav.helse.grensekomp.datapakke.DatapakkePublisherJob
 import no.nav.helse.grensekomp.db.*
 import no.nav.helse.grensekomp.integration.GrunnbeløpClient
 import no.nav.helse.grensekomp.service.JoarkService
@@ -26,11 +27,11 @@ import javax.sql.DataSource
 
 
 @KtorExperimentalAPI
-fun localDevConfig(config: ApplicationConfig) = module {
+fun localDevConfig(cfg: ApplicationConfig) = module {
     mockExternalDependecies()
     single { GrunnbeløpClient(get()) }
 
-    single { HikariDataSource(createHikariConfig(config.getjdbcUrlFromProperties(), config.getString("database.username"), config.getString("database.password"))) } bind DataSource::class
+    single { HikariDataSource(createHikariConfig(cfg.getjdbcUrlFromProperties(), cfg.getString("database.username"), cfg.getString("database.password"))) } bind DataSource::class
 
     single { PostgresBakgrunnsjobbRepository(get()) } bind BakgrunnsjobbRepository::class
     single { BakgrunnsjobbService(get()) }
@@ -48,4 +49,8 @@ fun localDevConfig(config: ApplicationConfig) = module {
     single { RefusjonskravProcessor(get(), get(), get(), get(), get(), get()) }
     single { SletteRefusjonskravProcessor(get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
+
+    single { DatapakkePublisherJob(get(), get(), cfg.getString("datapakke.api_url"), cfg.getString("datapakke.id")) }
+
+
 }

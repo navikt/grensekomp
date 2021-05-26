@@ -12,6 +12,7 @@ import no.nav.helse.arbeidsgiver.kubernetes.ReadynessComponent
 import no.nav.helse.arbeidsgiver.system.AppEnv
 import no.nav.helse.arbeidsgiver.system.getEnvironment
 import no.nav.helse.arbeidsgiver.system.getString
+import no.nav.helse.grensekomp.datapakke.DatapakkePublisherJob
 import no.nav.helse.grensekomp.koin.getAllOfType
 import no.nav.helse.grensekomp.koin.selectModuleBasedOnProfile
 import no.nav.helse.grensekomp.web.nais.nais
@@ -84,6 +85,8 @@ class GrensekompApplication(val port: Int = 8080) : KoinComponent {
                 registrer(get<SletteRefusjonskravProcessor>())
                 startAsync(true)
             }
+
+            get<DatapakkePublisherJob>().startAsync(retryOnFail = true)
             logger.info("Startet!")
         }
     }

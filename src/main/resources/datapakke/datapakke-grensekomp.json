@@ -1,0 +1,45 @@
+{
+  "title": "Grensekompensasjon",
+  "type": "datapackage",
+  "description": "Kravstatistikk fra kompensasjonsordningen for utestengte EØS-borgere",
+  "name": "grensekomp_statistikk",
+  "uri": "https://arbeidsgiver.nav.no/grensekomp-frontend",
+  "url": "https://arbeidsgiver.nav.no/grensekomp-frontend",
+  "team": "helsearbeidsgiver",
+  "views": [
+    {
+      "title": "Antall krav",
+      "description": "Antall Krav per uke",
+      "specType": "echart",
+      "spec": {
+        "url": "",
+        "option": {
+          "legend": {
+            "data": ["Antall krav", "Estimert refusjonsbeløp"]
+          },
+          "xAxis": {
+            "type": "category",
+            "data": [@ukeSerie]
+          },
+          "yAxis": {
+            "type": "value"
+          },
+          "series": [{
+            "data": [@antallSerie],
+            "type": "line"
+          }, {
+            "data": [@beløpSerie],
+            "type": "line"
+          }],
+          "toolbox": {
+            "show": true,
+            "feature": {
+              "magicType": {"type": ["line", "bar"]},
+              "saveAsImage": {}
+            }
+          }
+        }
+      }
+    }
+  ]
+}

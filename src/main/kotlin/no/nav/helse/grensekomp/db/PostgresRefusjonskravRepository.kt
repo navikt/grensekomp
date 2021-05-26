@@ -13,6 +13,7 @@ import java.sql.SQLException
 import java.util.*
 import javax.sql.DataSource
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapper) : RefusjonskravRepository {
     private val logger = LoggerFactory.getLogger(PostgresRefusjonskravRepository::class.java)
@@ -45,7 +46,30 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
     private val deleteAllStatement = "DELETE FROM $tableName"
 
+    private val statsByWeekStatement = """
+        SELECT
+               extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD')) as uke,
+               count(*) as antall,
+               sum((data -> 'periode' ->> 'beregnetMånedsinntekt')::float)
+        FROM refusjonskrav
+        WHERE data ->> 'status' = 'SENDT_TIL_BEHANDLING'
+        GROUP BY extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD'));
+    """.trimIndent()
+
     private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
+
+    override fun statsByWeek(): Map<Int, Pair<Int, Float>> {
+        ds.connection.use { con ->
+            val resultMap = HashMap<Int, Pair<Int, Float>>()
+            val res = con.prepareStatement(statsByWeekStatement).apply {
+            }.executeQuery()
+
+            while (res.next()) {
+                resultMap[res.getInt(0)] = Pair(res.getInt(1), res.getFloat(2))
+            }
+            return resultMap
+        }
+    }
 
     override fun getAllForVirksomhet(virksomhetsnummer: String): List<Refusjonskrav> {
         ds.connection.use { con ->

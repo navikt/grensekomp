@@ -2,6 +2,7 @@ package no.nav.helse.grensekomp.db
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.helse.grensekomp.domene.RefusjonskravStatus
 import no.nav.helse.grensekomp.kvittering.Kvittering
 import no.nav.helse.grensekomp.kvittering.KvitteringStatus
 import java.io.IOException

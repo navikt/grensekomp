@@ -83,6 +83,10 @@ spec:
       value: data.brreg.no/enhetsregisteret/api/underenheter
     - name: PROXY_SCOPE
       value: api://dev-fss.helsearbeidsgiver.helsearbeidsgiver-proxy/.default
+    - name: DATAPAKKE_ID
+      value: 8f29efc4b7e41002130db5a172587fd4
+    - name: DATAPAKKE_API_URL
+      value: https://datakatalog-api.dev.intern.nav.no/v1/datapackage
 
   gcp:
     sqlInstances:
