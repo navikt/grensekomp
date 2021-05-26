@@ -50,6 +50,7 @@ spec:
         - host: www.altinn.no
         - host: data.brreg.no
         - host: g.nav.no
+        - host: datakatalog-api.dev.intern.nav.no
 
       rules:
         - application: helsearbeidsgiver-proxy
