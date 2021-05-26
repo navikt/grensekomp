@@ -21,5 +21,5 @@ interface RefusjonskravRepository {
     fun getRandomVirksomhetWithoutKvittering(): String?
     fun getByIdentitetsnummer(identitetsnummer: String): List<Refusjonskrav>
 
-    fun countByStatus(): Map<RefusjonskravStatus, Int>
+    fun statsByWeek(): Map<Int, Pair<Int, Float>>
 }

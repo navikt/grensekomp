@@ -46,18 +46,26 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
     private val deleteStatement = "DELETE FROM $tableName WHERE data ->> 'id' = ?"
     private val deleteAllStatement = "DELETE FROM $tableName"
 
-    private val countByStatus = """SELECT data ->> 'status', count(*) FROM $tableName GROUP BY data ->> 'status'"""
+    private val statsByWeekStatement = """
+        SELECT
+               extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD')) as uke,
+               count(*) as antall,
+               sum((data -> 'periode' ->> 'beregnetMånedsinntekt')::float)
+        FROM refusjonskrav
+        WHERE data ->> 'status' = 'SENDT_TIL_BEHANDLING'
+        GROUP BY extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD'));
+    """.trimIndent()
 
     private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
 
-    override fun countByStatus(): Map<RefusjonskravStatus, Int> {
+    override fun statsByWeek(): Map<Int, Pair<Int, Float>> {
         ds.connection.use { con ->
-            val resultMap = HashMap<RefusjonskravStatus, Int>()
-            val res = con.prepareStatement(countByStatus).apply {
+            val resultMap = HashMap<Int, Pair<Int, Float>>()
+            val res = con.prepareStatement(statsByWeekStatement).apply {
             }.executeQuery()
 
             while (res.next()) {
-                resultMap.put(RefusjonskravStatus.valueOf(res.getString(0)), res.getInt(1))
+                resultMap[res.getInt(0)] = Pair(res.getInt(1), res.getFloat(2))
             }
             return resultMap
         }

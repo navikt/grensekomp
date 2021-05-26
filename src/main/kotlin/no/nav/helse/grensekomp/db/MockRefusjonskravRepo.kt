@@ -43,6 +43,10 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         }
     }
 
+    override fun statsByWeek(): Map<Int, Pair<Int, Float>> {
+        TODO("Not yet implemented")
+    }
+
     override fun insert(refusjonskrav: Refusjonskrav): Refusjonskrav {
         refusjonskravListe.add(refusjonskrav)
         return refusjonskrav

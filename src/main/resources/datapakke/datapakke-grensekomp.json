@@ -1,24 +1,45 @@
 {
-  "title": "Echarts demo datapakke",
-  "description": "Echarts demo datapakke",
+  "title": "Grensekompensasjon",
+  "type": "datapackage",
+  "description": "Kravstatistikk fra kompensasjonsordningen for utestengte EØS-borgere",
+  "name": "grensekomp_statistikk",
+  "uri": "https://arbeidsgiver.nav.no/grensekomp-frontend",
+  "url": "https://arbeidsgiver.nav.no/grensekomp-frontend",
+  "team": "helsearbeidsgiver",
   "views": [
     {
-      "title": "Echart demofigur",
-      "description": "Dette er en testfigur",
+      "title": "Antall krav",
+      "description": "Antall Krav per uke",
       "specType": "echart",
-      "spec": { "option": {
-        "xAxis": {
-          "type": "category",
-          "data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        },
-        "yAxis": {
-          "type": "value"
-        },
-        "series": [{
-          "data": [150, 230, 224, 218, 135, 147, 260],
-          "type": "line"
-        }]
+      "spec": {
+        "url": "",
+        "option": {
+          "legend": {
+            "data": ["Antall krav", "Estimert refusjonsbeløp"]
+          },
+          "xAxis": {
+            "type": "category",
+            "data": [@ukeSerie]
+          },
+          "yAxis": {
+            "type": "value"
+          },
+          "series": [{
+            "data": [@antallSerie],
+            "type": "line"
+          }, {
+            "data": [@beløpSerie],
+            "type": "line"
+          }],
+          "toolbox": {
+            "show": true,
+            "feature": {
+              "magicType": {"type": ["line", "bar"]},
+              "saveAsImage": {}
+            }
+          }
+        }
       }
-      }
-      ]
     }
+  ]
+}
