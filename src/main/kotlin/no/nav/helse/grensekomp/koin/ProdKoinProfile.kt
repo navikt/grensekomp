@@ -10,6 +10,7 @@ import no.nav.helse.arbeidsgiver.system.getString
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.arbeidsgiver.web.auth.DefaultAltinnAuthorizer
 import no.nav.helse.grensekomp.MetrikkVarsler
+import no.nav.helse.grensekomp.datapakke.DatapakkePublisherJob
 import no.nav.helse.grensekomp.db.*
 import no.nav.helse.grensekomp.integration.altinn.message.Clients
 import no.nav.helse.grensekomp.prosessering.kvittering.KvitteringProcessor
@@ -67,6 +68,7 @@ fun prodConfig(config: ApplicationConfig) = module {
     single { SletteRefusjonskravProcessor(get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 
+    single { DatapakkePublisherJob(get(), get(), get(), config.getString("datapakke.api_url"), config.getString("datapakke.id")) }
 
 }
 

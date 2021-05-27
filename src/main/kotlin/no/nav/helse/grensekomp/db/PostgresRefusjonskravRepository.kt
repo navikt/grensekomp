@@ -10,6 +10,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.time.temporal.WeekFields
 import java.util.*
 import javax.sql.DataSource
 import kotlin.collections.ArrayList
@@ -47,27 +48,26 @@ class PostgresRefusjonskravRepository(val ds: DataSource, val mapper: ObjectMapp
     private val deleteAllStatement = "DELETE FROM $tableName"
 
     private val statsByWeekStatement = """
-        SELECT
-               extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD')) as uke,
-               count(*) as antall,
-               sum((data -> 'periode' ->> 'beregnetMånedsinntekt')::float)
-        FROM refusjonskrav
-        WHERE data ->> 'status' = 'SENDT_TIL_BEHANDLING'
-        GROUP BY extract('week' from to_date(data ->> 'opprettet', 'YYYY-MM-DD'));
+        SELECT * FROM refusjonskrav
+        WHERE data ->> 'status' = 'SENDT_TIL_BEHANDLING';
     """.trimIndent()
 
     private val getByIdentitetsnummerStatement = "SELECT * FROM $tableName WHERE data ->> 'identitetsnummer' = ?;"
 
-    override fun statsByWeek(): Map<Int, Pair<Int, Float>> {
+    override fun statsByWeek(seksG: Double): Map<Int, Pair<Int, Int>> {
         ds.connection.use { con ->
             val resultMap = HashMap<Int, Pair<Int, Float>>()
             val res = con.prepareStatement(statsByWeekStatement).apply {
             }.executeQuery()
 
+            val resultList = ArrayList<Refusjonskrav>()
             while (res.next()) {
-                resultMap[res.getInt(1)] = Pair(res.getInt(2), res.getFloat(3))
+                resultList.add(extractRefusjonskrav(res))
             }
-            return resultMap
+
+            return resultList
+                .groupBy { it.opprettet.get(WeekFields.ISO.weekOfYear()) }
+                .mapValues { Pair(it.value.size, it.value.sumBy { krav -> krav.periode.estimertUtbetaling(seksG) }) }
         }
     }
 

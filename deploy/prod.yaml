@@ -50,6 +50,7 @@ spec:
         - host: www.altinn.no
         - host: data.brreg.no
         - host: g.nav.no
+        - host: datakatalog-api.prod-gcp.nais.io
 
       rules:
         - application: helsearbeidsgiver-proxy
@@ -87,6 +88,11 @@ spec:
       value: /grensekomp-api
     - name: RUN_BACKGROUND_WORKERS
       value: "true"
+    - name: DATAPAKKE_ID
+      value: 8f29efc4b7e41002130db5a172587fd4
+    - name: DATAPAKKE_API_URL
+      value: https://datakatalog-api.prod-gcp.nais.io/v1/datapackage
+
 
   gcp:
     sqlInstances:

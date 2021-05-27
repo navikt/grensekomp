@@ -43,7 +43,7 @@ class MockRefusjonskravRepo : RefusjonskravRepository {
         }
     }
 
-    override fun statsByWeek(): Map<Int, Pair<Int, Float>> {
+    override fun statsByWeek(seksG: Double): Map<Int, Pair<Int, Int>> {
         TODO("Not yet implemented")
     }
 
