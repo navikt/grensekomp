@@ -50,7 +50,7 @@ spec:
         - host: www.altinn.no
         - host: data.brreg.no
         - host: g.nav.no
-        - host: data.dev-fss.nais.io
+        - host: datakatalog-api.dev.intern.nav.no
 
       rules:
         - application: helsearbeidsgiver-proxy
@@ -87,7 +87,7 @@ spec:
     - name: DATAPAKKE_ID
       value: 8f29efc4b7e41002130db5a172587fd4
     - name: DATAPAKKE_API_URL
-      value: https://data.dev-fss.nais.io/v1/datapackage
+      value: https://datakatalog-api.dev.intern.nav.no/v1/datapackage
 
   gcp:
     sqlInstances:
