@@ -8,27 +8,44 @@
   "team": "helsearbeidsgiver",
   "views": [
     {
-      "title": "Antall krav",
-      "description": "Antall Krav per uke",
+      "title": "Antall krav og beløp",
+      "description": "Antall krav og beløp per uke",
       "specType": "echart",
       "spec": {
         "url": "",
         "option": {
+          "tooltip": {
+            "trigger": "axis",
+            "axisPointer": {
+              "type": "cross",
+              "crossStyle": {
+                "color": "#999"
+              }
+            }
+          },
           "legend": {
-            "data": ["Antall krav", "Estimert refusjonsbeløp"]
+            "data": ["Antall krav", "Estimert refusjonsbeløp"],
+            "left": 10
           },
           "xAxis": {
             "type": "category",
-            "data": [@ukeSerie]
+            "data": [17, 18]
           },
-          "yAxis": {
-            "type": "value"
-          },
+          "yAxis": [{
+            "type": "value",
+            "name": "Antall"
+          }, {
+            "type": "value",
+            "name": "Beløp (NOK)"
+          }],
           "series": [{
-            "data": [@antallSerie],
+            "name": "Antall",
+            "data": [123, 235],
             "type": "line"
           }, {
-            "data": [@beløpSerie],
+            "data": [322443, 432934],
+            "name": "Beløp (NOK)",
+            "yAxisIndex": 1,
             "type": "line"
           }],
           "toolbox": {
