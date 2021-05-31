@@ -25,13 +25,14 @@ class DatapakkePublisherJob(
     ) {
 
     override fun doJob() {
-       val datapakkeTemplate = "datapakke/datapakke-grensekomp.json".loadFromResources()
+        val datapakkeTemplate = "datapakke/datapakke-grensekomp.json".loadFromResources()
         val stats = refusjonskravRepository.statsByWeek(gClient.hentGrunnbeløp().grunnbeløp * 6.0)
+        val sorted = stats.keys.sorted()
 
        val populatedDatapakke = datapakkeTemplate
-           .replace("@ukeSerie", stats.keys.joinToString())
-           .replace("@antallSerie", stats.values.map { it.first }.joinToString())
-           .replace("@beløpSerie", stats.values.map { it.second }.joinToString())
+           .replace("@ukeSerie", sorted.joinToString())
+           .replace("@antallSerie", sorted.map { stats[it]!!.first }.joinToString())
+           .replace("@beløpSerie", sorted.map { stats[it]!!.second }.joinToString())
 
         runBlocking {
             val response = httpClient.put<HttpResponse>("$datapakkeApiUrl/$datapakkeId") {
