@@ -45,4 +45,33 @@ internal class PdlConstraintsKtTest {
 
         validerPdlBaserteRegler(pdlInfo, soeknad)
     }
+
+
+    @Test
+    fun `Skal godkjenne med tom liste i boaddresse`() {
+        val pdlInfo = PdlHentFullPerson(
+            PdlHentFullPerson.PdlFullPersonliste(
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList()
+            ),
+
+            PdlHentFullPerson.PdlIdentResponse(listOf(PdlIdent("aktør-id", PdlIdent.PdlIdentGruppe.AKTORID))),
+
+            PdlHentFullPerson.PdlGeografiskTilknytning(
+                PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.UTLAND,
+                null,
+                null,
+                "SWE"
+            )
+        )
+
+        val soeknad = TestData.gyldigSoeknad.copy(periode = Periode(of(2021, 2, 1), of(2021, 4, 30), 25000))
+
+        validerPdlBaserteRegler(pdlInfo, soeknad)
+    }
 }
