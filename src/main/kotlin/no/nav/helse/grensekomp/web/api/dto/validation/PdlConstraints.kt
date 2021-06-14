@@ -16,7 +16,7 @@ class NorskStatsborgerConstraint : CustomConstraint
 fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: RefusjonskravDto) {
 
     val bosattINorge = personData?.hentPerson?.bostedsadresse?.any { adr ->
-        val harKjentNorskAddress = adr.matrikkeladresse != null || adr.ukjentBosted != null || adr.vegadresse != null
+        val harKjentNorskAddress = adr.matrikkeladresse != null || adr.vegadresse != null
         val erUtvandretFraDenneAddressenFørCutoff =
             adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato)
 

@@ -74,4 +74,39 @@ internal class PdlConstraintsKtTest {
 
         validerPdlBaserteRegler(pdlInfo, soeknad)
     }
+
+    @Test
+    fun `Skal godkjenner utkjent bostedsadresse`() {
+        val pdlInfo = PdlHentFullPerson(
+            PdlHentFullPerson.PdlFullPersonliste(
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                listOf(
+                    PdlHentFullPerson.PdlFullPersonliste.PdlBostedsadresse(
+                        LocalDateTime.of(2021, 5,1, 0, 0),
+                        null,
+                        null,
+                        null,
+                        NullNode.getInstance(),
+                    )),
+                emptyList()
+            ),
+
+            PdlHentFullPerson.PdlIdentResponse(listOf(PdlIdent("aktør-id", PdlIdent.PdlIdentGruppe.AKTORID))),
+
+            PdlHentFullPerson.PdlGeografiskTilknytning(
+                PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.UTLAND,
+                null,
+                null,
+                "SWE"
+            )
+        )
+
+        val soeknad = TestData.gyldigSoeknad.copy(periode = Periode(of(2021, 2, 1), of(2021, 4, 30), 25000))
+
+        validerPdlBaserteRegler(pdlInfo, soeknad)
+    }
 }
