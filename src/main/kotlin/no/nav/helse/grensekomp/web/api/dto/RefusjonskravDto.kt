@@ -28,6 +28,7 @@ data class RefusjonskravDto(
 
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
+                validate(Periode::fom).validerInnenforFristen()
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }
