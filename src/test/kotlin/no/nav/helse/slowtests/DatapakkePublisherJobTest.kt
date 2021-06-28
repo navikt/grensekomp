@@ -5,6 +5,7 @@ import no.nav.helse.grensekomp.db.RefusjonskravRepository
 import no.nav.helse.grensekomp.integration.GrunnbeløpClient
 import no.nav.helse.slowtests.systemtests.api.SystemTestBase
 import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.koin.test.inject
 
@@ -14,7 +15,7 @@ class DatapakkePublisherJobTest : SystemTestBase() {
     val gClient by inject<GrunnbeløpClient>()
 
     @Test
-    @Ignore("Exploratory test")
+    @Disabled
     internal fun name() = suspendableTest {
         DatapakkePublisherJob(
             repo,
