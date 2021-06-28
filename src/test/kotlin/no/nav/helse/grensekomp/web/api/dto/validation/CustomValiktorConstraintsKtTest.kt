@@ -16,13 +16,58 @@ class CustomValiktorConstraintsKtTest {
         val periode = Periode(
             LocalDate.MIN,
             LocalDate.MAX,
-            0)
+            0
+        )
 
         validationShouldFailFor(Periode::fom) {
             validate(periode) {
                 validate(Periode::fom).validerInnenforFristen()
             }
         }
+    }
+
+    @Test
+    fun `Skal godta dato i starten av måneden`() {
+
+        val periode = Periode(
+            LocalDate.now().withDayOfMonth(1).minusMonths(6),
+            LocalDate.MAX,
+            0
+        )
+        validate(periode) {
+            validate(Periode::fom).validerInnenforFristen()
+        }
+
+    }
+    @Test
+    fun `Skal godta dato for 2 av måneder siden`() {
+
+        val periode = Periode(
+            LocalDate.now().withDayOfMonth(1).minusMonths(2),
+            LocalDate.MAX,
+            0
+        )
+        validate(periode) {
+            validate(Periode::fom).validerInnenforFristen()
+        }
+
+    }
+
+    @Test
+    fun `Skal ikke godta dato i slutten av måneden for 7 måneder siden`() {
+
+        val periode = Periode(
+            LocalDate.now().minusMonths(7).withDayOfMonth(30),
+            LocalDate.MAX,
+            0
+        )
+
+        validationShouldFailFor(Periode::fom) {
+            validate(periode) {
+                validate(Periode::fom).validerInnenforFristen()
+            }
+        }
+
     }
 
 }
