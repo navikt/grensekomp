@@ -57,7 +57,7 @@ class CustomValiktorConstraintsKtTest {
     fun `Skal ikke godta dato i slutten av måneden for 7 måneder siden`() {
 
         val periode = Periode(
-            LocalDate.now().minusMonths(7).withDayOfMonth(30),
+            LocalDate.now().minusMonths(6).withDayOfMonth(1).minusDays(1),
             LocalDate.MAX,
             0
         )

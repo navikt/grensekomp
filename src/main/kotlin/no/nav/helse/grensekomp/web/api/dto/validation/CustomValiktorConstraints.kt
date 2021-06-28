@@ -54,9 +54,9 @@ fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: R
     }
 }
 
-class InnenforFristenConstraints : CustomConstraint
+class InnenforFristenConstraint : CustomConstraint
 fun <E> Validator<E>.Property<LocalDate?>.validerInnenforFristen() =
-    this.validate(InnenforFristenConstraints()) { fom ->
+    this.validate(InnenforFristenConstraint()) { fom ->
         val minDate = LocalDate.now().minusMonths(6).withDayOfMonth(1).minusDays(1)
         return@validate minDate.isBefore(fom)
     }
