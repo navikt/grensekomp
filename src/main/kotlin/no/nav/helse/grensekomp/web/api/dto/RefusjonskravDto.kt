@@ -2,7 +2,6 @@ package no.nav.helse.grensekomp.web.api.dto
 
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Periode.Companion.refusjonFraDato
-import no.nav.helse.grensekomp.domene.Periode.Companion.minFraDato
 import no.nav.helse.grensekomp.web.api.dto.validation.*
 import org.valiktor.functions.*
 import org.valiktor.validate
@@ -15,7 +14,7 @@ data class RefusjonskravDto(
         val bekreftet: Boolean,
         val bostedsland: String
 ) {
-    fun validate() {
+    fun validate(fristMnd: Long) {
         validate(this) {
             validate(RefusjonskravDto::identitetsnummer).isValidIdentitetsnummer()
             validate(RefusjonskravDto::virksomhetsnummer).isValidOrganisasjonsnummer()
@@ -29,8 +28,8 @@ data class RefusjonskravDto(
 
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
-
-                validate(Periode::fom).validerInnenforFristen(minFraDato)
+                val minFraDatoNy = LocalDate.now().minusMonths(fristMnd).withDayOfMonth(1)
+                validate(Periode::fom).validerInnenforFristen(minFraDatoNy)
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }
