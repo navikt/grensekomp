@@ -18,7 +18,9 @@ data class Periode(
         val refusjonFraDato = LocalDate.of(2021, 1, 29)
         val weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
         val justeringsFaktor = 0.7
-        val minFraDato = LocalDate.now().minusMonths(6).withDayOfMonth(1)
+        //val minFraDato = LocalDate.now().minusMonths(6).withDayOfMonth(1)
+        // midlertidig frist etter 29 juli
+        val minFraDato = LocalDate.of(2021, 3,1)
     }
 
     override fun compareTo(other: Periode): Int {
