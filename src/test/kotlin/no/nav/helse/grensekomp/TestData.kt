@@ -4,6 +4,7 @@ import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
 import no.nav.helse.grensekomp.domene.RefusjonskravStatus
 import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
+import java.time.LocalDate
 import java.time.LocalDate.of
 
 object TestData {
@@ -30,4 +31,6 @@ object TestData {
             1000.0),
         bekreftet = true,
         bostedsland = "SWE")
+
+    val fristDato = LocalDate.of(2021, 2, 1)
 }

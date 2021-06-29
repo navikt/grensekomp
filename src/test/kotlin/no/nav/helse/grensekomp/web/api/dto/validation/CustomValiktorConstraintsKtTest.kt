@@ -1,11 +1,10 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
 import no.nav.helse.grensekomp.domene.Periode
-import no.nav.helse.grensekomp.web.api.dto.RefusjonskravDto
 import no.nav.helse.grensekomp.web.api.resreq.validationShouldFailFor
 import org.junit.jupiter.api.Test
+import no.nav.helse.grensekomp.TestData.fristDato
 
-import org.junit.jupiter.api.Assertions.*
 import org.valiktor.validate
 import java.time.LocalDate
 
@@ -21,7 +20,7 @@ class CustomValiktorConstraintsKtTest {
 
         validationShouldFailFor(Periode::fom) {
             validate(periode) {
-                validate(Periode::fom).validerInnenforFristen()
+                validate(Periode::fom).validerInnenforFristen(fristDato)
             }
         }
     }
@@ -30,41 +29,41 @@ class CustomValiktorConstraintsKtTest {
     fun `Skal godta dato i starten av måneden`() {
 
         val periode = Periode(
-            LocalDate.now().withDayOfMonth(1).minusMonths(6),
+            LocalDate.of(2021, 2, 1),
             LocalDate.MAX,
             0
         )
         validate(periode) {
-            validate(Periode::fom).validerInnenforFristen()
+            validate(Periode::fom).validerInnenforFristen(fristDato)
         }
 
     }
     @Test
-    fun `Skal godta dato for 2 av måneder siden`() {
+    fun `Skal godta dato 2 måneder før fristen`() {
 
         val periode = Periode(
-            LocalDate.now().withDayOfMonth(1).minusMonths(2),
+            LocalDate.of(2021, 4, 1),
             LocalDate.MAX,
             0
         )
         validate(periode) {
-            validate(Periode::fom).validerInnenforFristen()
+            validate(Periode::fom).validerInnenforFristen(fristDato)
         }
 
     }
 
     @Test
-    fun `Skal ikke godta dato i slutten av måneden for 7 måneder siden`() {
+    fun `Skal ikke godta dato dagen før fristen`() {
 
         val periode = Periode(
-            LocalDate.now().minusMonths(6).withDayOfMonth(1).minusDays(1),
+            LocalDate.of(2021, 1, 31),
             LocalDate.MAX,
             0
         )
 
         validationShouldFailFor(Periode::fom) {
             validate(periode) {
-                validate(Periode::fom).validerInnenforFristen()
+                validate(Periode::fom).validerInnenforFristen(fristDato)
             }
         }
 

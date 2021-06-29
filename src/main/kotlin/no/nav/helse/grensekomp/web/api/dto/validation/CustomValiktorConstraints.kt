@@ -11,6 +11,7 @@ import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
 import org.valiktor.Validator
 import org.valiktor.functions.isGreaterThan
+import org.valiktor.functions.isGreaterThanOrEqualTo
 import java.time.LocalDate
 import java.util.*
 
@@ -55,10 +56,9 @@ fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: R
 }
 
 class InnenforFristenConstraint : CustomConstraint
-fun <E> Validator<E>.Property<LocalDate?>.validerInnenforFristen() =
+fun <E> Validator<E>.Property<LocalDate?>.validerInnenforFristen(frist: LocalDate) =
     this.validate(InnenforFristenConstraint()) { fom ->
-        val minDate = LocalDate.now().minusMonths(6).withDayOfMonth(1).minusDays(1)
-        return@validate minDate.isBefore(fom)
+        return@validate fom!!.isAfter(frist) || fom!!.isEqual(frist)
     }
 
 

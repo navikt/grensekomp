@@ -2,6 +2,7 @@ package no.nav.helse.grensekomp.web.api.dto
 
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Periode.Companion.refusjonFraDato
+import no.nav.helse.grensekomp.domene.Periode.Companion.minFraDato
 import no.nav.helse.grensekomp.web.api.dto.validation.*
 import org.valiktor.functions.*
 import org.valiktor.validate
@@ -28,7 +29,8 @@ data class RefusjonskravDto(
 
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
-                validate(Periode::fom).validerInnenforFristen()
+
+                validate(Periode::fom).validerInnenforFristen(minFraDato)
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }
