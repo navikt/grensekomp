@@ -26,7 +26,7 @@ object TestData {
         virksomhetsnummer = validOrgNr,
         periode = Periode(
             of(2021, 1,30),
-            of(2021, 2,5),
+            of(2021, 4,5),
             1000.0),
         bekreftet = true,
         bostedsland = "SWE")

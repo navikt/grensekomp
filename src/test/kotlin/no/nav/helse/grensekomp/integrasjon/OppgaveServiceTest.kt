@@ -3,9 +3,7 @@ package no.nav.helse.grensekomp.integrasjon
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.*
-import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OppgaveKlient
-import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveRequest
-import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.OpprettOppgaveResponse
+import no.nav.helse.arbeidsgiver.integrasjoner.oppgave.*
 import no.nav.helse.grensekomp.TestData
 import no.nav.helse.grensekomp.domene.RefusjonskravForOppgave
 import no.nav.helse.grensekomp.koin.common
@@ -20,6 +18,7 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
 import java.io.IOException
+import java.time.LocalDate
 
 internal class OppgaveServiceTest : KoinTest{
 
@@ -40,7 +39,8 @@ internal class OppgaveServiceTest : KoinTest{
 
 
         every { objectMapperMock.writeValueAsString(any())} returns mockJson
-        coEvery { oppgaveKlientMock.opprettOppgave(capture(mappedRequest), any()) } returns OpprettOppgaveResponse(mockOppgaveId)
+        coEvery { oppgaveKlientMock.opprettOppgave(capture(mappedRequest), any()) } returns
+                OpprettOppgaveResponse(mockOppgaveId, "1234", "SYK", "TEST", 1, LocalDate.now(), Prioritet.NORM, Status.OPPRETTET )
 
         val result = oppgaveService.opprettBehandlingsoppgave(
                 TestData.gyldigKrav,
@@ -71,7 +71,8 @@ internal class OppgaveServiceTest : KoinTest{
         }
 
         val mappedRequest = slot<OpprettOppgaveRequest>()
-        coEvery { oppgaveKlientMock.opprettOppgave(capture(mappedRequest), any()) } returns OpprettOppgaveResponse(mockOppgaveId)
+        coEvery { oppgaveKlientMock.opprettOppgave(capture(mappedRequest), any()) } returns
+                OpprettOppgaveResponse(mockOppgaveId, "1234", "SYK", "TEST", 1, LocalDate.now(), Prioritet.NORM, Status.OPPRETTET )
 
         om = get<ObjectMapper>()
 
