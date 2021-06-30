@@ -18,7 +18,8 @@ fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: Refus
     val bosattINorge = personData?.hentPerson?.bostedsadresse?.any { adr ->
         val harKjentNorskAddress = adr.matrikkeladresse != null || adr.vegadresse != null
         val erUtvandretFraDenneAddressenFørCutoff =
-            adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato)
+            (adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato))
+                    || (adr.angittFlyttedato != null && adr.angittFlyttedato!!.isBefore(Periode.refusjonFraDato))
 
         val erInnvandretTilDenneAddressenEtterPerioden =
             adr.gyldigFraOgMed != null && adr.gyldigFraOgMed!!.toLocalDate().isAfter(refusjonskrav.periode.tom)
