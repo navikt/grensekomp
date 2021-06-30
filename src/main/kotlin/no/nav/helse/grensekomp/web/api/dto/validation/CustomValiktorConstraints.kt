@@ -10,6 +10,10 @@ import org.valiktor.Constraint
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
 import org.valiktor.Validator
+import org.valiktor.functions.isGreaterThan
+import org.valiktor.functions.isGreaterThanOrEqualTo
+import java.time.LocalDate
+import java.util.*
 
 interface CustomConstraint : Constraint {
     override val messageBundle: String
@@ -50,4 +54,11 @@ fun validerKravPerioden(refusjonskrav: RefusjonskravDto, refusjonskravService: R
         }
     }
 }
+
+class InnenforFristenConstraint : CustomConstraint
+fun <E> Validator<E>.Property<LocalDate?>.validerInnenforFristen(frist: LocalDate) =
+    this.validate(InnenforFristenConstraint()) { fom ->
+        return@validate fom!!.isAfter(frist) || fom!!.isEqual(frist)
+    }
+
 

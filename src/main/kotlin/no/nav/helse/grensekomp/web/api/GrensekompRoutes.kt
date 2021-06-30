@@ -13,6 +13,7 @@ import io.ktor.util.pipeline.*
 import no.nav.helse.arbeidsgiver.integrasjoner.aareg.AaregArbeidsforholdClient
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClient
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlClientImpl
+import no.nav.helse.arbeidsgiver.system.getString
 import no.nav.helse.arbeidsgiver.web.auth.AltinnAuthorizer
 import no.nav.helse.grensekomp.domene.Periode
 import no.nav.helse.grensekomp.domene.Refusjonskrav
@@ -86,13 +87,15 @@ fun Route.grensekompRoutes(
             )
             val innsendingstidspunkt = LocalDateTime.now()
 
+            val fristMnd = application.environment.config.getString("soekefrist_i_mnd")
+
             for (i in 0 until jsonTree.size())
                 responseBody.add(i, PostListResponseDto(PostListResponseDto.Status.OK))
 
             for (i in 0 until jsonTree.size()) {
                 try {
                     val dto = om.readValue<RefusjonskravDto>(jsonTree[i].traverse())
-                    dto.validate()
+                    dto.validate(fristMnd.toLong())
                     authorize(authorizer, dto.virksomhetsnummer)
                     val personData = pdlClient.fullPerson(dto.identitetsnummer)
 

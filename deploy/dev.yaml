@@ -88,6 +88,8 @@ spec:
       value: 8f29efc4b7e41002130db5a172587fd4
     - name: DATAPAKKE_API_URL
       value: https://datakatalog-api.dev-gcp.nais.io/v1/datapackage
+    - name: SOEKEFRIST_I_MND
+      value: 1
 
   gcp:
     sqlInstances:

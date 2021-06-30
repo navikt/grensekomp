@@ -14,7 +14,7 @@ data class RefusjonskravDto(
         val bekreftet: Boolean,
         val bostedsland: String
 ) {
-    fun validate() {
+    fun validate(fristMnd: Long) {
         validate(this) {
             validate(RefusjonskravDto::identitetsnummer).isValidIdentitetsnummer()
             validate(RefusjonskravDto::virksomhetsnummer).isValidOrganisasjonsnummer()
@@ -28,6 +28,8 @@ data class RefusjonskravDto(
 
                 // kan ikke kreve refusjon for dager før første refusjonsdato
                 validate(Periode::fom).isGreaterThanOrEqualTo(refusjonFraDato)
+                val minFraDatoNy = LocalDate.now().minusMonths(fristMnd).withDayOfMonth(1)
+                validate(Periode::fom).validerInnenforFristen(minFraDatoNy)
             }
             validate(RefusjonskravDto::bostedsland).isValidBostedsland()
         }
