@@ -17,7 +17,7 @@ object TestData {
             opprettetAv,
             validIdentitetsnummer,
             validOrgNr,
-            Periode(of(2021, 3,30),of(2021, 4,5),1000.0),
+            Periode(of(2021, 1,30),of(2021, 2,5),1000.0),
             true,
         "SWE",
             RefusjonskravStatus.MOTTATT
@@ -26,7 +26,7 @@ object TestData {
         identitetsnummer = validIdentitetsnummer,
         virksomhetsnummer = validOrgNr,
         periode = Periode(
-            of(2021, 3,30),
+            of(2021, 1,30),
             of(2021, 4,5),
             1000.0),
         bekreftet = true,

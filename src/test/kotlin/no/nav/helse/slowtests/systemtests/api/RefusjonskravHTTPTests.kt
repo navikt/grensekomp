@@ -94,8 +94,8 @@ class RefusjonskravHTTPTests : SystemTestBase() {
             loggedInAs("123456789")
             val dtocopy = TestData.gyldigSoeknad.copy(periode =
             Periode(
-                LocalDate.of(2021, 4, 6),
-                LocalDate.of(2021, 4, 10),
+                LocalDate.of(2021, 2, 6),
+                LocalDate.of(2021, 2, 10),
                 1000)
             )
             body= listOf(dtocopy)
@@ -118,8 +118,8 @@ class RefusjonskravHTTPTests : SystemTestBase() {
             loggedInAs("123456789")
             body= listOf(TestData.gyldigSoeknad.copy(periode =
             Periode(
-                LocalDate.of(2021, 3, 30),
-                LocalDate.of(2021, 4, 5),
+                LocalDate.of(2021, 1, 30),
+                LocalDate.of(2021, 2, 5),
                 1000)
             ))
         }
