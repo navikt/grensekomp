@@ -50,7 +50,7 @@ fun localDevConfig(cfg: ApplicationConfig) = module {
     single { SletteRefusjonskravProcessor(get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 
-    single { DatapakkePublisherJob(get(), get(), get(), cfg.getString("datapakke.api_url"), cfg.getString("datapakke.id")) }
+    single { DatapakkePublisherJob(get(), get(), get(), cfg.getString("datapakke.api_url"), cfg.getString("datapakke.id"),get()) }
 
 
 }

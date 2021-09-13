@@ -4,6 +4,7 @@ import no.nav.helse.grensekomp.datapakke.DatapakkePublisherJob
 import no.nav.helse.grensekomp.db.RefusjonskravRepository
 import no.nav.helse.grensekomp.integration.GrunnbeløpClient
 import no.nav.helse.slowtests.systemtests.api.SystemTestBase
+import no.nav.security.mock.oauth2.http.objectMapper
 import org.junit.Ignore
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -22,7 +23,8 @@ class DatapakkePublisherJobTest : SystemTestBase() {
             httpClient,
             gClient,
             "https://datakatalog-api.dev.intern.nav.no/v1/datapackage",
-        "8f29efc4b7e41002130db5a172587fd4"
+        "8f29efc4b7e41002130db5a172587fd4",
+            om = objectMapper
         ).doJob()
     }
 }

@@ -1,8 +1,10 @@
 package no.nav.helse.grensekomp.datapakke
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -18,6 +20,7 @@ class DatapakkePublisherJob(
     private val gClient: GrunnbeløpClient,
     private val datapakkeApiUrl: String,
     private val datapakkeId: String,
+    private val om: ObjectMapper
 ) :
     RecurringJob(
         CoroutineScope(Dispatchers.IO),
@@ -36,7 +39,8 @@ class DatapakkePublisherJob(
 
         runBlocking {
             val response = httpClient.put<HttpResponse>("$datapakkeApiUrl/$datapakkeId") {
-                body = populatedDatapakke
+                contentType(ContentType.Application.Json)
+                body = om.readTree(populatedDatapakke)
             }
 
             logger.info("Oppdaterte datapakke $datapakkeId med respons ${response.readText()}")

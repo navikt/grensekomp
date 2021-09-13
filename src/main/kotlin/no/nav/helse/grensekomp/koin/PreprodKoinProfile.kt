@@ -68,6 +68,6 @@ fun preprodConfig(config: ApplicationConfig) = module {
     single { SletteRefusjonskravProcessor(get(), get(), get(), get(), get()) }
     single { KvitteringProcessor(get(), get(), get()) }
 
-    single { DatapakkePublisherJob(get(), get(), get(), config.getString("datapakke.api_url"), config.getString("datapakke.id")) }
+    single { DatapakkePublisherJob(get(), get(), get(), config.getString("datapakke.api_url"), config.getString("datapakke.id"), get()) }
 }
 
