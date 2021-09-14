@@ -1,5 +1,7 @@
 package no.nav.helse.grensekomp.web.api.dto.validation
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.NullNode
 import io.ktor.util.*
 import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlHentFullPerson
 import no.nav.helse.grensekomp.domene.Periode
@@ -15,8 +17,10 @@ class NorskStatsborgerConstraint : CustomConstraint
 @KtorExperimentalAPI
 fun validerPdlBaserteRegler(personData: PdlHentFullPerson?, refusjonskrav: RefusjonskravDto) {
 
+    fun isNullOrNullNode(node: JsonNode?) = node == null || node is NullNode
+
     val bosattINorge = personData?.hentPerson?.bostedsadresse?.any { adr ->
-        val harKjentNorskAddress = adr.matrikkeladresse != null || adr.vegadresse != null
+        val harKjentNorskAddress = !isNullOrNullNode(adr.matrikkeladresse) || !isNullOrNullNode(adr.vegadresse)
         val erUtvandretFraDenneAddressenFørCutoff =
             (adr.gyldigTilOgMed != null && adr.gyldigTilOgMed!!.toLocalDate().isBefore(Periode.refusjonFraDato))
 
