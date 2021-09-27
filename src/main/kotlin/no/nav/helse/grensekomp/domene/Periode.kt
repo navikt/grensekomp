@@ -16,6 +16,7 @@ data class Periode(
 
     companion object {
         val refusjonFraDato = LocalDate.of(2021, 1, 29)
+        val refusjonTilDato = LocalDate.of(2021,10,1)
         val weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
         val justeringsFaktor = 0.7
     }

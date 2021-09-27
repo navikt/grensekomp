@@ -22,8 +22,8 @@ internal class AaregConstraintsKtTest {
             emptyList(),
             Ansettelsesperiode(
                 Periode(
-                    of(2019, 1, 1),
-                    of(2021, 2, 28)
+                    of(2019, 3, 1),
+                    of(2021, 4, 30)
                 )
             ),
             LocalDateTime.now()
@@ -34,7 +34,7 @@ internal class AaregConstraintsKtTest {
             emptyList(),
             Ansettelsesperiode(
                 Periode(
-                    of(2021, 3, 1),
+                    of(2021, 5, 1),
                     null
                 )
             ),
@@ -43,7 +43,7 @@ internal class AaregConstraintsKtTest {
 
         validerArbeidsforhold(
             listOf(arbeidsForhold1, arbeidsForhold2),
-            TestData.gyldigSoeknad.copy(periode = TestData.gyldigSoeknad.periode.copy(tom = of(2021, 5, 1)))
+            TestData.gyldigSoeknad.copy(periode = TestData.gyldigSoeknad.periode.copy(tom = of(2021, 7, 1)))
         )
 
         assertThrows<ConstraintViolationException> {
@@ -58,7 +58,7 @@ internal class AaregConstraintsKtTest {
             val forLangtOpphold = arbeidsForhold2.copy(
                 ansettelsesperiode = Ansettelsesperiode(
                     Periode(
-                        LocalDate.of(2021, 3, 4),
+                        LocalDate.of(2021, 5, 4),
                         null
                     )
                 )
