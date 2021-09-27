@@ -56,7 +56,7 @@ dependencies {
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                strictly("4.1.68-.Final")
+                strictly("4.1.68.Final")
             }
             because("snyk control")
         }
