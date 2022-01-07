@@ -1,9 +1,9 @@
 name: Slowtests
 
 on:
-  push:
-    branches:
-      - '!dependabot/*'
+  pull_request:
+    branches-ignore:
+      - 'dependabot/*'
 
 jobs:
   slowTest:
