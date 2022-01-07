@@ -1,9 +1,9 @@
 name: Ktlint
 
 on:
-  pull_request:
-    branches-ignore:
-      - 'dependabot/*'
+  push:
+    branches:
+      - '!dependabot/*'
 
 jobs:
   Ktlint:
