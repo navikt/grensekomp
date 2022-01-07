@@ -1,7 +1,7 @@
 name: Ktlint
 
 on:
-  push:
+  pull_request:
     branches:
       - '!dependabot/*'
 
