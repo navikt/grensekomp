@@ -18,6 +18,7 @@ import no.nav.helse.grensekomp.integration.virusscan.VirusScanner
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import java.time.LocalDate.now
+import java.time.LocalDateTime
 
 fun Module.mockExternalDependecies() {
     single { MockAltinnRepo(get()) } bind AltinnOrganisationsRepository::class
@@ -38,10 +39,25 @@ fun Module.mockExternalDependecies() {
         object : AaregArbeidsforholdClient {
             override suspend fun hentArbeidsforhold(ident: String, callId: String): List<Arbeidsforhold> =
                 listOf<Arbeidsforhold>(
-                    Arbeidsforhold(Arbeidsgiver("test", "810007842"), Opplysningspliktig("Juice", "810007702"), emptyList(), Ansettelsesperiode(Periode(
-                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null)), no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.atStartOfDay()) ,
-                    Arbeidsforhold(Arbeidsgiver("test", "910098896"), Opplysningspliktig("Juice", "910098896"), emptyList(), Ansettelsesperiode(Periode(
-                    no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null)), no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.atStartOfDay()))
+                    Arbeidsforhold(
+                        Arbeidsgiver("test", "810007842"), Opplysningspliktig("Juice", "810007702"), emptyList(),
+                        Ansettelsesperiode(
+                            Periode(
+                                no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null
+                            )
+                        ),
+                        no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.atStartOfDay()
+                    ),
+                    Arbeidsforhold(
+                        Arbeidsgiver("test", "910098896"), Opplysningspliktig("Juice", "910098896"), emptyList(),
+                        Ansettelsesperiode(
+                            Periode(
+                                no.nav.helse.grensekomp.domene.Periode.refusjonFraDato, null
+                            )
+                        ),
+                        no.nav.helse.grensekomp.domene.Periode.refusjonFraDato.atStartOfDay()
+                    )
+                )
         }
     } bind AaregArbeidsforholdClient::class
 
@@ -81,15 +97,17 @@ fun Module.mockExternalDependecies() {
                     )
                 )
         }
-
     } bind PdlClient::class
 
     single {
         object : OppgaveKlient {
+            override suspend fun hentOppgave(oppgaveId: Int, callId: String): OppgaveResponse {
+                return OppgaveResponse(oppgaveId, 1, oppgavetype = "TEST", aktivDato = LocalDateTime.now().minusDays(3).toLocalDate(), prioritet = Prioritet.NORM.toString())
+            }
             override suspend fun opprettOppgave(
                 opprettOppgaveRequest: OpprettOppgaveRequest,
                 callId: String
-            ): OpprettOppgaveResponse = OpprettOppgaveResponse(1234, "1234", "SYK", "TEST", 1, now(), Prioritet.NORM, Status.OPPRETTET )
+            ): OpprettOppgaveResponse = OpprettOppgaveResponse(1234, "1234", "SYK", "TEST", 1, now(), Prioritet.NORM, Status.OPPRETTET)
         }
     } bind OppgaveKlient::class
 
