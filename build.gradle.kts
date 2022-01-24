@@ -24,7 +24,7 @@ plugins {
     application
     kotlin("jvm") version "1.4.20"
     id("com.github.ben-manes.versions") version "0.27.0"
-    id("com.autonomousapps.dependency-analysis") version "0.71.0"
+    id("com.autonomousapps.dependency-analysis") version "0.80.0"
     jacoco
 }
 
