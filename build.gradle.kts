@@ -23,7 +23,7 @@ val githubPassword: String by project
 plugins {
     application
     kotlin("jvm") version "1.4.20"
-    id("com.github.ben-manes.versions") version "0.27.0"
+    id("com.github.ben-manes.versions") version "0.42.0"
     id("com.autonomousapps.dependency-analysis") version "0.71.0"
     jacoco
 }
