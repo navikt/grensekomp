@@ -22,7 +22,8 @@ fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnAuthorize
 @KtorExperimentalAPI
 fun hentIdentitetsnummerFraLoginToken(config: ApplicationConfig, request: ApplicationRequest): String {
     val tokenString = getTokenString(config, request)
-    return JwtToken(tokenString).subject
+    val pid = JwtToken(tokenString).jwtTokenClaims.get("pid")
+    return pid?.toString() ?: JwtToken(tokenString).subject
 }
 
 @KtorExperimentalAPI
